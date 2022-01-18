@@ -4,6 +4,9 @@ import LogoImg from '../img/logo.svg'
 import EditImg from '../img/edit.svg'
 import TrashImg from '../img/trash.svg'
 import { NewDataModal } from "../components/Modal"
+import { Header, HeaderText, Table } from "../components"
+
+const mock = [{ name: "São sebastião", amount: 12, updatedAt: "01/12/2021"}, { name: "São sebastião", amount: 12, updatedAt: "01/12/2021"}];
 
 const City: React.FC = () => {
   const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false)
@@ -18,20 +21,7 @@ const City: React.FC = () => {
 
   return (
     <>
-      <header className="bg-blue" >
-
-        <div className="mx-auto py-4 px-4 w-[74rem] flex items-center justify-between">
-          <div className="flex items-center">
-            <img  className="h-16" src={LogoImg} alt="logo" />
-            <h1 className="text-white font-semibold text-xl ml-4" >DePara</h1>
-          </div>
-          <div>
-            <h1 className="text-white font-semibold text-sm" >Paulo Henrique Rosa</h1>
-            <p className="text-white font-light text-xs mt-0" >paulohenriquerosa@gmail.com</p>
-          </div>
-        </div>
-
-      </header>
+      <Header />
 
       <NewDataModal
         isOpen={isNewDataModalOpen}
@@ -43,115 +33,18 @@ const City: React.FC = () => {
       <main className="mx-auto py-4 px-4 w-[74rem] ">
         <div className="flex justify-between items-center" >
 
-          <h1 className="text-2xl font-bold text-title ">Minhas cidades</h1>
+          <HeaderText>Minhas cidades</HeaderText>
           <button onClick={handleOpenNewDataModal} className="text-white font-medium text-xs border rounded-md bg-blue py-3 px-16 hover:brightness-90"  >Nova cidade</button>
 
         </div>
 
 
         <div className="mt-4" >
-
-          <table className="w-full" >
-            <thead>
-              <tr >
-                <th className="text-body font-normal py-4 px-8 text-left leading-6">Nome</th>
-                <th className="text-body font-normal py-4 px-8 text-left leading-6">Quantidade</th>
-                <th className="text-body font-normal py-4 px-8 text-left leading-6">Modificação</th>
-                <th className="text-body font-normal py-4 px-8 text-left leading-6">Ação</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr>
-                <td className="bg-white border-0 rounded py-4 px-8 text-body">São sebastião</td>
-                <td className="bg-white rounded py-4 px-8 text-body">12 setores</td>
-                <td className="bg-white rounded py-4 px-8 text-body">01/12/2021</td>
-                <td className="bg-white rounded py-4 px-8 text-body">
-                  <div className="flex">
-                    <button >
-                      <img  src={EditImg} alt="" />
-                    </button>
-                    <button>
-                      <img className="pl-2" src={TrashImg} alt="" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              
-              <tr>
-                <td className="bg-white border-0 rounded py-4 px-8 text-body">São sebastião</td>
-                <td className="bg-white rounded py-4 px-8 text-body">12 setores</td>
-                <td className="bg-white rounded py-4 px-8 text-body">01/12/2021</td>
-                <td className="bg-white rounded py-4 px-8 text-body">
-                  <div className="flex">
-                    <button >
-                      <img  src={EditImg} alt="" />
-                    </button>
-                    <button>
-                      <img className="pl-2" src={TrashImg} alt="" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              
-              <tr>
-                <td className="bg-white border-0 rounded py-4 px-8 text-body">São sebastião</td>
-                <td className="bg-white rounded py-4 px-8 text-body">12 setores</td>
-                <td className="bg-white rounded py-4 px-8 text-body">01/12/2021</td>
-                <td className="bg-white rounded py-4 px-8 text-body">
-                  <div className="flex">
-                    <button >
-                      <img  src={EditImg} alt="" />
-                    </button>
-                    <button>
-                      <img className="pl-2" src={TrashImg} alt="" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              
-              <tr>
-                <td className="bg-white border-0 rounded py-4 px-8 text-body">São sebastião</td>
-                <td className="bg-white rounded py-4 px-8 text-body">12 setores</td>
-                <td className="bg-white rounded py-4 px-8 text-body">01/12/2021</td>
-                <td className="bg-white rounded py-4 px-8 text-body">
-                  <div className="flex">
-                    <button >
-                      <img  src={EditImg} alt="" />
-                    </button>
-                    <button>
-                      <img className="pl-2" src={TrashImg} alt="" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              
-              <tr>
-                <td className="bg-white border-0 rounded py-4 px-8 text-body">São sebastião</td>
-                <td className="bg-white rounded py-4 px-8 text-body">12 setores</td>
-                <td className="bg-white rounded py-4 px-8 text-body">01/12/2021</td>
-                <td className="bg-white rounded py-4 px-8 text-body">
-                  <div className="flex">
-                    <button >
-                      <img  src={EditImg} alt="" />
-                    </button>
-                    <button>
-                      <img className="pl-2" src={TrashImg} alt="" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-              
-            </tbody>
-          </table>
-
+          <Table data={mock} />
         </div>
-
       </main>
-
     </>
   )
-
 }
 
 

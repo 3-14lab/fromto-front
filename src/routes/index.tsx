@@ -7,6 +7,7 @@ import {SignIn} from '../pages/Signin';
 import {SignUp} from '../pages/Signup';
 import {City} from '../pages/City';
 import {Sector} from '../pages/Sector';
+import { Pairing } from '../pages/Pairing';
 
 const Routes: React.FC = () => {
   return (
@@ -15,6 +16,7 @@ const Routes: React.FC = () => {
       <Route path="/signup" exact component={SignUp} />
       <Route path="/city" exact component={City} />
       <Route path="/sector" exact component={Sector} />
+      <Route path="/pairing" exact component={Pairing} />
     </Switch>
   );
 };

@@ -8,6 +8,9 @@ module.exports = {
         'background-1': "url('/src/img/background-1.png')",
         'hero-sm': "url('/storage/img/sys/sm-hero.jpg')",
       },
+      fontFamily: {
+        inter: 'Inter, sans-serif',
+      }
     },
 
     colors: {
