@@ -4,15 +4,21 @@ import "./styles.css"
 
 import Routes from './routes';
 import {  AppProvider } from './hooks';
+import { UploadProvider } from './hooks/upload';
+import { PairingProvider } from './hooks/pairing';
 
 const App: React.FC = () => {
 
 
   return (
     <BrowserRouter>
-      <AppProvider>
-        <Routes />
-      </AppProvider>
+      <UploadProvider>
+        <PairingProvider>
+          <AppProvider>
+            <Routes />
+          </AppProvider>
+        </PairingProvider>
+      </UploadProvider>
     </BrowserRouter>
   );
 };

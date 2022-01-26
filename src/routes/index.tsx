@@ -7,16 +7,22 @@ import {SignIn} from '../pages/Signin';
 import {SignUp} from '../pages/Signup';
 import {City} from '../pages/City';
 import {Sector} from '../pages/Sector';
+import { Pairings } from '../pages/pairings';
 import { Pairing } from '../pages/Pairing';
+import { RecoverPassword } from '../pages/RecoverPassword';
 
 const Routes: React.FC = () => {
   return (
     <Switch>
-      <Route path="/signin" exact component={SignIn} />
-      <Route path="/signup" exact component={SignUp} />
-      <Route path="/city" exact component={City} />
-      <Route path="/sector" exact component={Sector} />
-      <Route path="/pairing" exact component={Pairing} />
+      <Route path="/" exact component={SignIn} />
+      <Route path="/signup" component={SignUp} />
+      <Route path="/city" component={City} />
+      <Route path="/sector" component={Sector} />
+      {/* refatorar */}
+      {/* <Route path="/pairing" exact component={Pairing} /> */}
+      <Route path="/pairings" component={Pairings} />
+      <Route path="/pairing" component={Pairing} />
+      <Route path="/recuperar" component={RecoverPassword} />
     </Switch>
   );
 };

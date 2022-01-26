@@ -4,7 +4,7 @@ h2 {
   margin-bottom: 2rem;
 }
 
-input {
+/* input {
   width: 100%;
   padding: 0 1.5rem;
   height: 4rem;
@@ -16,7 +16,7 @@ input {
   font-weight: 400;
   font-size: 1rem;
 
-}
+} */
 
 input::placeholder {
   color: #969CB2
@@ -25,7 +25,7 @@ input::placeholder {
 button[type="submit"]{
   width: 100%;
   padding: 0 1.5rem;
-  height: 4rem;
+  height: 2.5rem;
   background: #6933FF;
   color: #FFF;
   border-radius: 0.25rem;
@@ -59,10 +59,9 @@ button:hover{
 }
 
 .react-modal-content {
-  width: 100%;
-  max-width: 576px;
-  background: #F0F2F5;
-  padding: 3rem;
+  max-width: 560px;
+  background: white;
+  padding: 2.5rem;
   position: relative;
   border-radius: 0.25rem;
 }

@@ -5,6 +5,9 @@ import EditImg from '../img/edit.svg'
 import TrashImg from '../img/trash.svg'
 import { NewDataModal } from "../components/Modal"
 
+const titles = ['Nome', 'Qtde. setores', 'Última Modificação', 'Ação'];
+const mock = [];
+
 const Sector: React.FC = () => {
 
   const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false)
@@ -40,7 +43,7 @@ const Sector: React.FC = () => {
         isOpen={isNewDataModalOpen}
         onRequestClose={handleCloseNewDataModal}
         placeholder="Nome"
-        title="Criar novo setor"
+        title="Cadastrar setor"
       />
 
         <div className="flex justify-between items-center" >
