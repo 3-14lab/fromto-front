@@ -36,7 +36,9 @@ module.exports = {
       'title': '#374151',
       'body': '#969CB2',
       'shape': '#F0F2F5',
-      'white': '#FFF'
+      'white': '#FFF',
+      'green-200': '#7CEA9C',
+      'green-800': '#43aa8b',
     }
   },
   plugins: [],

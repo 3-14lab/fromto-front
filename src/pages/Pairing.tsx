@@ -3,6 +3,8 @@ import { Redirect } from 'react-router-dom';
 import { Header } from '../components';
 import { usePairing } from '../hooks/pairing';
 import { useUpload } from '../hooks/upload';
+import {CSVLink} from 'react-csv';
+
 interface FieldGroupProps {
   code?: string;
   location?: string;
@@ -25,7 +27,6 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
 
   async function handleCodeSelected(valueCode: string | undefined) {
     setCodeSelected(valueCode);
-    console.log(valueCode)
     setBody({ ...body, code_base: valueCode })
 
     handleAddPairing({...body, code_base: valueCode}, code);
@@ -74,8 +75,14 @@ const Row = ({ code, location, file, value }: any) => {
 
 export const Pairing: React.FC = () => {
   const { files } = useUpload();
-  const { allBody } = usePairing();
-  console.log(allBody)
+  const { allBody, formatCSV } = usePairing();
+  console.log(formatCSV);
+   const headers = [
+    { label: "Código base (sicgesp)", key: "code_base" },
+    { label: "Locação", key: "location" },
+    { label: "Valor", key: "value" }
+  ]
+
   if (!files.sicgesp) return <Redirect to="/pairings" />
 
   return (
@@ -100,8 +107,13 @@ export const Pairing: React.FC = () => {
             <Row key={code_model} code={code_model} location={location} file={files?.local} value={value} />
           ))}
         </div>
-        <div className="w-full flex justify-center">
+        <div className="w-[382px] mx-auto flex items-center justify-around">
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg">Atualizar planilha</button>
+          <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
+            <CSVLink data={formatCSV} filename={"from_to.csv"} headers={headers} separator={";"}>
+              Baixar planilha
+            </CSVLink>
+          </button>
         </div>
       </div>
     </>
