@@ -6,7 +6,7 @@ interface BodyHeaderProps {
 }
 
 function HeaderText({ children }: BodyHeaderProps) {
-  return <h1 className="text-2xl font-bold text-title">{children}</h1>
+  return <h1 className="font-roboto font-medium text-4xl text-title">{children}</h1>
 }
 
 export default HeaderText;

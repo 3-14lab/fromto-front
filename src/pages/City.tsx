@@ -7,6 +7,7 @@ import { useAuth } from '../hooks/auth'
 
 import api from '../services/api';
 
+const titles = ['Nome', 'Qtde. setores', 'Última Modificação', 'Ação'];
 const mock = [{ name: "São sebastião", amount: 12, updatedAt: "01/12/2021"}, { name: "São sebastião", amount: 12, updatedAt: "01/12/2021"}];
 
 
@@ -48,20 +49,20 @@ const City: React.FC = () => {
         isOpen={isNewDataModalOpen}
         onRequestClose={handleCloseNewDataModal}
         placeholder="Nome"
-        title="Criar nova cidade"
+        title="Cadastrar cidade"
       />
 
-      <main className="mx-auto py-4 px-4 w-[74rem] ">
-        <div className="flex justify-between items-center" >
+      <main className="mx-auto w-[70rem] ">
+        <div className="flex justify-between items-center mt-10" >
 
-          <HeaderText>Minhas cidades</HeaderText>
+          <HeaderText>Cidades</HeaderText>
           <button onClick={handleOpenNewDataModal} className="text-white font-medium text-xs border rounded-md bg-blue py-3 px-16 hover:brightness-90"  >Nova cidade</button>
 
         </div>
 
 
         <div className="mt-4" >
-          <Table data={cities} />
+          <Table data={mock} titles={titles}/>
         </div>
       </main>
     </>
