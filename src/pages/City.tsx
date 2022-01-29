@@ -1,15 +1,36 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 
-import LogoImg from '../img/logo.svg'
-import EditImg from '../img/edit.svg'
-import TrashImg from '../img/trash.svg'
 import { NewDataModal } from "../components/Modal"
 import { Header, HeaderText, Table } from "../components"
 
+import { useAuth } from '../hooks/auth'
+
+import api from '../services/api';
+
 const mock = [{ name: "São sebastião", amount: 12, updatedAt: "01/12/2021"}, { name: "São sebastião", amount: 12, updatedAt: "01/12/2021"}];
+
+
+interface CityData {
+  name: string,
+  amount: number,
+  updatedAt: Date
+}
+
 
 const City: React.FC = () => {
   const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false)
+  const [cities, setCities] = useState<CityData[]>([])
+
+  const { user } = useAuth()
+
+  useEffect(()=>{
+
+    api.get('city', { data:{ user_id: user.id} }).then(response => {
+      setCities(response.data)
+    })
+
+
+  }, [user])
 
   function handleOpenNewDataModal(){
     setIsNewDataModalOpen(true)
@@ -40,7 +61,7 @@ const City: React.FC = () => {
 
 
         <div className="mt-4" >
-          <Table data={mock} />
+          <Table data={cities} />
         </div>
       </main>
     </>

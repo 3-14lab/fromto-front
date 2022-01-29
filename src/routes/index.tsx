@@ -12,11 +12,11 @@ import { Pairing } from '../pages/Pairing';
 const Routes: React.FC = () => {
   return (
     <Switch>
-      <Route path="/signin" exact component={SignIn} />
+      <Route path="/" exact component={SignIn} />
       <Route path="/signup" exact component={SignUp} />
-      <Route path="/city" exact component={City} />
-      <Route path="/sector" exact component={Sector} />
-      <Route path="/pairing" exact component={Pairing} />
+      <Route path="/city" isPrivate exact component={City} />
+      <Route path="/sector" isPrivate  exact component={Sector} />
+      <Route path="/pairing" isPrivate exact component={Pairing} />
     </Switch>
   );
 };

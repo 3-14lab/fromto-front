@@ -1,12 +1,13 @@
 import React from 'react'
 
+
 const titles = ['Nome', 'Quantidade', 'Modificação', 'Ação'];
 interface DataProps {
   name: string;
   amount: number;
   updatedAt: string;
 }
-function index({ data }: any) {
+function Index({ data }: any) {
   return (
     <table className="w-full" >
       <thead>
@@ -40,4 +41,4 @@ function index({ data }: any) {
   )
 }
 
-export default index
+export default Index
