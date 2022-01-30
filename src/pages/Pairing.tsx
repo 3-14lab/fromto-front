@@ -27,12 +27,24 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
 
   async function handleCodeSelected(valueCode: string | undefined) {
     setCodeSelected(valueCode);
+    // console.log(valueCode);
+    // console.log(body);
+    // const bodyFilted = body?.map((item: any) => {
+    //   if (item.location !== location) {
+    //     return item;
+    //   }
+    // })
+
+    
+
     setBody({ ...body, code_base: valueCode })
 
     handleAddPairing({...body, code_base: valueCode}, code);
   } 
 
   function update(event?: ChangeEvent<HTMLSelectElement>) {
+    // console.log(event?.target.options[event?.target.options.selectedIndex].text)
+    // console.log(text, value);
     handleCodeSelected(event?.target.options[event?.target.options.selectedIndex].value)
   }
 
@@ -103,8 +115,8 @@ export const Pairing: React.FC = () => {
         </div>
         
         <div className="max-h-[400px] overflow-y-scroll">
-          { files?.sicgesp.map(({ code_model, location, value}: any) => (
-            <Row key={code_model} code={code_model} location={location} file={files?.local} value={value} />
+          { files?.local.map(({ code_model, location, value}: any) => (
+            <Row key={code_model} code={code_model} location={location} file={files?.sicgesp} value={value} />
           ))}
         </div>
         <div className="w-[382px] mx-auto flex items-center justify-around">
