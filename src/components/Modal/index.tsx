@@ -4,7 +4,6 @@ import Modal from 'react-modal'
 import './style.css'
 
 import closeImg from '../../img/close.svg'
-import { useHistory } from 'react-router-dom'
 
 interface NewDataModalProps  {
   isOpen: boolean;
@@ -13,23 +12,22 @@ interface NewDataModalProps  {
   placeholder: string
   children?: any;
   firstLabelText?: string;
+  handleSubmit: (data: string) => void;
 }
 
-export function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, firstLabelText }:NewDataModalProps){
+
+export function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSubmit }:NewDataModalProps){
   
-  const history = useHistory();
   const [value, setValue] = useState('')
 
   function handleCreateNewDataModal (event: FormEvent){
     event.preventDefault()
 
-    console.log(
-      value,
-    )
-  }
-
-  function handlePairing() {
-    history.push('/pairing');
+    if(value){
+      handleSubmit(value)
+      setValue('')
+      onRequestClose()
+    }
   }
 
   return(
@@ -57,7 +55,7 @@ export function NewDataModal({ isOpen, onRequestClose, placeholder, title, child
         
       { children }
        
-       <button onClick={handlePairing}type="submit">Cadastrar</button>
+       <button type="submit">Cadastrar</button>
 
       </form>
     </Modal>

@@ -12,9 +12,10 @@ const mock = [{ name: "São sebastião", amount: 12, updatedAt: "01/12/2021"}, {
 
 
 interface CityData {
+  id: string,
   name: string,
   amount: number,
-  updatedAt: Date
+  created_at: Date
 }
 
 
@@ -26,10 +27,14 @@ const City: React.FC = () => {
 
   useEffect(()=>{
 
-    api.get('city', { data:{ user_id: user.id} }).then(response => {
+    async function  loadCities(){
+      const response = await api.get(`city/user/${user.id}`);
       setCities(response.data)
-    })
+      console.log(response.data)
 
+    }
+
+    loadCities()
 
   }, [user])
 
@@ -41,6 +46,18 @@ const City: React.FC = () => {
     setIsNewDataModalOpen(false)
   }
 
+  async function handleModalSubmit(data: string){
+
+    await api.post('city', { 
+        name: data,
+        user_id: user.id
+    })
+
+    const response = await api.get(`city/user/${user.id}`);
+    setCities(response.data)
+    
+  }
+
   return (
     <>
       <Header />
@@ -50,6 +67,7 @@ const City: React.FC = () => {
         onRequestClose={handleCloseNewDataModal}
         placeholder="Nome"
         title="Cadastrar cidade"
+        handleSubmit={handleModalSubmit}
       />
 
       <main className="mx-auto w-[70rem] ">
@@ -59,10 +77,8 @@ const City: React.FC = () => {
           <button onClick={handleOpenNewDataModal} className="text-white font-medium text-xs border rounded-md bg-blue py-3 px-16 hover:brightness-90"  >Nova cidade</button>
 
         </div>
-
-
         <div className="mt-4" >
-          <Table data={mock} titles={titles}/>
+          <Table data={cities} titles={titles}/>
         </div>
       </main>
     </>

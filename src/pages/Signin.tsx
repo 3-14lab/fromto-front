@@ -25,8 +25,11 @@ const SignIn: React.FC = () =>{
 
   const handleSubmit = useCallback( async (data: SignInData )=>{
     
-    console.log(data)
-    await signIn(data)
+    try {
+      await signIn(data)
+    } catch (error) {
+      console.log(error)
+    }
     
     history.push('/city');
 
@@ -59,7 +62,7 @@ const SignIn: React.FC = () =>{
           {/* <a className='text-center text-sm mt-8 text-green-700' href="login">Esqueci minha senha</a> */}
 
           <Link className='text-center text-sm font-medium mt-[19px] text-title' to="/signup">Cadastre-se</Link>
-          <Link className='text-center text-sm font-medium mt-[50px] p text-title' to="/recuperar">Esqueci minha senha</Link>
+          <Link className='text-center text-sm font-medium mt-[50px] p text-title' to="/recover">Esqueci minha senha</Link>
 
         </Form>
 

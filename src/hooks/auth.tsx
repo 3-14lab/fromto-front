@@ -3,7 +3,7 @@ import api from '../services/api';
 
 interface User {
   id: string;
-  name: string;
+  username: string;
   email: string;
   avatar_url: string;
 }
@@ -40,19 +40,24 @@ export const AuthProvider: React.FC = ({ children }) => {
   });
 
   const signIn = useCallback(async ({ email, password }: SignInCredentials) => {
-    const response = await api.post('session', {
-      email,
-      password,
-    });
 
-    const { token, user } = response.data;
-
-    localStorage.setItem('@fromto:token', token);
-    localStorage.setItem('@fromto:user', JSON.stringify(user));
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    
-
-    setData({ token, user });
+    try {
+      const response = await api.post('session', {
+        email,
+        password,
+      });
+  
+      const { token, user } = response.data;
+  
+      localStorage.setItem('@fromto:token', token);
+      localStorage.setItem('@fromto:user', JSON.stringify(user));
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+  
+      setData({ token, user });
+    } catch (error) {
+     console.log(error) 
+    }
   }, []);
 
   const signOut = useCallback(() => {

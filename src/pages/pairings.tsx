@@ -1,14 +1,44 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 
 import { NewDataModal } from "../components/Modal"
-import { FileUploader, Header, Table } from "../components"
+import { FileUploader, Header } from "../components"
 import { useUpload } from "../hooks/upload"
+import api from "../services/api";
+import { useParams } from "react-router-dom";
+
+import TrashImg from '../img/trash.svg'
+
 
 const titles = ['Nome', 'Arq. SICGESP', 'Arq. local', 'Modificação', 'Ação'];
 const mock = [{ name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}, { name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}];
 
+interface ExpenseSheetData {
+  id: string,
+  value: number,
+  sector_id: string,
+  place_name: string,
+  base_code: string,
+  model_code: string,
+  created_at: Date
+}
+
 export const Pairings: React.FC = () => {
   const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false)
+  const [expenseSheets, setExpenseSheets] = useState<ExpenseSheetData[]>([])
+
+  const {sector_id} = useParams() as {sector_id: string}
+
+  useEffect(()=>{
+
+    async function  loadSector(){
+      const response = await api.get(`expense_sheet/${sector_id}`);
+      setExpenseSheets(response.data)
+
+    }
+
+    loadSector()
+
+  }, [sector_id])
 
   function handleOpenNewDataModal(){
     setIsNewDataModalOpen(true)
@@ -30,6 +60,7 @@ export const Pairings: React.FC = () => {
         onRequestClose={handleCloseNewDataModal}
         placeholder="Nome"
         title="Cadastrar pareamento"
+        handleSubmit={(data) => console.log(data)}
       >
         <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP" label="Arquivo SICGESP" type="sicgesp" />
         <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv sem padronização" label="Arquivo local" type="local" />
@@ -46,7 +77,35 @@ export const Pairings: React.FC = () => {
 
 
         <div className="mt-4" >
-          <Table data={mock} titles={titles} />
+        <table className="w-full" >
+            <thead>
+              <tr >
+                <th className="text-body font-normal py-4 px-8 text-left leading-6">Nome</th>
+                <th className="text-body font-normal py-4 px-8 text-left leading-6">Modificação</th>
+                <th className="text-body font-normal py-4 px-8 text-left leading-6">Ação</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              {expenseSheets.map(expenseSheet => (  
+
+              <tr key={expenseSheet.id} >
+                <td className="bg-white border-0 rounded py-4 px-8 text-body">{expenseSheet.place_name}</td>
+                <td className="bg-white rounded py-4 px-8 text-body">{new Date(expenseSheet.created_at).toLocaleDateString('pt-br')}</td>
+                <td className="bg-white rounded py-4 px-8 text-body">
+                  <div className="flex">
+                    <button >
+                      <img className="pl-2" src={TrashImg} alt="" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+            ))}
+              
+            </tbody>
+          </table>
         </div>
       </main>
     </>

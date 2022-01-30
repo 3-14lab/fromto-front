@@ -4,6 +4,7 @@ import { Header } from '../components';
 import { usePairing } from '../hooks/pairing';
 import { useUpload } from '../hooks/upload';
 import {CSVLink} from 'react-csv';
+import api from '../services/api';
 
 interface FieldGroupProps {
   code?: string;
@@ -85,6 +86,16 @@ export const Pairing: React.FC = () => {
 
   if (!files.sicgesp) return <Redirect to="/pairings" />
 
+
+  async function handlePairinglSubmit(){
+
+      await api.post('sector', { 
+        allBody
+      })
+    
+    
+  }
+
   return (
     <>
     <Header />
@@ -108,7 +119,7 @@ export const Pairing: React.FC = () => {
           ))}
         </div>
         <div className="w-[382px] mx-auto flex items-center justify-around">
-          <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg">Atualizar planilha</button>
+          <button onClick={handlePairinglSubmit} className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg">Atualizar planilha</button>
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
             <CSVLink data={formatCSV} filename={"from_to.csv"} headers={headers} separator={";"}>
               Baixar planilha
