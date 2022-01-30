@@ -8,19 +8,9 @@ interface FilesProps {
 }
 
 const FileUploader = ({ placeholder, label, type }: any) => {
-  // const { isDragActive } = useDropzone();
-
-  // const [files, setFiles] = useState({} as FilesProps);
-  const [fileName, setFileName] = useState<string | undefined>("");
+  
   const importFile = useRef<any>(null);
-
-  // function handleUploadFile(file: any, type: string) {
-  //   const filledFile = {
-  //     [type]: file,
-  //   }
-  //   setFiles({ ...files, ...filledFile})
-  // }
-
+  const [fileName, setFileName] = useState<string | undefined>("");
   const { handleUploadFile } = useUpload();
 
   return (
@@ -44,16 +34,10 @@ const FileUploader = ({ placeholder, label, type }: any) => {
               const reader = new global.FileReader();
               reader.onloadend = () => {
                 const csv = csvToObject(reader.result);
-                console.log(file?.type);
-
                 setFileName(file?.name);
-
                 handleUploadFile(csv, type);
               };
               reader.readAsText(file as Blob);
-
-              
-
             }} type="file" style={{ display: "none" }} />
             {fileName !== "" ? fileName : placeholder}
           </button>
