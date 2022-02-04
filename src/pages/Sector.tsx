@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import LogoImg from '../img/logo.svg'
 import TrashImg from '../img/trash.svg'
 import { NewDataModal } from "../components/Modal"
@@ -115,8 +115,11 @@ const Sector: React.FC = () => {
 
               {sectors.map(sector => (  
 
-              <tr key={sector.id} >
-                <td className="bg-white border-0 rounded py-4 px-8 text-body">{sector.name}</td>
+              <tr key={sector.id} className="bg-white text-body text-sm" >
+          
+                <Link to={`/pairings/${sector.id}`} >
+                  <td className="bg-white border-0 rounded py-4 px-8 text-body">{sector.name}</td>
+                </Link>
                 <td className="bg-white rounded py-4 px-8 text-body">{new Date(sector.created_at).toLocaleDateString('pt-br')}</td>
                 <td className="bg-white rounded py-4 px-8 text-body">
                   <div className="flex">

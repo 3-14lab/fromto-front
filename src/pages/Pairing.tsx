@@ -1,10 +1,11 @@
 import React, { ChangeEvent, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory, useParams } from 'react-router-dom';
 import { Header } from '../components';
 import { usePairing } from '../hooks/pairing';
 import { useUpload } from '../hooks/upload';
 import {CSVLink} from 'react-csv';
 import api from '../services/api';
+import { Oval } from 'react-loader-spinner';
 
 interface FieldGroupProps {
   code?: string;
@@ -17,6 +18,7 @@ interface FieldGroupProps {
 const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) => {
 
   const { handleAddPairing } = usePairing();
+
 
   const [codeSelected, setCodeSelected] = useState("---" as any);
   const [body, setBody] = useState({
@@ -87,6 +89,14 @@ const Row = ({ code, location, file, value }: any) => {
 }
 
 export const Pairing: React.FC = () => {
+
+  const {sector_id} = useParams() as {sector_id: string}
+  const history = useHistory();
+  const [isLoading, setIsLoading] = useState(false)
+
+
+
+
   const { files } = useUpload();
   const { allBody, formatCSV } = usePairing();
   console.log(formatCSV);
@@ -101,10 +111,25 @@ export const Pairing: React.FC = () => {
 
   async function handlePairinglSubmit(){
 
-      await api.post('sector', { 
-        allBody
-      })
-    
+
+    const data = allBody.map((item: any) => {
+      return {
+        sector_id,
+        base_code: item.code_base,
+        value: item.value,
+        place_name: item.location,
+        model_code: "0000"
+       }
+    })
+
+    console.log("FormattedData ")
+
+    setIsLoading(true)
+
+    await api.post('expense_sheet', data)
+
+    setIsLoading(false)
+    history.push(`/pairings/${sector_id}`)
     
   }
 
@@ -131,7 +156,12 @@ export const Pairing: React.FC = () => {
           ))}
         </div>
         <div className="w-[382px] mx-auto flex items-center justify-around">
-          <button onClick={handlePairinglSubmit} className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg">Atualizar planilha</button>
+          <button onClick={handlePairinglSubmit} className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg flex justify-center items-center">
+            
+            { 
+              isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) :'Atualizar planilha' 
+            }
+          </button>
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
             <CSVLink data={formatCSV} filename={"from_to.csv"} headers={headers} separator={";"}>
               Baixar planilha

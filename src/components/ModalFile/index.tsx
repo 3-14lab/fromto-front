@@ -12,30 +12,25 @@ interface NewDataModalProps  {
   placeholder: string
   children?: any;
   firstLabelText?: string;
-  handleSubmit: (data: string) => void;
+  handleSumit: () => void
 }
 
-
-export function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSubmit }:NewDataModalProps){
+export function ModalFile({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSumit}:NewDataModalProps){
+  
+  
   
   const [value, setValue] = useState('')
-  const [emptyField, setEmptyField] = useState(true)
 
   function handleCreateNewDataModal (event: FormEvent){
     event.preventDefault()
 
-    console.log(value)
+    console.log(
+      value,
+    )
+  }
 
-    if(value){
-      handleSubmit(value)
-      setValue('')
-      onRequestClose()
-      setEmptyField(false)
-
-      return 
-    }
-
-    setEmptyField(true)
+  function handlePairing() {
+    handleSumit()
   }
 
   return(
@@ -45,7 +40,7 @@ export function NewDataModal({ isOpen, onRequestClose, placeholder, title, child
       overlayClassName="react-modal-overlay"
       className="react-modal-content"
     >
-      <button type='button' onClick={() => { setEmptyField(false); onRequestClose()}} className='react-modal-close' >
+      <button type='button' onClick={onRequestClose} className='react-modal-close' >
         <img src={closeImg} alt="Fechar modal" />
       </button>
 
@@ -55,16 +50,15 @@ export function NewDataModal({ isOpen, onRequestClose, placeholder, title, child
 
       <label className="font-roboto font-medium text-blue text-sm">Título</label>
       <input 
-        className="w-full font-roboto font-normal text-sm px-6 py-3 mb-5 mt-0.5 rounded border-2	 text-[#9CA3AF]"
+        className="w-full font-roboto font-normal text-sm px-6 py-3 mb-5 mt-0.5 rounded-t-md	bg-[#F3F4F6] text-[#9CA3AF]"
         placeholder={placeholder}
         value={value}
         onChange={event=> setValue(event.target.value) }
-        style={{borderColor: !!emptyField ? '#d60f0f' : "" }}
         />
         
       { children }
        
-       <button type="submit">Cadastrar</button>
+       <button onClick={handlePairing}type="submit">Cadastrar</button>
 
       </form>
     </Modal>

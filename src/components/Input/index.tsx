@@ -17,7 +17,7 @@ const Input: React.FC<InputProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { fieldName, registerField } = useField(name);
+  const { fieldName, registerField, error} = useField(name);
 
   useEffect(() => {
     registerField({
@@ -28,7 +28,7 @@ const Input: React.FC<InputProps> = ({
   }, [fieldName, registerField]);
 
   return(
-    <input ref={inputRef} {...rest} />
+    <input ref={inputRef} style={{borderColor: !!error ? '#d60f0f' : "" }} {...rest} />
   )
 };
 

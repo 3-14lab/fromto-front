@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 
-import { NewDataModal } from "../components/Modal"
+import { ModalFile } from "../components/ModalFile"
 import { FileUploader, Header } from "../components"
 import { useUpload } from "../hooks/upload"
 import api from "../services/api";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import TrashImg from '../img/trash.svg'
 
@@ -25,6 +25,7 @@ interface ExpenseSheetData {
 export const Pairings: React.FC = () => {
   const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false)
   const [expenseSheets, setExpenseSheets] = useState<ExpenseSheetData[]>([])
+  const history = useHistory();
 
   const {sector_id} = useParams() as {sector_id: string}
 
@@ -48,6 +49,16 @@ export const Pairings: React.FC = () => {
     setIsNewDataModalOpen(false)
   }
 
+  function handlePairing(){
+    history.push(`/pairing/${sector_id}`)
+  }
+
+  async function handleDelete(expenseSheet_id: string){
+    await api.delete(`expense_sheet/${expenseSheet_id}`)
+    const response = await api.get(`expense_sheet/${sector_id}`);
+    setExpenseSheets(response.data)
+  }
+
   const { files } = useUpload();
   console.log(files)
 
@@ -55,16 +66,16 @@ export const Pairings: React.FC = () => {
     <>
       <Header />
         
-      <NewDataModal
+      <ModalFile
         isOpen={isNewDataModalOpen}
         onRequestClose={handleCloseNewDataModal}
         placeholder="Nome"
         title="Cadastrar pareamento"
-        handleSubmit={(data) => console.log(data)}
+        handleSumit={handlePairing}
       >
         <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP" label="Arquivo SICGESP" type="sicgesp" />
         <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv sem padronização" label="Arquivo local" type="local" />
-      </NewDataModal>
+      </ModalFile>
 
       <main className="mx-auto py-4 px-4 w-[74rem] ">
         <div className="flex justify-between items-center" >
@@ -95,7 +106,7 @@ export const Pairings: React.FC = () => {
                 <td className="bg-white rounded py-4 px-8 text-body">{new Date(expenseSheet.created_at).toLocaleDateString('pt-br')}</td>
                 <td className="bg-white rounded py-4 px-8 text-body">
                   <div className="flex">
-                    <button >
+                    <button onClick={() => handleDelete(expenseSheet.id)} >
                       <img className="pl-2" src={TrashImg} alt="" />
                     </button>
                   </div>

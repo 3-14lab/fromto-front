@@ -57,6 +57,14 @@ const City: React.FC = () => {
     setCities(response.data)
     
   }
+  async function handleDelete(city_id: string){
+
+    await api.post(`city/${city_id}`)
+
+    const response = await api.get(`city/user/${user.id}`);
+    setCities(response.data)
+    
+  }
 
   return (
     <>
@@ -78,7 +86,7 @@ const City: React.FC = () => {
 
         </div>
         <div className="mt-4" >
-          <Table data={cities} titles={titles}/>
+          <Table data={cities} titles={titles} handleDelete={handleDelete}/>
         </div>
       </main>
     </>

@@ -49,12 +49,13 @@ export const AuthProvider: React.FC = ({ children }) => {
   
       const { token, user } = response.data;
   
-      localStorage.setItem('@fromto:token', token);
-      localStorage.setItem('@fromto:user', JSON.stringify(user));
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-  
-      setData({ token, user });
+      if(token && user){ 
+        localStorage.setItem('@fromto:token', token);
+        localStorage.setItem('@fromto:user', JSON.stringify(user));
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        setData({ token, user });
+      }
     } catch (error) {
      console.log(error) 
     }

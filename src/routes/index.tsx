@@ -18,8 +18,9 @@ const Routes: React.FC = () => {
       <Route path="/signup" exact component={SignUp} />
       <Route path="/city" isPrivate exact component={City} />
       <Route path="/sector/:city_id" isPrivate exact component={Sector} />
-      <Route path="/pairings" isPrivate exact component={Pairings} />
-      <Route path="/pairing" isPrivate exact component={Pairing} />
+      <Route path="/pairings/:sector_id" isPrivate exact component={Pairings} />
+      <Route path="/pairing/:sector_id" isPrivate exact component={Pairing} />
+      {/* <Route path="/pairing" isPrivate exact component={Pairing} /> */}
       <Route path="/recover" component={RecoverPassword} />
       <Route component={() => <Redirect to='/' />} />
     </Switch>

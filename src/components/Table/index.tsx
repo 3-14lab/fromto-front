@@ -13,7 +13,9 @@ interface DataProps {
   arq?: string;
   local?: string;
 }
-function Table({ data, titles }: any) {
+function Table({ data, titles, handleDelete }: any) {
+
+  
 
   return (
     <table className="w-full" >
@@ -38,10 +40,7 @@ function Table({ data, titles }: any) {
               <td className="pl-8">{new Date(created_at).toLocaleDateString('pt-br')}</td>
               <td className="rounded-lg">
                 <div className="flex">
-                  <button>
-                    <img className="w-5 h-5" src={EditImg} alt="" />
-                  </button>
-                  <button>
+                  <button onClick={() => handleDelete(id)} >
                     <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
                   </button>
                 </div>
