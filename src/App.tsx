@@ -2,23 +2,21 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import "./styles.css"
 
+import Modal from 'react-modal'
+
 import Routes from './routes';
 import {  AppProvider } from './hooks';
-import { UploadProvider } from './hooks/upload';
-import { PairingProvider } from './hooks/pairing';
+
+Modal.setAppElement("#root")
 
 const App: React.FC = () => {
 
 
   return (
     <BrowserRouter>
-      <UploadProvider>
-        <PairingProvider>
-          <AppProvider>
-            <Routes />
-          </AppProvider>
-        </PairingProvider>
-      </UploadProvider>
+      <AppProvider>
+        <Routes />
+      </AppProvider>
     </BrowserRouter>
   );
 };

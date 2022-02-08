@@ -28,7 +28,7 @@ const RecoverPassword: React.FC = () =>{
 
           {/* <a className='text-center text-sm mt-8 text-green-700' href="login">Esqueci minha senha</a> */}
           <section className="flex flex-col justify-between gap-[19px]">
-            <Link className='text-center text-sm font-medium text-title' to="/signin">Fazer login</Link>
+            <Link className='text-center text-sm font-medium text-title' to="/">Fazer login</Link>
             <Link className='text-center text-sm font-medium p text-title' to="/signup">Cadastre-se</Link>
           </section>
 

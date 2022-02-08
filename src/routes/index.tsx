@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch } from 'react-router-dom';
+import { Redirect, Switch } from 'react-router-dom';
 
 import Route from './Route';
 
@@ -15,14 +15,14 @@ const Routes: React.FC = () => {
   return (
     <Switch>
       <Route path="/" exact component={SignIn} />
-      <Route path="/signup" component={SignUp} />
-      <Route path="/city" component={City} />
-      <Route path="/sector" component={Sector} />
-      {/* refatorar */}
-      {/* <Route path="/pairing" exact component={Pairing} /> */}
-      <Route path="/pairings" component={Pairings} />
-      <Route path="/pairing" component={Pairing} />
-      <Route path="/recuperar" component={RecoverPassword} />
+      <Route path="/signup" exact component={SignUp} />
+      <Route path="/city" isPrivate exact component={City} />
+      <Route path="/sector/:city_id" isPrivate exact component={Sector} />
+      <Route path="/pairings/:sector_id" isPrivate exact component={Pairings} />
+      <Route path="/pairing/:sector_id" isPrivate exact component={Pairing} />
+      {/* <Route path="/pairing" isPrivate exact component={Pairing} /> */}
+      <Route path="/recover" component={RecoverPassword} />
+      <Route component={() => <Redirect to='/' />} />
     </Switch>
   );
 };
