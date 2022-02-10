@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from 'react';
-import { Redirect, useHistory, useParams } from 'react-router-dom';
+import { Redirect, useHistory, useLocation, useParams } from 'react-router-dom';
 import { Header } from '../components';
 import { usePairing } from '../hooks/pairing';
 import { useUpload } from '../hooks/upload';
@@ -73,7 +73,7 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
         <div>
           { select ? (
             <select defaultValue={'DEFAULT'} id="select-primary" onChange={(event) => update(event)} className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}>
-              {file.map(({ code_model, location }: any) => (
+              {file && file?.map(({ code_model, location }: any) => (
                 <>
                   <option value="DEFAULT" disabled hidden>Nome da instituição</option>
                   <option key={code_model + 'c'} value={code_model}>{location}</option>
@@ -92,14 +92,20 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
   )
 }
 
+interface LocationState {
+  view: any;
+  // pathname: string;
+  state: {
+    view: boolean;
+  }
+}
+
 export const Pairing: React.FC = () => {
 
   const {sector_id} = useParams() as {sector_id: string}
   const history = useHistory();
+  const { state } = useLocation<LocationState>();
   const [isLoading, setIsLoading] = useState(false)
-
-
-
 
   const { files } = useUpload();
   const { allBody, formatCSV } = usePairing();
@@ -110,12 +116,9 @@ export const Pairing: React.FC = () => {
     { label: "Valor", key: "value" }
   ]
 
-  if (!files.sicgesp) return <Redirect to="/pairings" />
-
+  if (!files.sicgesp && !state?.view ) return <Redirect to="/pairings" />
 
   async function handlePairinglSubmit(){
-
-
     const data = allBody.map((item: any) => {
       return {
         sector_id,
@@ -134,7 +137,6 @@ export const Pairing: React.FC = () => {
 
     setIsLoading(false)
     history.push(`/pairings/${sector_id}`)
-    
   }
 
   return (
@@ -155,7 +157,7 @@ export const Pairing: React.FC = () => {
         </div>
         
         <div className="max-h-[400px] overflow-y-scroll">
-          { files?.local.map(({ code_model, location, value}: any) => (
+          { files && files?.local.map(({ code_model, location, value}: any) => (
             // <Row key={code_model} code={code_model} location={location} file={files?.sicgesp} value={value} />
             <div className={`flex justify-center py-5 bg-white rounded-md mb-2.5`}>
               <FieldGroup key={code_model + 'b'} code={code_model} location={location} />
@@ -168,7 +170,7 @@ export const Pairing: React.FC = () => {
         {/* <div className="w-[72] mx-auto flex items-center justify-center gap-5">
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg">Atualizar planilha</button> */}
 
-        <div className="w-[382px] mx-auto flex items-center justify-around">
+        <div className="w-[700px] mx-auto flex items-center justify-around">
           <button onClick={handlePairinglSubmit} className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg flex justify-center items-center">
             
             { 

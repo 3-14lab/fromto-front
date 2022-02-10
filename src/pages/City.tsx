@@ -129,7 +129,7 @@ const City: React.FC = () => {
           </div>
           { cities.map(({ name, amount, created_at, id, sectors }) => (
             <>
-              <div className={`overflow-hidden px-5 pb-5 bg-white rounded-lg cursor-pointer transition-height duration-500 ease-in-out h-16 hover:h-${56 + ((sectors.length - 1) * 16)} mb-5`} onClick={() => setOpen(prev => !prev)}>
+              <div className={`overflow-hidden px-5 pb-5 bg-white rounded-lg cursor-pointer transition-height duration-500 ease-in-out h-16 hover:h-72`} onClick={() => setOpen(prev => !prev)}>
                 <div className="grid grid-cols-5 w-full h-16  	">
                   <div className="flex col-span-2	items-center text-body font-medium">{ name }</div>
                   <div className="flex items-center text-body font-normal">{`${amount} ${amount === 1 ? "setor" : "setores"}`}</div>
@@ -144,7 +144,7 @@ const City: React.FC = () => {
                   </div>
                 </div>
                 { sectors.map(({ name, created_at, id }: SectorData) => (
-                  <Link to={`/pairings/${id}`} >
+                  <Link to={{ pathname: `/pairings/${id}`, state: { view: true }}}>
                     <div className="grid grid-cols-5 bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
                       <div className="flex col-span-2	items-center text-body font-medium">{ name }</div>
                       <div className="flex items-center text-body font-normal">12 pareamentos</div>

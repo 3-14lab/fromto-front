@@ -18,6 +18,7 @@ module.exports = {
         '51px': '51px',
         '382px': '382px',
         '400px': '400px',
+        '700px': '700px',
       },
       backgroundImage: {
         'background': "url('/src/img/background.png')",
