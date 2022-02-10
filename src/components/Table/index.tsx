@@ -15,14 +15,14 @@ function index({ data, titles }: any) {
       <thead>
         <tr>
           {titles.map((title: string, index: number) => (
-            <th className={`text-body font-normal py-4 ${index === 0 && "px-8"} text-left leading-6`}>{title}</th>
+            <th key={index} className={`text-body font-normal py-4 ${index === 0 && "px-8"} text-left leading-6`}>{title}</th>
           ))}
         </tr>
       </thead>
 
       <tbody>
-        {data.map(({ name, amount, arq, local, updatedAt }: DataProps) => (
-          <tr className="bg-white text-body text-sm"> 
+        {data.map(({ name, amount, arq, local, updatedAt }: DataProps, index: number) => (
+          <tr key={index} className="bg-white text-body text-sm"> 
               <td className="font-medium rounded-lg py-6 px-5">{name}</td>
               { !!arq && <td>{arq}</td> }
               { !!local && <td>{local}</td>}

@@ -7,7 +7,7 @@ import {SignIn} from '../pages/Signin';
 import {SignUp} from '../pages/Signup';
 import {City} from '../pages/City';
 import {Sector} from '../pages/Sector';
-import { Pairings } from '../pages/pairings';
+import { Pairings } from '../pages/Pairings';
 import { Pairing } from '../pages/Pairing';
 import { RecoverPassword } from '../pages/RecoverPassword';
 

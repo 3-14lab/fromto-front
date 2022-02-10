@@ -4,9 +4,11 @@ import LogoImg from '../img/logo.svg'
 import EditImg from '../img/edit.svg'
 import TrashImg from '../img/trash.svg'
 import { NewDataModal } from "../components/Modal"
+import { Header, Table } from "../components"
 
 const titles = ['Nome', 'Qtde. setores', 'Última Modificação', 'Ação'];
-const mock = [];
+const mock = [{ name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}, { name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}];
+
 
 const Sector: React.FC = () => {
 
@@ -22,20 +24,7 @@ const Sector: React.FC = () => {
 
   return (
     <>
-      <header className="bg-blue" >
-
-        <div className="mx-auto py-4 px-4 w-[74rem] flex items-center justify-between">
-          <div className="flex items-center">
-            <img  className="h-16" src={LogoImg} alt="logo" />
-            <h1 className="text-white font-semibold text-xl ml-4" >DePara</h1>
-          </div>
-          <div>
-            <h1 className="text-white font-semibold text-sm" >Paulo Henrique Rosa</h1>
-            <p className="text-white font-light text-xs mt-0" >paulohenriquerosa@gmail.com</p>
-          </div>
-        </div>
-
-      </header>
+      <Header />
 
       <main className="mx-auto py-4 px-4 w-[74rem] ">
 
@@ -44,6 +33,7 @@ const Sector: React.FC = () => {
         onRequestClose={handleCloseNewDataModal}
         placeholder="Nome"
         title="Cadastrar setor"
+     
       />
 
         <div className="flex justify-between items-center" >
@@ -149,6 +139,10 @@ const Sector: React.FC = () => {
               
             </tbody>
           </table>
+
+          <div className="mt-4" >
+          <Table data={mock} titles={titles} />
+          </div>
 
         </div>
 

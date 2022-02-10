@@ -15,7 +15,12 @@ interface FieldGroupProps {
 
 const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) => {
 
-  const { handleAddPairing } = usePairing();
+  const { handleAddPairing, allCodeSelect } = usePairing();
+  
+  const [error, setError] = useState({
+    location: '', 
+    error: false,
+  });
 
   const [codeSelected, setCodeSelected] = useState("---" as any);
   const [body, setBody] = useState({
@@ -25,17 +30,16 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
     value,
   });
 
-  async function handleCodeSelected(valueCode: string | undefined) {
-    setCodeSelected(valueCode);
-    // console.log(valueCode);
-    // console.log(body);
-    // const bodyFilted = body?.map((item: any) => {
-    //   if (item.location !== location) {
-    //     return item;
-    //   }
-    // })
+  async function handleCodeSelected(valueCode: any) {
 
-    
+    if (allCodeSelect.includes(valueCode)) {
+      setError({...error, error: true});
+      return;
+    }
+
+    setError({ location: '', error: false });
+
+    setCodeSelected(valueCode);
 
     setBody({ ...body, code_base: valueCode })
 
@@ -43,44 +47,44 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
   } 
 
   function update(event?: ChangeEvent<HTMLSelectElement>) {
-    // console.log(event?.target.options[event?.target.options.selectedIndex].text)
-    // console.log(text, value);
+    // eslint-disable-next-line array-callback-return
+    const item: any = (Object.values(file).filter((item: any) => {
+      if (item?.code_model === event?.target.options[event?.target.options.selectedIndex].value) {
+        return item;
+      }
+    }))
+
+    if (item) {
+      setError({ ...error, location: item.location})
+    }
+
     handleCodeSelected(event?.target.options[event?.target.options.selectedIndex].value)
   }
 
   return (
-    <div className="flex items-center space-x-5">
-      <div>
-        <p className={`lg:w-28 md:w-20 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5] ${select && "text-[#6B7280]"}`}>{ select ? codeSelected : code}</p>
+    <div>
+      <div key={code} className="flex items-center space-x-5">
+        <div>
+          <p className={`lg:w-28 md:w-20 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5] ${select && "text-[#6B7280]"}`}>{ select ? codeSelected : code}</p>
+        </div>
+        <div>
+          { select ? (
+            <select defaultValue={'DEFAULT'} id="select-primary" onChange={(event) => update(event)} className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}>
+              {file.map(({ code_model, location }: any) => (
+                <>
+                  <option value="DEFAULT" disabled hidden>Nome da instituição</option>
+                  <option key={code_model + 'c'} value={code_model}>{location}</option>
+                </>
+              ))}
+            </select>
+            ) : (
+              <div className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md text-[#D1D5DB] bg-[#f0f2f5]`}>
+                <p className="font-roboto font-medium text-[#6B7280]">{ location }</p>
+              </div>
+            )
+          }
+        </div>
       </div>
-      <div>
-        { select ? (
-          <select id="select-primary" onChange={(event) => update(event)} className="lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] ont-roboto font-medium outline-none">
-            {file.map(({ code_model, location }: any) => (
-              <>
-  
-                <option selected disabled hidden>Nome da instituição</option>
-                <option key={code_model} value={code_model}>{location}</option>
-              </>
-            ))}
-          </select>
-          ) : (
-            <div className="lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md text-[#D1D5DB] bg-[#f0f2f5]">
-              <p className="font-roboto font-medium text-[#6B7280]">{ location }</p>
-            </div>
-          )
-        }
-      </div>
-    </div>
-  )
-}
-
-const Row = ({ code, location, file, value }: any) => {
-  return (
-    <div className="flex justify-center py-5 bg-white rounded-md mb-2.5">
-      <FieldGroup code={code} location={location} />
-      <h4 className="self-center lg:mx-8 md:mx-2 font-poppins font-bold lg:text-2xl md:text-xl text-[#5429CC]">=</h4>
-      <FieldGroup code={code} location={location} value={value} select file={file} />
     </div>
   )
 }
@@ -88,8 +92,8 @@ const Row = ({ code, location, file, value }: any) => {
 export const Pairing: React.FC = () => {
   const { files } = useUpload();
   const { allBody, formatCSV } = usePairing();
-  console.log(formatCSV);
-   const headers = [
+  
+  const headers = [
     { label: "Código base (sicgesp)", key: "code_base" },
     { label: "Locação", key: "location" },
     { label: "Valor", key: "value" }
@@ -99,7 +103,7 @@ export const Pairing: React.FC = () => {
 
   return (
     <>
-    <Header />
+      <Header />
       <div className="mx-auto lg:w-[74rem] md:w-[54rem]">
         <section className="flex items-end my-10 space-x-8 ">
           <h1 className="text-[#374151] font-roboto font-medium text-4xl">Pareamento</h1>
@@ -116,14 +120,26 @@ export const Pairing: React.FC = () => {
         
         <div className="max-h-[400px] overflow-y-scroll">
           { files?.local.map(({ code_model, location, value}: any) => (
-            <Row key={code_model} code={code_model} location={location} file={files?.sicgesp} value={value} />
+            // <Row key={code_model} code={code_model} location={location} file={files?.sicgesp} value={value} />
+            <div className={`flex justify-center py-5 bg-white rounded-md mb-2.5`}>
+              <FieldGroup key={code_model + 'b'} code={code_model} location={location} />
+              <h4 className="self-center lg:mx-8 md:mx-2 font-poppins font-bold lg:text-2xl md:text-xl text-[#5429CC]">=</h4>
+              <FieldGroup key={code_model + 'selected'} code={code_model} location={location} value={value} select file={files?.sicgesp} />
+          </div>
           ))}
         </div>
-        <div className="w-[382px] mx-auto flex items-center justify-around">
+        
+        {/* section-button */}
+        <div className="w-[72] mx-auto flex items-center justify-center gap-5">
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg">Atualizar planilha</button>
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
             <CSVLink data={formatCSV} filename={"from_to.csv"} headers={headers} separator={";"}>
               Baixar planilha
+            </CSVLink>
+          </button>
+          <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-red-400 rounded-lg">
+            <CSVLink data={formatCSV} filename={"from_to.csv"} headers={headers} separator={";"}>
+              Baixar não pareados
             </CSVLink>
           </button>
         </div>

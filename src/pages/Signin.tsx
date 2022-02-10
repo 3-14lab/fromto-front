@@ -1,9 +1,14 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import logo from '../img/prov.svg'
 
-const SignIn: React.FC = () =>{
+const SignIn: React.FC = () => {
+  const history = useHistory();
+  
+  function handleLogin() {
+    history.push('/city')
+  }
   return (
     <div className='flex flex-col items-center justify-center w-screen h-screen bg-cover bg-center bg-no-repeat bg-background' >
       <header className="flex flex-col justify-center align-center gap-2">
@@ -23,6 +28,7 @@ const SignIn: React.FC = () =>{
             <button
               type='submit'
               className='bg-blue py-3 text-lg font-bold rounded-md text-white mt-5'
+              onClick={handleLogin}
               >
               Entrar
             </button>

@@ -11,7 +11,8 @@ interface CSVLine {
 interface PairingContextData {
   allBody: any;
   handleAddPairing(file: any, type: string | undefined): void;
-  formatCSV: CSVLine[]
+  formatCSV: CSVLine[];
+  allCodeSelect: string[];
 }
 
 const PairingContext = createContext({} as PairingContextData);
@@ -19,8 +20,11 @@ const PairingContext = createContext({} as PairingContextData);
 export const PairingProvider: React.FC = ({ children }) => {
   
   const [allBody, setAllBody] = useState([] as any);
+  const [allCodeSelect, setAllCodeSelect] = useState([] as any);
 
   function handleAddPairing(body: any, code: string | undefined) {
+    console.log(body);
+    setAllCodeSelect((prev: string[]) => [...prev, body.code_base]);
     // eslint-disable-next-line array-callback-return
     const allBodyFilted = allBody.filter((body: any) => body.code_model !== code && body);
     
@@ -29,11 +33,13 @@ export const PairingProvider: React.FC = ({ children }) => {
     setAllBody(allBodyFilted);
   }
 
+  
+
   const formatCSV = allBody.map((item: any) => delete item.code_model && item);
 
   return (
     <PairingContext.Provider
-      value={{ allBody, handleAddPairing, formatCSV }}
+      value={{ allBody, handleAddPairing, formatCSV, allCodeSelect }}
     >
       {children}
     </PairingContext.Provider>
