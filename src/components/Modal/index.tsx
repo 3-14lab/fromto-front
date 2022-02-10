@@ -4,7 +4,6 @@ import Modal from 'react-modal'
 import './style.css'
 
 import closeImg from '../../img/close.svg'
-import { useHistory } from 'react-router-dom'
 
 interface NewDataModalProps  {
   isOpen: boolean;
@@ -13,23 +12,30 @@ interface NewDataModalProps  {
   placeholder: string
   children?: any;
   firstLabelText?: string;
+  handleSubmit: (data: string) => void;
 }
 
-export function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, firstLabelText }:NewDataModalProps){
+
+function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSubmit }:NewDataModalProps){
   
-  const history = useHistory();
   const [value, setValue] = useState('')
+  const [emptyField, setEmptyField] = useState(true)
 
   function handleCreateNewDataModal (event: FormEvent){
     event.preventDefault()
 
-    console.log(
-      value,
-    )
-  }
+    console.log(value)
 
-  function handlePairing() {
-    history.push('/pairing');
+    if(value){
+      handleSubmit(value)
+      setValue('')
+      onRequestClose()
+      setEmptyField(false)
+
+      return 
+    }
+
+    setEmptyField(true)
   }
 
   useEffect(() => {
@@ -44,7 +50,7 @@ export function NewDataModal({ isOpen, onRequestClose, placeholder, title, child
       className="react-modal-content"
       // ariaHideApp={false}
     >
-      <button type='button' onClick={onRequestClose} className='react-modal-close' >
+      <button type='button' onClick={() => { setEmptyField(false); onRequestClose()}} className='react-modal-close' >
         <img src={closeImg} alt="Fechar modal" />
       </button>
 
@@ -58,13 +64,16 @@ export function NewDataModal({ isOpen, onRequestClose, placeholder, title, child
         placeholder={placeholder}
         value={value}
         onChange={event=> setValue(event.target.value) }
+        style={{borderColor: !!emptyField ? '#d60f0f' : "" }}
         />
         
       { children }
        
-       <button onClick={handlePairing}type="submit">Cadastrar</button>
+       <button type="submit">Cadastrar</button>
 
       </form>
     </Modal>
   )
 }
+
+export default NewDataModal;

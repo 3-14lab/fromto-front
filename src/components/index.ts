@@ -6,3 +6,5 @@ export { default as LocationTable } from './LocationTable';
 export { default as Button } from './Button';
 export { default as Select } from './Select';
 export { default as FileUploader } from './FileUploader';
+export { default as Modal } from './Modal';
+export { default as ModalFile } from './ModalFile';

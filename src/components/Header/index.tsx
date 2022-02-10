@@ -1,9 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BodyText } from '..';
+import { useAuth } from '../../hooks/auth';
 import logo from '../../img/logo.svg';
 
-function index() {
+function Index() {
+
+  const { user } = useAuth()
+
   return (
     <header className="bg-blue " >
         <div className="mx-auto py-4 lg:w-[70rem] md:w-[48rem] flex items-center justify-between">
@@ -15,10 +18,10 @@ function index() {
             <div className="w-[48px] h-[48px] bg-white rounded-full text-blue flex items-center justify-center font-roboto font-bold text-lg">P</div>
             <div>
               <p className="font-roboto text-xs text-white font-bold">
-                Paulo Henrique Rosa
+                {user.username}
               </p>
               <p className="font-roboto text-white text-xs font-normal	">
-                paulohenriquerosa@gmail.com
+                {user.email}
               </p>
             </div>
           </div>
@@ -27,4 +30,4 @@ function index() {
   )
 }
 
-export default index
+export default Index

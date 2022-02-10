@@ -1,20 +1,61 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
+import api from '../services/api';
 
-import LogoImg from '../img/logo.svg'
+import { useAuth } from '../hooks/auth'
+
 import EditImg from '../img/edit.svg'
 import TrashImg from '../img/trash.svg'
 import Add from '../img/Icon.svg'
 
-import { NewDataModal } from "../components/Modal"
-import { Header, HeaderText, Table } from "../components"
-
-const titles = ['Nome', 'Qtde. setores', 'Última Modificação', 'Ação'];
-const mock = [{ name: "São sebastião", amount: 12, updatedAt: "01/12/2021"}, { name: "São sebastião", amount: 12, updatedAt: "01/12/2021"}];
+import { Header, HeaderText, Modal } from "../components"
 
 
-const Item: React.FC = () => {
+import { Oval } from  'react-loader-spinner'
+import { Link } from "react-router-dom"
+
+interface SectorData {
+  id: string,
+  name: string,
+  amount: number,
+  created_at: Date
+}
+
+interface CityData {
+  id: string,
+  name: string,
+  amount: number,
+  created_at: Date
+  sectors: SectorData[]
+}
+
+
+const City: React.FC = () => {
+  const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false)
+  const [cities, setCities] = useState<CityData[]>([]);
+  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false)
+
+  const { user } = useAuth()
+
+  useEffect(()=>{
+
+    async function loadCitiesAndSectors() {
+      const response = await api.get(`city/user/${user.id}`);
+      const citiesWithSectors = await Promise.all(response.data.map(async (city: any) => {
+        const response = await api.get(`sector/city/${city.id}`);
+
+        return { ...city, sectors: response.data}
+      }))
+
+      setCities(citiesWithSectors)
+      setLoading(false);
+    }
+
+    loadCitiesAndSectors()
+
+  }, [user])
+
+  console.log(JSON.stringify(cities, null, 2))
 
   function handleOpenNewDataModal(){
     setIsNewDataModalOpen(true)
@@ -24,137 +65,115 @@ const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false)
     setIsNewDataModalOpen(false)
   }
 
+  async function handleModalSubmit(data: string){
+
+    await api.post('city', { 
+        name: data,
+        user_id: user.id
+    })
+
+    const response = await api.get(`city/user/${user.id}`);
+    setCities(response.data)
+    
+  }
+  async function handleDelete(city_id: string){
+
+    await api.post(`city/${city_id}`)
+
+    const response = await api.get(`city/user/${user.id}`);
+    setCities(response.data)
+    
+  }
+
+  async function handleDeleteSector(sector_id: string) {
+     
+    await api.delete(`sector/${sector_id}`)
+
+    const response = await api.get(`city/user/${user.id}`);
+      const citiesWithSectors = await Promise.all(response.data.map(async (city: any) => {
+        const response = await api.get(`sector/city/${city.id}`);
+
+        return { ...city, sectors: response.data}
+      }))
+
+    setCities(citiesWithSectors)
+    setLoading(false);
+  }
+
   return (
     <>
-    <NewDataModal
-          isOpen={isNewDataModalOpen}
-          onRequestClose={handleCloseNewDataModal}
-          placeholder="Insira o nome do setor"
-          title="Cadastrar setor"
-          firstLabelText="Nome"
+      <Header />
+
+      <Modal
+        isOpen={isNewDataModalOpen}
+        onRequestClose={handleCloseNewDataModal}
+        placeholder="Nome"
+        title="Cadastrar cidade"
+        handleSubmit={handleModalSubmit}
       />
-    <div className={` overflow-hidden px-5 pb-5 bg-white rounded-lg cursor-pointer transition-height duration-500 ease-in-out h-16 hover:h-72 mb-5`} onClick={() => setOpen(prev => !prev)}>
-      <div className="grid grid-cols-5 w-full h-16  	">
-        <div className="flex col-span-2	items-center text-body font-medium">Goiânia - GO</div>
-        <div className="flex items-center text-body font-normal">2 setores</div>
-        <div className="flex items-center text-body font-normal justify-center">01/12/2021</div>
-        <div className="flex justify-end">
-          <button>
-            <img className="w-5 h-5" src={EditImg} alt="" />
-          </button>
-          <button>
-            <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
-          </button>
+      <main className="mx-auto w-[70rem] ">
+        <div className="flex justify-between items-center mt-10" >
+
+          <HeaderText>Cidades</HeaderText>
+          <button onClick={handleOpenNewDataModal} className="text-white font-medium text-xs border rounded-md bg-blue py-3 px-16 hover:brightness-90"  >Nova cidade</button>
+
         </div>
-      </div>
-      <div className="grid grid-cols-5 bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
-        <div className="flex col-span-2	items-center text-body font-normal font-medium">Educação</div>
-        <div className="flex items-center text-body font-normal">12 pareamentos</div>
-        <div className="flex items-center text-body font-normal justify-center">01/12/2021</div>
-        <div className="flex justify-end">
-          <button>
-            <img className="w-5 h-5" src={EditImg} alt="" />
-          </button>
-          <button>
-            <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
-          </button>
-        </div>
-      </div>
-      <div className="grid grid-cols-5 bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
-      <div className="flex col-span-2	items-center text-body font-medium">Saúde</div>
-        <div className="flex items-center text-body font-normal">12 pareamentos</div>
-        <div className="flex items-center text-body font-normal justify-center">01/12/2021</div>
-        <div className="flex justify-end">
-          <button>
-            <img className="w-5 h-5" src={EditImg} alt="" />
-          </button>
-          <button>
-            <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
-          </button>
-        </div>
-      </div>
-      <div className="bg-gray/100 w-full h-16 rounded-lg mb-2.5 hover:bg-gray/200" onClick={handleOpenNewDataModal}>
-        <div className="flex h-full items-center justify-start mx-5 gap-5 ">
-          <img alt="adicionar setor"src={Add} />
-          <p className="font-roboto font-medium text-sm	text-blue " >Novo Setor</p>
-        </div>
-      </div>
-    </div>
-    <div className={` overflow-hidden px-5 pb-5 bg-white rounded-lg cursor-pointer transition-height duration-500 ease-in-out h-16 hover:h-72	`} onClick={() => setOpen(prev => !prev)}>
-    <div className="grid grid-cols-5 w-full h-16  	">
-      <div className="flex col-span-2	items-center text-body font-medium">Goiânia - GO</div>
-      <div className="flex items-center text-body font-normal">2 setores</div>
-      <div className="flex items-center text-body font-normal justify-center">01/12/2021</div>
-      <div className="flex justify-end">
-        <button>
-          <img className="w-5 h-5" src={EditImg} alt="" />
-        </button>
-        <button>
-          <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
-        </button>
-      </div>
-    </div>
-    <div className="grid grid-cols-5 bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
-      <div className="flex col-span-2	items-center text-body font-normal font-medium">Educação</div>
-      <div className="flex items-center text-body font-normal">12 pareamentos</div>
-      <div className="flex items-center text-body font-normal justify-center">01/12/2021</div>
-      <div className="flex justify-end">
-        <button>
-          <img className="w-5 h-5" src={EditImg} alt="" />
-        </button>
-        <button>
-          <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
-        </button>
-      </div>
-    </div>
-    <div className="grid grid-cols-5 bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
-    <div className="flex col-span-2	items-center text-body font-medium">Saúde</div>
-      <div className="flex items-center text-body font-normal">12 pareamentos</div>
-      <div className="flex items-center text-body font-normal justify-center">01/12/2021</div>
-      <div className="flex justify-end">
-        <button>
-          <img className="w-5 h-5" src={EditImg} alt="" />
-        </button>
-        <button>
-          <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
-        </button>
-      </div>
-    </div>
-    <div className="bg-gray/100 w-full h-16 rounded-lg mb-2.5 hover:bg-gray/200">
-      <div className="flex h-full items-center justify-start mx-5 gap-5 " onClick={handleOpenNewDataModal}>
-        <img alt="adicionar setor"src={Add} />
-        <p className="font-roboto font-medium text-sm	text-blue ">Novo Setor</p>
-      </div>
-    </div>
-  </div>
+
+      { loading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) : (
+        <>
+          <div className="grid grid-cols-5 w-full h-16 mt-4">
+            <div className="flex col-span-2	items-center text-title font-poppins font-normal ml-8">Nome</div>
+            <div className="flex items-center text-title font-poppins font-normal">Qtde.setores</div>
+            <div className="flex items-center justify-center text-title font-poppins font-normal">Última Modificação</div>
+            <div className="flex items-center justify-end mr-6 text-title font-poppins font-normal">Ação</div>
+          </div>
+          { cities.map(({ name, amount, created_at, id, sectors }) => (
+            <>
+              <div className={`overflow-hidden px-5 pb-5 bg-white rounded-lg cursor-pointer transition-height duration-500 ease-in-out h-16 hover:h-${56 + ((sectors.length - 1) * 16)} mb-5`} onClick={() => setOpen(prev => !prev)}>
+                <div className="grid grid-cols-5 w-full h-16  	">
+                  <div className="flex col-span-2	items-center text-body font-medium">{ name }</div>
+                  <div className="flex items-center text-body font-normal">{`${amount} ${amount === 1 ? "setor" : "setores"}`}</div>
+                  <div className="flex items-center text-body font-normal justify-center">{new Date(created_at).toLocaleDateString('pt-br')}</div>
+                  <div className="flex justify-end">
+                    <button>
+                      <img className="w-5 h-5" src={EditImg} alt="" />
+                    </button>
+                    <button onClick={() => handleDelete(id)}>
+                      <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
+                    </button>
+                  </div>
+                </div>
+                { sectors.map(({ name, created_at, id }: SectorData) => (
+                  <Link to={`/pairings/${id}`} >
+                    <div className="grid grid-cols-5 bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
+                      <div className="flex col-span-2	items-center text-body font-medium">{ name }</div>
+                      <div className="flex items-center text-body font-normal">12 pareamentos</div>
+                      <div className="flex items-center text-body font-normal justify-center">{new Date(created_at).toLocaleDateString('pt-br')}</div>
+                      <div className="flex justify-end">
+                        <button>
+                          <img className="w-5 h-5" src={EditImg} alt="" />
+                        </button>
+                        <button onClick={() => handleDeleteSector(id)}>
+                          <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
+                        </button>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+                <div className="bg-gray/100 w-full h-16 rounded-lg mb-2.5 hover:bg-gray/200" onClick={handleOpenNewDataModal}>
+                  <div className="flex h-full items-center justify-start mx-5 gap-5 ">
+                    <img alt="adicionar setor"src={Add} />
+                    <p className="font-roboto font-medium text-sm	text-blue " >Novo Setor</p>
+                  </div>
+                </div>
+              </div>
+            </>
+          ))}
+        </>
+      )}
+    </main>
   </>
   )
 }
-const City: React.FC = () => {
-  
-
-  return (
-    <>
-        <Header />
-
-        
-
-        <main className="mx-auto w-[70rem] ">
-          <div className="flex justify-between items-center mt-10" >
-
-            <HeaderText>Cidades</HeaderText>
-            <button className="text-white font-medium text-xs border rounded-md bg-blue py-3 px-16 hover:brightness-90"  >Nova cidade</button>
-
-          </div>
-
-
-          <div className="mt-4" >
-            <Item />
-          </div>
-        </main>
-    </>
-  )
-}
-
 
 export {City}
