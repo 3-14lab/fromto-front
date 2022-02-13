@@ -133,7 +133,7 @@ export const Pairing: React.FC = () => {
 
     setIsLoading(true)
 
-    await api.post('expense_sheet', data)
+    await api.post('pairing', data)
 
     setIsLoading(false)
     history.push(`/pairings/${sector_id}`)

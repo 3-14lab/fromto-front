@@ -102,7 +102,7 @@ const City: React.FC = () => {
 
   }
 
-  async function handleModalSubmitNewSectior(data: string) {
+  async function handleModalSubmitNewSector(data: string) {
 
     await api.post('sector', {
       name: data,
@@ -142,7 +142,7 @@ const City: React.FC = () => {
         onRequestClose={handleCloseNewSectorModal}
         placeholder="Nome"
         title="Cadastrar setor"
-        handleSubmit={handleModalSubmitNewSectior}
+        handleSubmit={handleModalSubmitNewSector}
       />
       <main className="mx-auto w-[70rem] ">
         <div className="flex justify-between items-center mt-10" >
@@ -196,7 +196,7 @@ const City: React.FC = () => {
                     </div>
                   ))}
                   <div className="bg-gray/100 w-full h-16 rounded-lg mb-2.5 hover:bg-gray/200" onClick={handleOpenNewSectorModal(id)}>
-                    <div className="flex h-full items-center justify-start mx-5 gap-5 ">
+                    <div className="flex h-full items-center justify-start mx-5 gap-5  cursor-pointer">
                       <img alt="adicionar setor" src={Add} />
                       <p className="font-roboto font-medium text-sm	text-blue " >Novo Setor</p>
                     </div>

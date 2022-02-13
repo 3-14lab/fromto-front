@@ -34,11 +34,11 @@ export const Pairings: React.FC = () => {
 
   const {sector_id} = useParams() as {sector_id: string}
   const location = useLocation();
-  console.log(location.state);
+  console.log('oiiiiii', location.state);
   useEffect(()=>{
 
     async function  loadSector(){
-      const response = await api.get(`expense_sheet/${sector_id}`);
+      const response = await api.get(`pairing/${sector_id}`);
       setExpenseSheets(response.data)
 
     }
@@ -122,7 +122,9 @@ export const Pairings: React.FC = () => {
         <table className="w-full" >
             <thead>
               <tr >
-                <th className="text-body font-normal py-4 px-8 text-left leading-6">Nome</th>
+                <th className="text-body colspan-2 font-normal py-4 px-8 text-left leading-6">Nome</th>
+                <th className="text-body font-normal py-4 px-8 text-left leading-6">Arq. SICGESP</th>
+                <th className="text-body font-normal py-4 px-8 text-left leading-6">Arq. local</th>
                 <th className="text-body font-normal py-4 px-8 text-left leading-6">Modificação</th>
                 <th className="text-body font-normal py-4 px-8 text-left leading-6">Ação</th>
               </tr>
