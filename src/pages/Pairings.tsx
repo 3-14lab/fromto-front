@@ -15,6 +15,7 @@ interface ExpenseSheetData {
   id: string,
   value: number,
   sector_id: string,
+  name: string,
   place_name: string,
   base_code: string,
   model_code: string,
@@ -55,8 +56,8 @@ export const Pairings: React.FC = () => {
     setIsNewDataModalOpen(false)
   }
 
-  function handlePairing(){
-    history.push(`/pairing/${sector_id}`)
+  function handlePairing(name: string){
+    history.push({pathname: `/pairing/${sector_id}`, state: { pairingName: name }})
   }
 
   async function handleDelete(expenseSheet_id: string){
@@ -123,8 +124,6 @@ export const Pairings: React.FC = () => {
             <thead>
               <tr >
                 <th className="text-body colspan-2 font-normal py-4 px-8 text-left leading-6">Nome</th>
-                <th className="text-body font-normal py-4 px-8 text-left leading-6">Arq. SICGESP</th>
-                <th className="text-body font-normal py-4 px-8 text-left leading-6">Arq. local</th>
                 <th className="text-body font-normal py-4 px-8 text-left leading-6">Modificação</th>
                 <th className="text-body font-normal py-4 px-8 text-left leading-6">Ação</th>
               </tr>
@@ -135,7 +134,7 @@ export const Pairings: React.FC = () => {
               {expenseSheets.map(expenseSheet => (  
 
               <tr key={expenseSheet.id} >
-                <td className="bg-white border-0 rounded py-4 px-8 text-body">{expenseSheet.place_name}</td>
+                <td className="bg-white border-0 rounded py-4 px-8 text-body">{expenseSheet.name}</td>
                 <td className="bg-white rounded py-4 px-8 text-body">{new Date(expenseSheet.created_at).toLocaleDateString('pt-br')}</td>
                 <td className="bg-white rounded py-4 px-8 text-body">
                   <div className="flex">

@@ -3,7 +3,7 @@ import { Redirect, useHistory, useLocation, useParams } from 'react-router-dom';
 import { Header } from '../components';
 import { usePairing } from '../hooks/pairing';
 import { useUpload } from '../hooks/upload';
-import {CSVLink} from 'react-csv';
+import { CSVLink } from 'react-csv';
 import api from '../services/api';
 import { Oval } from 'react-loader-spinner';
 
@@ -18,9 +18,9 @@ interface FieldGroupProps {
 const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) => {
 
   const { handleAddPairing, allCodeSelect } = usePairing();
-  
+
   const [error, setError] = useState({
-    location: '', 
+    location: '',
     error: false,
   });
 
@@ -36,7 +36,7 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
   async function handleCodeSelected(valueCode: any) {
 
     if (allCodeSelect.includes(valueCode)) {
-      setError({...error, error: true});
+      setError({ ...error, error: true });
       return;
     }
 
@@ -46,8 +46,8 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
 
     setBody({ ...body, code_base: valueCode })
 
-    handleAddPairing({...body, code_base: valueCode}, code);
-  } 
+    handleAddPairing({ ...body, code_base: valueCode }, code);
+  }
 
   function update(event?: ChangeEvent<HTMLSelectElement>) {
     // eslint-disable-next-line array-callback-return
@@ -58,7 +58,7 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
     }))
 
     if (item) {
-      setError({ ...error, location: item.location})
+      setError({ ...error, location: item.location })
     }
 
     handleCodeSelected(event?.target.options[event?.target.options.selectedIndex].value)
@@ -68,10 +68,10 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
     <div>
       <div key={code} className="flex items-center space-x-5">
         <div>
-          <p className={`lg:w-28 md:w-20 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5] ${select && "text-[#6B7280]"}`}>{ select ? codeSelected : code}</p>
+          <p className={`lg:w-28 md:w-20 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5] ${select && "text-[#6B7280]"}`}>{select ? codeSelected : code}</p>
         </div>
         <div>
-          { select ? (
+          {select ? (
             <select defaultValue={'DEFAULT'} id="select-primary" onChange={(event) => update(event)} className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}>
               {file && file?.map(({ code_model, location }: any) => (
                 <>
@@ -80,11 +80,11 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
                 </>
               ))}
             </select>
-            ) : (
-              <div className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md text-[#D1D5DB] bg-[#f0f2f5]`}>
-                <p className="font-roboto font-medium text-[#6B7280]">{ location }</p>
-              </div>
-            )
+          ) : (
+            <div className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md text-[#D1D5DB] bg-[#f0f2f5]`}>
+              <p className="font-roboto font-medium text-[#6B7280]">{location}</p>
+            </div>
+          )
           }
         </div>
       </div>
@@ -94,6 +94,7 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
 
 interface LocationState {
   view: any;
+  pairingName: string;
   // pathname: string;
   state: {
     view: boolean;
@@ -102,38 +103,43 @@ interface LocationState {
 
 export const Pairing: React.FC = () => {
 
-  const {sector_id} = useParams() as {sector_id: string}
+  const { sector_id } = useParams() as { sector_id: string }
   const history = useHistory();
   const { state } = useLocation<LocationState>();
   const [isLoading, setIsLoading] = useState(false)
 
   const { files } = useUpload();
   const { allBody, formatCSV } = usePairing();
-  
+
   const headers = [
     { label: "Código base (sicgesp)", key: "code_base" },
     { label: "Locação", key: "location" },
     { label: "Valor", key: "value" }
   ]
 
-  if (!files.sicgesp && !state?.view ) return <Redirect to="/pairings" />
+  if (!files.sicgesp && !state?.view) return <Redirect to="/pairings" />
 
-  async function handlePairinglSubmit(){
-    const data = allBody.map((item: any) => {
-      return {
+  async function handlePairinglSubmit() {
+    const data = allBody.map((item: any) => (
+      (Number(item.value)) && {
         sector_id,
         base_code: item.code_base,
         value: item.value,
         place_name: item.location,
         model_code: "0000"
-       }
-    })
+      }
+    )).filter((item: any) => item);
 
-    console.log("FormattedData ")
+      console.log("FormattedData ", { name: state.pairingName, sector_id, data: data })
 
     setIsLoading(true)
 
-    await api.post('pairing', data)
+    try {
+      await api.post('pairing', { name: state.pairingName, sector_id, data: [...data] })
+    } catch (err) {
+      console.log('caiu no catch')
+      console.log(err)
+    }
 
     setIsLoading(false)
     history.push(`/pairings/${sector_id}`)
@@ -147,7 +153,7 @@ export const Pairing: React.FC = () => {
           <h1 className="text-[#374151] font-roboto font-medium text-4xl">Pareamento</h1>
           <h3 className="font-roboto font-medium text-2xl	text-[#6B7280]">Goiânia - GO | Educação | Dezembro</h3>
         </section>
-        
+
         <div className="flex mx-10 gap-5 mb-2.5">
           <h4 className="lg:w-24 md:w-20 font-poppins font-normal text-center text-[#5429CC]">codigo</h4>
           <h4 className="lg:w-96 md:w-72 font-poppins font-normal text-center text-[#5429CC]">nome da instituicao</h4>
@@ -155,15 +161,15 @@ export const Pairing: React.FC = () => {
           <h4 className="lg:w-24 md:w-20 font-poppins font-normal text-center text-[#5429CC]">codigo</h4>
           <h4 className="lg:w-96 md:w-72 font-poppins font-normal text-center text-[#5429CC]">nome da instituicao</h4>
         </div>
-        
+
         <div className="max-h-[400px] overflow-y-scroll">
-          { files && files?.local.map(({ code_model, location, value}: any) => (
+          {files && files?.local.map(({ code_model, location, value }: any) => (
             // <Row key={code_model} code={code_model} location={location} file={files?.sicgesp} value={value} />
             <div className={`flex justify-center py-5 bg-white rounded-md mb-2.5`}>
               <FieldGroup key={code_model + 'b'} code={code_model} location={location} />
               <h4 className="self-center lg:mx-8 md:mx-2 font-poppins font-bold lg:text-2xl md:text-xl text-[#5429CC]">=</h4>
               <FieldGroup key={code_model + 'selected'} code={code_model} location={location} value={value} select file={files?.sicgesp} />
-          </div>
+            </div>
           ))}
         </div>
 
@@ -172,9 +178,9 @@ export const Pairing: React.FC = () => {
 
         <div className="w-[700px] mx-auto flex items-center justify-around">
           <button onClick={handlePairinglSubmit} className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg flex justify-center items-center">
-            
-            { 
-              isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) :'Atualizar planilha' 
+
+            {
+              isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) : 'Atualizar planilha'
             }
           </button>
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
