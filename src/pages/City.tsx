@@ -41,7 +41,7 @@ const City: React.FC = () => {
 
     async function loadCitiesAndSectors() {
       const response = await api.get(`city/user/${user.id}`);
-      const citiesWithSectors = await Promise.all(response.data.map(async (city: any) => {
+      const citiesWithSectors = await Promise.all(response.data?.map(async (city: any) => {
         const response = await api.get(`sector/city/${city.id}`);
 
         return { ...city, sectors: response.data}
@@ -90,7 +90,7 @@ const City: React.FC = () => {
     await api.delete(`sector/${sector_id}`)
 
     const response = await api.get(`city/user/${user.id}`);
-      const citiesWithSectors = await Promise.all(response.data.map(async (city: any) => {
+      const citiesWithSectors = await Promise.all(response.data?.map(async (city: any) => {
         const response = await api.get(`sector/city/${city.id}`);
 
         return { ...city, sectors: response.data}
@@ -127,9 +127,9 @@ const City: React.FC = () => {
             <div className="flex items-center justify-center text-title font-poppins font-normal">Última Modificação</div>
             <div className="flex items-center justify-end mr-6 text-title font-poppins font-normal">Ação</div>
           </div>
-          { cities.map(({ name, amount, created_at, id, sectors }) => (
-            <>
-              <div className={`overflow-hidden px-5 pb-5 bg-white rounded-lg cursor-pointer transition-height duration-500 ease-in-out h-16 hover:h-72`} onClick={() => setOpen(prev => !prev)}>
+          { cities?.map(({ name, amount, created_at, id, sectors }) => (
+            <div className="grid gap-y-0.5">
+              <div className={`overflow-hidden px-5 pb-5 bg-white rounded-lg cursor-pointer transition-height duration-500 ease-in-out h-16 hover:h-72 mb-5`} onClick={() => setOpen(prev => !prev)}>
                 <div className="grid grid-cols-5 w-full h-16  	">
                   <div className="flex col-span-2	items-center text-body font-medium">{ name }</div>
                   <div className="flex items-center text-body font-normal">{`${amount} ${amount === 1 ? "setor" : "setores"}`}</div>
@@ -143,7 +143,7 @@ const City: React.FC = () => {
                     </button>
                   </div>
                 </div>
-                { sectors.map(({ name, created_at, id }: SectorData) => (
+                { sectors?.map(({ name, created_at, id }: SectorData) => (
                   <Link to={{ pathname: `/pairings/${id}`, state: { view: true }}}>
                     <div className="grid grid-cols-5 bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
                       <div className="flex col-span-2	items-center text-body font-medium">{ name }</div>
@@ -167,7 +167,7 @@ const City: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </>
+            </div>
           ))}
         </>
       )}
