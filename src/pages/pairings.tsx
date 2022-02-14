@@ -7,10 +7,6 @@ import { HiInformationCircle } from "react-icons/hi";
 
 import TrashImg from '../img/trash.svg'
 
-
-const titles = ['Nome', 'Arq. SICGESP', 'Arq. local', 'Modificação', 'Ação'];
-const mock = [{ name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}, { name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}];
-
 interface ExpenseSheetData {
   id: string,
   value: number,

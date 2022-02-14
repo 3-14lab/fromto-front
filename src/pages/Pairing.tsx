@@ -108,12 +108,12 @@ export const Pairing: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const { files } = useUpload();
-  const { allBody, formatCSV } = usePairing();
-  
+  const { allBody, formatCSV, formatCSVSecondary } = usePairing();
+  console.log(formatCSVSecondary);
   const headers = [
-    { label: "Código base (sicgesp)", key: "code_base" },
-    { label: "Locação", key: "location" },
-    { label: "Valor", key: "value" }
+    { label: "Código Lotação", key: "code_base" },
+    { label: "Descrição Locação", key: "location" },
+    { label: "Valor Realocado", key: "value" }
   ]
 
   if (!files.sicgesp && !state?.view ) return <Redirect to="/pairings" />
@@ -158,7 +158,6 @@ export const Pairing: React.FC = () => {
         
         <div className="max-h-[400px] overflow-y-scroll">
           { files && files?.local.map(({ code_model, location, value}: any) => (
-            // <Row key={code_model} code={code_model} location={location} file={files?.sicgesp} value={value} />
             <div className={`flex justify-center py-5 bg-white rounded-md mb-2.5`}>
               <FieldGroup key={code_model + 'b'} code={code_model} location={location} />
               <h4 className="self-center lg:mx-8 md:mx-2 font-poppins font-bold lg:text-2xl md:text-xl text-[#5429CC]">=</h4>

@@ -13,6 +13,7 @@ interface PairingContextData {
   handleAddPairing(file: any, type: string | undefined): void;
   formatCSV: CSVLine[];
   allCodeSelect: string[];
+  formatCSVSecondary: any;
 }
 
 const PairingContext = createContext({} as PairingContextData);
@@ -36,10 +37,15 @@ export const PairingProvider: React.FC = ({ children }) => {
   
 
   const formatCSV = allBody.map((item: any) => delete item.code_model && item);
+  const formatCSVSecondary = (file: any) => {
+    const aux = [...formatCSV, ...file];
+
+    return aux.map(item => item.value === "");
+  }
 
   return (
     <PairingContext.Provider
-      value={{ allBody, handleAddPairing, formatCSV, allCodeSelect }}
+      value={{ allBody, handleAddPairing, formatCSV, allCodeSelect, formatCSVSecondary }}
     >
       {children}
     </PairingContext.Provider>

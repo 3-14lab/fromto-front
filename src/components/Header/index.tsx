@@ -15,7 +15,7 @@ function Index() {
             <p className="text-white font-poppins font-bold text-lg">DePara</p>
           </Link>
           <div className="flex justify-between items-center gap-3">
-            <div className="w-[48px] h-[48px] bg-white rounded-full text-blue flex items-center justify-center font-roboto font-bold text-lg">P</div>
+            <div className="w-[48px] h-[48px] bg-white rounded-full text-blue flex items-center justify-center font-roboto font-bold text-lg">{user.username.split('')[0]}</div>
             <div>
               <p className="font-roboto text-xs text-white font-bold">
                 {user.username}
