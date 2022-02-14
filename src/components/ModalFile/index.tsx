@@ -12,7 +12,7 @@ interface NewDataModalProps  {
   placeholder: string
   children?: any;
   firstLabelText?: string;
-  handleSumit: () => void
+  handleSumit: (name: string) => void
 }
 
 function ModalFile({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSumit}:NewDataModalProps){
@@ -30,7 +30,7 @@ function ModalFile({ isOpen, onRequestClose, placeholder, title, children, first
   }
 
   function handlePairing() {
-    handleSumit()
+    handleSumit(value)
   }
 
   return(
