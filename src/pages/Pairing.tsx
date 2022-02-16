@@ -24,29 +24,30 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
     error: false,
   });
 
-
   const [codeSelected, setCodeSelected] = useState("---" as any);
+  const [locationSelected, setLocationSelected] = useState(location);
+
   const [body, setBody] = useState({
     code_model: code,
     code_base: codeSelected,
-    location,
+    location: locationSelected,
     value,
   });
 
-  async function handleCodeSelected(valueCode: any) {
-
+  async function handleCodeSelected(valueCode: any, textCode: any) {
+    console.log(allCodeSelect)
     if (allCodeSelect.includes(valueCode)) {
-      setError({ ...error, error: true });
+      // setError({ ...error, error: true });
+      // console.log(allCodeSelect)
       return;
     }
 
-    setError({ location: '', error: false });
+    setBody(prev => ({ ...prev, code_base: valueCode, location: textCode }))
+
+    handleAddPairing({ ...body, code_base: valueCode, location: textCode }, code);
 
     setCodeSelected(valueCode);
-
-    setBody({ ...body, code_base: valueCode })
-
-    handleAddPairing({ ...body, code_base: valueCode }, code);
+    setLocationSelected(textCode);
   }
 
   function update(event?: ChangeEvent<HTMLSelectElement>) {
@@ -61,7 +62,7 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
       setError({ ...error, location: item.location })
     }
 
-    handleCodeSelected(event?.target.options[event?.target.options.selectedIndex].value)
+    handleCodeSelected(event?.target.options[event?.target.options.selectedIndex].value, event?.target.options[event?.target.options.selectedIndex].text)
   }
 
   return (
@@ -73,10 +74,10 @@ const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) =>
         <div>
           {select ? (
             <select defaultValue={'DEFAULT'} id="select-primary" onChange={(event) => update(event)} className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}>
-              {file && file?.map(({ code_model, location }: any) => (
+              {file && file?.map(({ model_code, place_name }: any) => (
                 <>
                   <option value="DEFAULT" disabled hidden>Nome da instituição</option>
-                  <option key={code_model + 'c'} value={code_model}>{location}</option>
+                  <option key={model_code + 'c'} value={model_code}>{place_name}</option>
                 </>
               ))}
             </select>
@@ -109,10 +110,8 @@ export const Pairing: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const { files } = useUpload();
-  const { allBody, formatCSV, formatCSVSecondary } = usePairing();
+  const { allBody, setAllBody, setAllCodeSelect, formatCSV } = usePairing();
   
-  console.log(formatCSVSecondary);
-
   const headers = [
     { label: "Código Lotação", key: "code_base" },
     { label: "Descrição Locação", key: "location" },
@@ -121,14 +120,16 @@ export const Pairing: React.FC = () => {
 
   if (!files.sicgesp && !state?.view) return <Redirect to="/pairings" />
 
+  // console.log(allBody);
   async function handlePairinglSubmit() {
+    console.log(allBody);
     const data = allBody.map((item: any) => (
       (Number(item.value)) && {
         sector_id,
         base_code: item.code_base,
         value: item.value,
         place_name: item.location,
-        model_code: "0000"
+        model_code: item.code_model,
       }
     )).filter((item: any) => item);
 
@@ -138,6 +139,8 @@ export const Pairing: React.FC = () => {
 
     try {
       await api.post('pairing', { name: state.pairingName, sector_id, data: [...data] })
+      setAllBody([]);
+      setAllCodeSelect([]);
     } catch (err) {
       console.log('caiu no catch')
       console.log(err)
@@ -165,11 +168,11 @@ export const Pairing: React.FC = () => {
         </div>
 
         <div className="max-h-[400px] overflow-y-scroll">
-          { files && files?.local.map(({ code_model, location, value}: any) => (
+          { files && files?.local.map(({ model_code, place_name, value}: any) => (
             <div className={`flex justify-center py-5 bg-white rounded-md mb-2.5`}>
-              <FieldGroup key={code_model + 'b'} code={code_model} location={location} />
+              <FieldGroup key={model_code + 'b'} code={model_code} location={place_name} />
               <h4 className="self-center lg:mx-8 md:mx-2 font-poppins font-bold lg:text-2xl md:text-xl text-[#5429CC]">=</h4>
-              <FieldGroup key={code_model + 'selected'} code={code_model} location={location} value={value} select file={files?.sicgesp} />
+              <FieldGroup key={model_code + 'selected'} code={model_code} location={place_name} value={value} select file={files?.sicgesp} />
             </div>
           ))}
         </div>

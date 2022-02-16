@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FileUploader, Header, ModalFile } from "../components"
 import { useUpload } from "../hooks/upload"
 import api from "../services/api";
-import { useHistory, useLocation, useParams } from "react-router-dom";
+import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { HiInformationCircle } from "react-icons/hi";
 
 import TrashImg from '../img/trash.svg'
@@ -16,6 +16,7 @@ interface ExpenseSheetData {
   base_code: string,
   model_code: string,
   created_at: Date
+  data: any;
 }
 
 
@@ -37,7 +38,7 @@ export const Pairings: React.FC = () => {
     async function  loadSector(){
       const response = await api.get(`pairing/${sector_id}`);
       setExpenseSheets(response.data)
-
+      console.log(response.data)
     }
 
     loadSector()
@@ -67,6 +68,9 @@ export const Pairings: React.FC = () => {
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   
+  function handleNextPage(id: string, data: any) {
+    history.push({ pathname: `/pairing/view/${id}`, state: { data }});
+  }
 
   return (
     <>
@@ -119,7 +123,7 @@ export const Pairings: React.FC = () => {
         <table className="w-full" >
             <thead>
               <tr >
-                <th className="text-body colspan-2 font-normal py-4 px-8 text-left leading-6">Nome</th>
+                <th className="text-body font-normal py-4 px-8 text-left leading-6">Nome</th>
                 <th className="text-body font-normal py-4 px-8 text-left leading-6">Modificação</th>
                 <th className="text-body font-normal py-4 px-8 text-left leading-6">Ação</th>
               </tr>
@@ -128,21 +132,20 @@ export const Pairings: React.FC = () => {
             <tbody>
 
               {expenseSheets.map(expenseSheet => (  
-
-              <tr key={expenseSheet.id} >
-                <td className="bg-white border-0 rounded py-4 px-8 text-body">{expenseSheet.name}</td>
-                <td className="bg-white rounded py-4 px-8 text-body">{new Date(expenseSheet.created_at).toLocaleDateString('pt-br')}</td>
-                <td className="bg-white rounded py-4 px-8 text-body">
-                  <div className="flex">
-                    <button onClick={() => handleDelete(expenseSheet.id)} >
-                      <img className="pl-2" src={TrashImg} alt="" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-
+                // <Link to={`/pairing/view/${expenseSheet.id}`}>
+                  <tr key={expenseSheet.id} onClick={() => handleNextPage(expenseSheet.id, expenseSheet.data)} className="w-full cursor-pointer hover:bg-text">
+                    <td className="bg-white border-0 rounded py-4 px-8 text-body">{expenseSheet.name}</td>
+                    <td className="bg-white  py-4 px-8 text-body">{new Date(expenseSheet.created_at).toLocaleDateString('pt-br')}</td>
+                    <td className="bg-white rounded py-4 px-8 text-body">
+                      <div>
+                        <button onClick={() => handleDelete(expenseSheet.id)} >
+                          <img className="pl-2" src={TrashImg} alt="" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+              // </Link>
             ))}
-              
             </tbody>
           </table>
         </div>

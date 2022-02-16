@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
 import api from '../services/api';
 
 
@@ -14,6 +14,8 @@ interface PairingContextData {
   formatCSV: CSVLine[];
   allCodeSelect: string[];
   formatCSVSecondary: any;
+  setAllBody: (body: any) => void;
+  setAllCodeSelect: (code: any) => void;
 }
 
 const PairingContext = createContext({} as PairingContextData);
@@ -24,19 +26,20 @@ export const PairingProvider: React.FC = ({ children }) => {
   const [allCodeSelect, setAllCodeSelect] = useState([] as any);
 
   function handleAddPairing(body: any, code: string | undefined) {
-    console.log(body);
+    console.log(body.code_base);
     setAllCodeSelect((prev: string[]) => [...prev, body.code_base]);
     // eslint-disable-next-line array-callback-return
     const allBodyFilted = allBody.filter((body: any) => body.code_model !== code && body);
     
-    allBodyFilted.push(body);
-
     setAllBody(allBodyFilted);
+    console.log('allBody');
+    console.log(JSON.stringify(allBody, null, 2))
   }
 
-  
+  const formatCSV = allBody.map((item: any) => {
+    return { code_base: item.code_base, location: item.location, value: item.value };
+  });
 
-  const formatCSV = allBody.map((item: any) => delete item.code_model && item);
   const formatCSVSecondary = (file: any) => {
     const aux = [...formatCSV, ...file];
 
@@ -45,7 +48,13 @@ export const PairingProvider: React.FC = ({ children }) => {
 
   return (
     <PairingContext.Provider
-      value={{ allBody, handleAddPairing, formatCSV, allCodeSelect, formatCSVSecondary }}
+      value={{ allBody, handleAddPairing,
+         formatCSV, 
+         allCodeSelect, 
+         formatCSVSecondary,
+         setAllCodeSelect,
+         setAllBody,
+      }}
     >
       {children}
     </PairingContext.Provider>

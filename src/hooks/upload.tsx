@@ -25,6 +25,8 @@ export const UploadProvider: React.FC = ({ children }) => {
   }
 
 
+  console.log(JSON.stringify(files.sicgesp, null, 2))
+
   return (
     <UploadContext.Provider
       value={{ files, setFiles, handleUploadFile }}

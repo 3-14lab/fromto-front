@@ -107,20 +107,20 @@ const Sector: React.FC = () => {
 
               {sectors.map(sector => (  
 
-              <tr key={sector.id} className="bg-white text-body text-sm" >
-          
-                <Link to={`/pairings/${sector.id}`} >
-                  <td className="bg-white border-0 rounded py-4 px-8 text-body">{sector.name}</td>
+                <Link to={`/pairings/${sector.id}`}>
+                  <tr key={sector.id} className="bg-white text-body text-sm" >
+              
+                    <td className="bg-white border-0 rounded py-4 px-8 text-body">{sector.name}</td>
+                    <td className="bg-white rounded py-4 px-8 text-body">{new Date(sector.created_at).toLocaleDateString('pt-br')}</td>
+                    <td className="bg-white rounded py-4 px-8 text-body">
+                      <div className="flex">
+                        <button onClick={()=> handleDeleteSector(sector.id)} >
+                          <img className="pl-2" src={TrashImg} alt="" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 </Link>
-                <td className="bg-white rounded py-4 px-8 text-body">{new Date(sector.created_at).toLocaleDateString('pt-br')}</td>
-                <td className="bg-white rounded py-4 px-8 text-body">
-                  <div className="flex">
-                    <button onClick={()=> handleDeleteSector(sector.id)} >
-                      <img className="pl-2" src={TrashImg} alt="" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
 
             ))}
               

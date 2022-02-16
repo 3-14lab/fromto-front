@@ -10,8 +10,8 @@ function csvToObject(csv: any) {
       const fields = column.split(/,/)[0].split(/;/);
 
       const incomeFormatted = {
-        code_model: fields[0],
-        location: fields[1],
+        model_code: fields[0],
+        place_name: fields[1],
         value: fields[2],
       }
       income.push(incomeFormatted);
@@ -19,8 +19,9 @@ function csvToObject(csv: any) {
   }
 
   income.shift();
+  income.shift();
 
-  return income.filter(value => value.code_model !== "00" && value.location !== undefined);
+  return income.filter(value => value.model_code !== "00" && value.place_name !== undefined);
 }
 
 export { csvToObject };
