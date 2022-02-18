@@ -1,35 +1,31 @@
 import React, { createContext, useState, useContext } from 'react';
 
 interface UploadContextData {
-  files: FilesProps;
-  setFiles: any;
-  handleUploadFile(file: any, type: string): void;
+  file: FileProps[];
+  setFile: any;
+  handleUploadFile(file: FileProps[]): void;
 }
 
-interface FilesProps {
-  sicgesp: [],
-  local: [],
+interface FileProps {
+  model_code: string;
+  place_name: string;
+  value: string;
+  base_code?: string | undefined;
 }
 
 const UploadContext = createContext({} as UploadContextData);
 
 export const UploadProvider: React.FC = ({ children }) => {
   
-  const [files, setFiles] = useState({} as FilesProps);
+  const [file, setFile] = useState({} as FileProps[]);
 
-  function handleUploadFile(file: any, type: string) {
-    const filledFile = {
-      [type]: file,
-    }
-    setFiles({ ...files, ...filledFile})
+  function handleUploadFile(file: FileProps[]) {
+    setFile(file)
   }
-
-
-  console.log(JSON.stringify(files.sicgesp, null, 2))
 
   return (
     <UploadContext.Provider
-      value={{ files, setFiles, handleUploadFile }}
+      value={{ file, setFile, handleUploadFile }}
     >
       {children}
     </UploadContext.Provider>

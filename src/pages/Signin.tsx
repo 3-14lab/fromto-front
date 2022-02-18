@@ -30,7 +30,6 @@ const SignIn: React.FC = () =>{
 
 
   const handleSubmit = useCallback( async (data: SignInData )=>{
-    console.log(data)
     try {
       formRef.current?.setErrors({});
 

@@ -24,8 +24,6 @@ function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, fi
   function handleCreateNewDataModal (event: FormEvent){
     event.preventDefault()
 
-    console.log(value)
-
     if(value){
       handleSubmit(value)
       setValue('')

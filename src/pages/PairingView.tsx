@@ -296,10 +296,8 @@ export const PairingView: React.FC = () => {
   ]
 
   const { state: { data }} = useLocation<LocationState>();
-  console.log(data);
 
   const { allBody } = usePairing();
-  console.log(allBody);
 
 
   const formatCSV = data.map((item: any) => {
@@ -323,7 +321,7 @@ export const PairingView: React.FC = () => {
           <h4 className="lg:w-96 md:w-72 font-poppins font-normal text-center text-[#5429CC]">nome da instituicao</h4>
         </div>
 
-        <div className="max-h-[400px] overflow-y-scroll">
+        <div className="max-h-[400px] overflow-y-scroll pairing-select">
           { data.map(({ base_code, model_code, place_name, value}: any) => (
             <div className={`flex justify-center py-5 bg-white rounded-md mb-2.5`}>
               <FieldGroup key={model_code + 'b'} code={model_code} location={place_name} />
@@ -336,24 +334,11 @@ export const PairingView: React.FC = () => {
         {/* <div className="w-[72] mx-auto flex items-center justify-center gap-5">
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg">Atualizar planilha</button> */}
 
-        <div className="w-[700px] mx-auto flex items-center justify-around">
-          <button 
-            // onClick={handlePairinglSubmit} 
-            className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg flex justify-center items-center">
-
-            {
-              isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) : 'Atualizar planilha'
-            }
-          </button>
+        <div className="w-fit	mx-auto">
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
             <CSVLink data={formatCSV} filename={"from_to.csv"} headers={headers} separator={";"}>
               Baixar planilha
             </CSVLink>
-          </button>
-          <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-red-400 rounded-lg">
-            {/* <CSVLink data={formatCSV} filename={"from_to.csv"} headers={headers} separator={";"}>
-              Baixar não pareados
-            </CSVLink> */}
           </button>
         </div>
       </div>

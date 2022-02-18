@@ -32,11 +32,10 @@ export const Pairings: React.FC = () => {
 
   const {sector_id} = useParams() as {sector_id: string}
   const location = useLocation();
-  console.log('oiiiiii', location.state);
   useEffect(()=>{
 
     async function  loadSector(){
-      const response = await api.get(`pairing/${sector_id}`);
+      const response = await api.get(`pairings/${sector_id}`);
       setExpenseSheets(response.data)
       console.log(response.data)
     }
@@ -58,13 +57,10 @@ export const Pairings: React.FC = () => {
   }
 
   async function handleDelete(expenseSheet_id: string){
-    await api.delete(`expense_sheet/${expenseSheet_id}`)
-    const response = await api.get(`expense_sheet/${sector_id}`);
+    await api.delete(`pairings/${expenseSheet_id}`)
+    const response = await api.get(`pairing/${sector_id}`);
     setExpenseSheets(response.data)
   }
-
-  const { files } = useUpload();
-  console.log(files)
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   
@@ -83,7 +79,7 @@ export const Pairings: React.FC = () => {
         title="Cadastrar pareamento"
         handleSumit={handlePairing}
       >
-        <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP" label="Arquivo SICGESP" type="sicgesp" />
+        {/* <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP" label="Arquivo SICGESP" type="sicgesp" /> */}
         <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv sem padronização" label="Arquivo local" type="local" />
 
         <div className="flex gap-1 items-center">
@@ -137,7 +133,7 @@ export const Pairings: React.FC = () => {
                     <td className="bg-white border-0 rounded py-4 px-8 text-body">{expenseSheet.name}</td>
                     <td className="bg-white  py-4 px-8 text-body">{new Date(expenseSheet.created_at).toLocaleDateString('pt-br')}</td>
                     <td className="bg-white rounded py-4 px-8 text-body">
-                      <div>
+                      <div className="z-50">
                         <button onClick={() => handleDelete(expenseSheet.id)} >
                           <img className="pl-2" src={TrashImg} alt="" />
                         </button>

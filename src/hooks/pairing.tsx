@@ -26,14 +26,11 @@ export const PairingProvider: React.FC = ({ children }) => {
   const [allCodeSelect, setAllCodeSelect] = useState([] as any);
 
   function handleAddPairing(body: any, code: string | undefined) {
-    console.log(body.code_base);
     setAllCodeSelect((prev: string[]) => [...prev, body.code_base]);
     // eslint-disable-next-line array-callback-return
     const allBodyFilted = allBody.filter((body: any) => body.code_model !== code && body);
-    
+    allBodyFilted.push(body);
     setAllBody(allBodyFilted);
-    console.log('allBody');
-    console.log(JSON.stringify(allBody, null, 2))
   }
 
   const formatCSV = allBody.map((item: any) => {
