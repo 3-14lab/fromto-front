@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { Redirect, useHistory, useLocation, useParams } from 'react-router-dom';
 import { Header } from '../components';
 import { usePairing } from '../hooks/pairing';
@@ -100,6 +100,7 @@ interface LocationState {
   state: {
     view: boolean;
   }
+  data: [];
 }
 
 interface FileProps {
@@ -121,18 +122,45 @@ export const Pairing: React.FC = () => {
 
   const { file } = useUpload();
   const [formattedFile, setFormattedFile] = useState({} as FileProps);
+  const [formattedTemplate, setFormattedTemplate] = useState({});
 
   const headers = [
-    { label: "Código Lotação", key: "code_base" },
+    { label: "Código Lotação", key: "base_code" },
     { label: "Descrição Locação", key: "location" },
     { label: "Valor Realocado", key: "value" }
+  ]
+
+  const headersSecondary = [
+    { label: "Código Lotação", key: "model_code" },
+    { label: "Descrição Locação", key: "location" },
+    { label: "Valor Realocado", key: "value" },
+    { label: "Adicional", key: "add"}
   ]
 
   useEffect(() => {
     setFormattedFile(file.reduce((p, c) => ({ ...p, [c.model_code]: c }), {}));
   }, [file])
 
-  if (!file) return <Redirect to="/pairings" />
+  useEffect(() => {
+    if (state?.data) {
+      setFormattedFile(prev => ({ ...prev, ...state.data.reduce((p: any, c: any) => ({ ...p, [c.model_code]: c }), {})}))
+    }
+  }, [state?.data])
+
+  const downloadPairingFilled = useMemo(() => {
+    const aux = formattedFile;
+    return Object.values(aux).filter(item => item.base_code).map(item => {
+      return  { base_code: item.base_code, location: item.place_name, value: item.value }
+    })
+  }, [formattedFile]) 
+
+  const downloadPairingEmpty = useMemo(() => {
+    const aux = formattedFile;
+    return Object.values(aux).filter(item => !item.base_code).map(item => {
+      console.log(item);
+      return  { model_code: item.model_code, location: item.place_name, value: item.value }
+    })
+  }, [formattedFile]) 
 
   function update(code: string) {
     return ({ target }: ChangeEvent<HTMLSelectElement>) => {
@@ -162,6 +190,10 @@ export const Pairing: React.FC = () => {
     setIsLoading(false);
     history.push(`/pairings/${sector_id}`)
   }
+
+
+  if (!file) return <Redirect to="/pairings" />
+
 
   return (
     <>
@@ -195,7 +227,7 @@ export const Pairing: React.FC = () => {
               <div className="font-roboto font-medium text-[#292438] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]">
                 { base_code || "---"}
               </div>
-              <select onChange={update(model_code)} defaultValue={'DEFAULT'} id="select-primary" className="col-span-3 w-full px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none">
+              <select onChange={update(model_code)} value={base_code || 'DEFAULT'} id="select-primary" className="col-span-3 w-full px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none">
                 <option value="DEFAULT" disabled hidden>Nome da instituição</option>
                 { (Object.values(sicgesp)).map(({ base_code, location }: any) => (
                   <option value={base_code}>{location}</option>
@@ -211,12 +243,12 @@ export const Pairing: React.FC = () => {
             }
           </button>
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
-            <CSVLink data={[]} filename={"from_to.csv"} headers={headers} separator={";"}>
+            <CSVLink data={downloadPairingFilled as []} filename={"from_to.csv"} headers={headers} separator={";"}>
               Baixar planilha
             </CSVLink>
           </button>
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-red-400 rounded-lg">
-            <CSVLink data={[]} filename={"from_to.csv"} headers={headers} separator={";"}>
+            <CSVLink data={downloadPairingEmpty as []} filename={"from_to.csv"} headers={headersSecondary} separator={";"}>
               Baixar não pareados
             </CSVLink>
           </button>
