@@ -28,10 +28,13 @@ const templates = [{
 export const Pairings: React.FC = () => {
   const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false)
   const [expenseSheets, setExpenseSheets] = useState<ExpenseSheetData[]>([])
+  const [templateSelect, setTemplateSelect] = useState("");
+
   const history = useHistory();
 
   const {sector_id} = useParams() as {sector_id: string}
   const location = useLocation();
+  
   useEffect(()=>{
 
     async function  loadSector(){
@@ -53,6 +56,19 @@ export const Pairings: React.FC = () => {
   }
 
   function handlePairing(name: string){
+    if (templateSelect !== "") {
+      const templ = expenseSheets.find(item => item.id === templateSelect)!.data.map((item: any) => {
+        delete item.created_at
+        delete item.id
+        delete item.pairing_id
+        delete item.updated_at
+        
+        return item;
+       })
+      history.push({pathname: `/pairing/${sector_id}`, state: { pairingName: name, data: templ }})
+      return;
+    }
+
     history.push({pathname: `/pairing/${sector_id}`, state: { pairingName: name }})
   }
 
@@ -95,8 +111,12 @@ export const Pairings: React.FC = () => {
             )}
           </div>
         </div>
-        <select defaultValue={'DEFAULT'} id="select-primary" className={`lg:w-full md:w-72 px-3.5 py-2.5 mt-0.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}>
-          {templates.map(({ id, name }: any) => (
+        <select 
+          onChange={({ target }) => {
+            setTemplateSelect(target.value);
+          }} 
+          defaultValue={'DEFAULT'} id="select-primary" className={`lg:w-full md:w-72 px-3.5 py-2.5 mt-0.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}>
+          {expenseSheets.map(({ id, name }: any) => (
             <>
               <option value="DEFAULT" disabled hidden>Nenhum (padrão)</option>
               <option key={id} value={id}>{name}</option>
