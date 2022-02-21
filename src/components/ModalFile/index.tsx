@@ -12,7 +12,7 @@ interface NewDataModalProps  {
   placeholder: string
   children?: any;
   firstLabelText?: string;
-  handleSumit: (name: string) => void
+  handleSumit: (name: string) => void;
 }
 
 function ModalFile({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSumit}:NewDataModalProps){

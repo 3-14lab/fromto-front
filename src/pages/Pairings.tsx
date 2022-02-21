@@ -79,7 +79,7 @@ export const Pairings: React.FC = () => {
         title="Cadastrar pareamento"
         handleSumit={handlePairing}
       >
-        {/* <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP" label="Arquivo SICGESP" type="sicgesp" /> */}
+        <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP" label="Arquivo SICGESP" type="sicgesp" />
         <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv sem padronização" label="Arquivo local" type="local" />
 
         <div className="flex gap-1 items-center">

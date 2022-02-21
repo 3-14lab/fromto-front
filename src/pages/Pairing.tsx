@@ -1,97 +1,13 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Redirect, useHistory, useLocation, useParams } from 'react-router-dom';
 import { Header } from '../components';
-import { usePairing } from '../hooks/pairing';
 import { useUpload } from '../hooks/upload';
 import { CSVLink } from 'react-csv';
 import api from '../services/api';
 import { Oval } from 'react-loader-spinner';
-import { sicgesp } from '../mock/file';
 
-interface FieldGroupProps {
-  code?: string;
-  location?: string;
-  select?: boolean;
-  file?: any;
-  value?: string;
-}
-
-const FieldGroup = ({ code, location, select, file, value }: FieldGroupProps) => {
-
-  const { handleAddPairing, allCodeSelect } = usePairing();
-
-  const [error, setError] = useState({
-    location: '',
-    error: false,
-  });
-
-  const [codeSelected, setCodeSelected] = useState("---" as any);
-  const [locationSelected, setLocationSelected] = useState(location);
-
-  const [body, setBody] = useState({
-    code_model: code,
-    code_base: codeSelected,
-    location: locationSelected,
-    value,
-  });
-
-  async function handleCodeSelected(valueCode: any, textCode: any) {
-    if (allCodeSelect.includes(valueCode)) {
-      // setError({ ...error, error: true });
-      // console.log(allCodeSelect)
-      return;
-    }
-
-    setBody(prev => ({ ...prev, code_base: valueCode, location: textCode }))
-
-    handleAddPairing({ ...body, code_base: valueCode, location: textCode }, code);
-
-    setCodeSelected(valueCode);
-    setLocationSelected(textCode);
-  }
-
-  function update(event?: ChangeEvent<HTMLSelectElement>) {
-    // eslint-disable-next-line array-callback-return
-    const item: any = (Object.values(file).filter((item: any) => {
-      if (item?.code_model === event?.target.options[event?.target.options.selectedIndex].value) {
-        return item;
-      }
-    }))
-
-    if (item) {
-      setError({ ...error, location: item.location })
-    }
-
-    handleCodeSelected(event?.target.options[event?.target.options.selectedIndex].value, event?.target.options[event?.target.options.selectedIndex].text)
-  }
-
-  return (
-    <div>
-      <div key={code} className="flex items-center space-x-5">
-        <div>
-          <p className={`lg:w-28 md:w-20 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5] ${select && "text-[#6B7280]"}`}>{select ? codeSelected : code}</p>
-        </div>
-        <div>
-          {select ? (
-            <select defaultValue={'DEFAULT'} id="select-primary" onChange={(event) => update(event)} className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}>
-              {file && file?.map(({ model_code, place_name }: any) => (
-                <>
-                  <option value="DEFAULT" disabled hidden>Nome da instituição</option>
-                  <option key={model_code + 'c'} value={model_code}>{place_name}</option>
-                </>
-              ))}
-            </select>
-          ) : (
-            <div className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md text-[#D1D5DB] bg-[#f0f2f5]`}>
-              <p className="font-roboto font-medium text-[#6B7280]">{location}</p>
-            </div>
-          )
-          }
-        </div>
-      </div>
-    </div>
-  )
-}
+import { sicgespType, localType } from '../hooks/upload';
+// import { sicgesp } from '../mock/file';
 
 interface LocationState {
   view: any;
@@ -102,15 +18,13 @@ interface LocationState {
   }
 }
 
-interface FileProps {
-  [field: string]: {
-    model_code?: string;
-    place_name: string;
-    value: string;
-    base_code?: string | undefined;
-  }
-}
+type FilePropsSicgesp = {
+  [field: string]: sicgespType;
+};
 
+type FilePropsLocal = {
+  [field: string]: localType;
+};
 
 export const Pairing: React.FC = () => {
 
@@ -119,8 +33,10 @@ export const Pairing: React.FC = () => {
   const { state } = useLocation<LocationState>();
   const [isLoading, setIsLoading] = useState(false)
 
+
   const { file } = useUpload();
-  const [formattedFile, setFormattedFile] = useState({} as FileProps);
+  const [formattedFile, setFormattedFile] = useState({} as FilePropsLocal);
+  const [sicgespFile, setSicgespFile] = useState({} as FilePropsSicgesp);
 
   const headers = [
     { label: "Código Lotação", key: "code_base" },
@@ -129,7 +45,8 @@ export const Pairing: React.FC = () => {
   ]
 
   useEffect(() => {
-    setFormattedFile(file.reduce((p, c) => ({ ...p, [c.model_code]: c }), {}));
+    setFormattedFile(file['local']?.reduce((p, c) => ({ ...p, [c.model_code]: c }), {}));
+    setSicgespFile(file['sicgesp']?.reduce((p, c) => ({ ...p, [c.base_code]: c }), {}));
   }, [file])
 
   if (!file) return <Redirect to="/pairings" />
@@ -197,7 +114,7 @@ export const Pairing: React.FC = () => {
               </div>
               <select onChange={update(model_code)} defaultValue={'DEFAULT'} id="select-primary" className="col-span-3 w-full px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none">
                 <option value="DEFAULT" disabled hidden>Nome da instituição</option>
-                { (Object.values(sicgesp)).map(({ base_code, location }: any) => (
+                { (Object.values(sicgespFile)).map(({ base_code, location }) => (
                   <option value={base_code}>{location}</option>
                 ))}
               </select>
