@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { FileUploader, Header, ModalFile } from "../components"
-import { useUpload } from "../hooks/upload"
 import api from "../services/api";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { HiInformationCircle } from "react-icons/hi";
@@ -19,12 +18,6 @@ interface ExpenseSheetData {
   data: any;
 }
 
-
-const templates = [{
-  id: '123423432fasdfdsf',
-  name: 'Janeiro',
-}]
-
 export const Pairings: React.FC = () => {
   const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false)
   const [expenseSheets, setExpenseSheets] = useState<ExpenseSheetData[]>([])
@@ -32,62 +25,57 @@ export const Pairings: React.FC = () => {
 
   const history = useHistory();
 
-  const {sector_id} = useParams() as {sector_id: string}
-  const location = useLocation();
-  
-  useEffect(()=>{
+  const { sector_id } = useParams() as { sector_id: string };
+  const { state: {  sector_name, city_name } } = useLocation() as { state: { sector_name: string, city_name: string } };
 
-    async function  loadSector(){
+  useEffect(() => {
+
+    async function loadSector() {
       const response = await api.get(`pairings/${sector_id}`);
       setExpenseSheets(response.data)
-      console.log(response.data)
     }
 
     loadSector()
 
   }, [sector_id])
 
-  function handleOpenNewDataModal(){
+  function handleOpenNewDataModal() {
     setIsNewDataModalOpen(true)
   }
 
-  function handleCloseNewDataModal(){
+  function handleCloseNewDataModal() {
     setIsNewDataModalOpen(false)
   }
 
-  function handlePairing(name: string){
+  function handlePairing(name: string) {
     if (templateSelect !== "") {
       const templ = expenseSheets.find(item => item.id === templateSelect)!.data.map((item: any) => {
         delete item.created_at
         delete item.id
         delete item.pairing_id
         delete item.updated_at
-        
+
         return item;
-       })
-      history.push({pathname: `/pairing/${sector_id}`, state: { pairingName: name, data: templ }})
+      })
+      history.push({ pathname: `/pairing/${sector_id}`, state: { pairing_name: name, data: templ, city_name, sector_name } })
       return;
     }
 
-    history.push({pathname: `/pairing/${sector_id}`, state: { pairingName: name }})
+    history.push({ pathname: `/pairing/${sector_id}`, state: { pairing_name: name, city_name, sector_name } })
   }
 
-  async function handleDelete(expenseSheet_id: string){
-    await api.delete(`pairings/${expenseSheet_id}`)
-    const response = await api.get(`pairing/${sector_id}`);
-    setExpenseSheets(response.data)
+  async function handleDelete(expenseSheet_id: string) {
+      await api.delete(`pairings/${expenseSheet_id}`)    
+      const response = await api.get(`pairings/${sector_id}`);
+      setExpenseSheets(response.data)
   }
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  
-  function handleNextPage(id: string, data: any) {
-    history.push({ pathname: `/pairing/view/${id}`, state: { data }});
-  }
 
   return (
     <>
       <Header />
-        
+
       <ModalFile
         isOpen={isNewDataModalOpen}
         onRequestClose={handleCloseNewDataModal}
@@ -100,10 +88,10 @@ export const Pairings: React.FC = () => {
 
         <div className="flex gap-1 items-center">
           <label className="font-roboto font-medium text-blue text-sm">
-              Template de pareamento
+            Template de pareamento
           </label>
           <div className="relative cursor-pointer" onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
-            <HiInformationCircle color="#5429CC"/>
+            <HiInformationCircle color="#5429CC" />
             {isOpen && (
               <div className="w-80 absolute bottom-[-6] left-1 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
                 Selecione um pareamento anterior e utilize a mesma paridade de lotações para este novo pareamento!
@@ -111,16 +99,16 @@ export const Pairings: React.FC = () => {
             )}
           </div>
         </div>
-        <select 
+        <select
           onChange={({ target }) => {
             setTemplateSelect(target.value);
-          }} 
+          }}
           defaultValue={'DEFAULT'} id="select-primary" className={`lg:w-full md:w-72 px-3.5 py-2.5 mt-0.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}>
+          <option value="DEFAULT" disabled hidden>Nenhum (padrão)</option>
           {expenseSheets.map(({ id, name }: any) => (
-            <>
-              <option value="DEFAULT" disabled hidden>Nenhum (padrão)</option>
-              <option key={id} value={id}>{name}</option>
-            </>
+            <React.Fragment key={id}>
+              <option value={id}>{name}</option>
+            </React.Fragment>
           ))}
         </select>
       </ModalFile>
@@ -128,42 +116,41 @@ export const Pairings: React.FC = () => {
       <main className="mx-auto py-4 px-4 w-[74rem] ">
         <div className="flex justify-between items-center" >
           <section className="flex items-end my-10 space-x-8 ">
-                <h1 className="text-[#374151] font-roboto font-medium text-4xl">Pareamento</h1>
-                <h3 className="font-roboto font-medium text-2xl	text-[#6B7280]">Goiânia - GO | Educação | Dezembro</h3>
+            <h1 className="text-[#374151] font-roboto font-medium text-4xl">Pareamento</h1>
+            <h3 className="font-roboto font-medium text-2xl	text-[#6B7280]">{city_name} | {sector_name}</h3>
           </section>
           <button onClick={handleOpenNewDataModal} className="text-white font-medium text-xs border rounded-md bg-blue py-3 px-16 hover:brightness-90"  >Novo Pareamento</button>
         </div>
 
 
-        <div className="mt-4" >
-        <table className="w-full" >
-            <thead>
-              <tr >
-                <th className="text-body font-normal py-4 px-8 text-left leading-6">Nome</th>
-                <th className="text-body font-normal py-4 px-8 text-left leading-6">Modificação</th>
-                <th className="text-body font-normal py-4 px-8 text-left leading-6">Ação</th>
-              </tr>
-            </thead>
+        <div className="w-full mt-4" >
+          <div className="flex flex-1 w-full justify-between py-4 px-8">
+            <div className="flex w-full justify-between">
+              <div className="text-body font-normal  text-left leading-6">Nome</div>
+              <div className="text-body font-normal text-left leading-6">Modificação</div>
+            </div>
+            <div className="flex w-full justify-end  text-body font-normal text-left leading-6">Ação</div>
+          </div>
 
-            <tbody>
 
-              {expenseSheets.map(expenseSheet => (  
-                // <Link to={`/pairing/view/${expenseSheet.id}`}>
-                  <tr key={expenseSheet.id} onClick={() => handleNextPage(expenseSheet.id, expenseSheet.data)} className="w-full cursor-pointer hover:bg-text">
-                    <td className="bg-white border-0 rounded py-4 px-8 text-body">{expenseSheet.name}</td>
-                    <td className="bg-white  py-4 px-8 text-body">{new Date(expenseSheet.created_at).toLocaleDateString('pt-br')}</td>
-                    <td className="bg-white rounded py-4 px-8 text-body">
-                      <div className="z-50">
-                        <button onClick={() => handleDelete(expenseSheet.id)} >
-                          <img className="pl-2" src={TrashImg} alt="" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-              // </Link>
-            ))}
-            </tbody>
-          </table>
+          {expenseSheets.map(expenseSheet => (
+            <div className="w-full mt-5">
+              <div key={expenseSheet.id} className="flex rounded-md flex-1 bg-white hover:bg-text justify-between">
+                <Link
+                  to={{pathname: `/pairing/view/${expenseSheet.id}`, state: { city_name, sector_name, expensesheet_name: expenseSheet.name }}}
+                  className="flex w-full bg-white cursor-pointer hover:bg-text  py-4 px-8 justify-between"
+                >
+                  <div className="bg-white text-body">{expenseSheet.name}</div>
+                  <div className="bg-white text-body">{new Date(expenseSheet.created_at).toLocaleDateString('pt-br')}</div>
+                </Link>
+                <div className="flex w-full justify-end">
+                  <button className="cursor-pointer px-8" onClick={() => handleDelete(expenseSheet.id)} >
+                    <img src={TrashImg} alt="" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       </main>
     </>

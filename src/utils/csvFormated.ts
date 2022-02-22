@@ -22,7 +22,6 @@ function csvToObject(csv: any, type: 'sicgesp' | 'local'): fileObject[] {
           income.push(incomeFormatted);
         }
       } else {
-        console.log('entrei')
         incomeFormatted = {
           base_code: fields[0],
           location: fields[1],

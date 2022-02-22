@@ -20,7 +20,7 @@ export type sicgespType = {
   value: string;
 }
 
-type FileProps = {
+export type FileProps = {
   sicgesp: sicgespType[];
   local: localType[];
 };
@@ -30,8 +30,6 @@ const UploadContext = createContext({} as UploadContextData);
 export const UploadProvider: React.FC = ({ children }) => {
   
   const [file, setFile] = useState({} as FileProps);
-
-  console.log('fileeeeeeeeeeee', file)
 
   function handleUploadFile(file: FileProps) {
     setFile(file)

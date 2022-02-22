@@ -57,8 +57,6 @@ const City: React.FC = () => {
 
   }, [user])
 
-  console.log(JSON.stringify(cities, null, 2))
-
   function handleOpenNewCityModal() {
     setIsNewCityModalOpen(true)
   }
@@ -161,7 +159,7 @@ const City: React.FC = () => {
               <div className="flex items-center justify-end mr-6 text-title font-poppins font-normal">Ação</div>
             </div>
             {cities?.map(({ name, amount, created_at, id, sectors }) => (
-              <div className="grid gap-y-0.5">
+              <div key={id} className="grid gap-y-0.5">
                 <div className={`overflow-hidden px-5 pb-5 bg-white rounded-lg transition-height duration-500 ease-in-out h-16 hover:h-72 mb-5`} onClick={() => setOpen(prev => !prev)}>
                   <div className="grid grid-cols-5 w-full h-16">
                     <div className="flex col-span-2	items-center text-body font-medium">{name}</div>
@@ -176,11 +174,11 @@ const City: React.FC = () => {
                       </button>
                     </div>
                   </div>
-                  {sectors?.map(({ name, created_at, id }: SectorData) => (
-                    <div className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
-                      <Link to={{ pathname: `/pairings/${id}`, state: { view: true } }} className="flex flex-1 justify-between hover:bg-gray/200">
+                  {sectors?.map(({ name: sector_name, created_at, id }: SectorData) => (
+                    <div key={id} className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
+                      <Link to={{ pathname: `/pairings/${id}`, state: { city_name: name, sector_name } }} className="flex flex-1 justify-between hover:bg-gray/200">
                         <div className="grid grid-cols-7 bg-gray/100 w-full hover:bg-gray/200">
-                          <div className="flex col-span-3	items-center text-body font-medium">{name}</div>
+                          <div className="flex col-span-3	items-center text-body font-medium">{sector_name}</div>
                           <div className="flex col-span-2 items-center text-body font-normal">12 pareamentos</div>
                           <div className="flex items-center text-body font-normal">{new Date(created_at).toLocaleDateString('pt-br')}</div>
                         </div>

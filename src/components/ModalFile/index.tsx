@@ -27,10 +27,6 @@ function ModalFile({ isOpen, onRequestClose, placeholder, title, children, first
 
   function handleCreateNewDataModal (event: FormEvent){
     event.preventDefault()
-
-    console.log(
-      value,
-    )
   }
 
   function handlePairing() {
