@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import Modal from 'react-modal'
 
 import './style.css'
@@ -12,31 +12,46 @@ interface NewDataModalProps  {
   placeholder: string
   children?: any;
   firstLabelText?: string;
-  handleSumit: () => void
+  handleSumit: (name: string) => void;
 }
 
-export function ModalFile({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSumit}:NewDataModalProps){
+function ModalFile({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSumit}:NewDataModalProps){
   
   
-  
+  const [error, setError] = useState(false)
   const [value, setValue] = useState('')
+
+  // function handleError() {
+  //   setError(prev => ({ ...error, visible: true }))
+  // }
 
   function handleCreateNewDataModal (event: FormEvent){
     event.preventDefault()
-
-    console.log(
-      value,
-    )
   }
 
   function handlePairing() {
-    handleSumit()
+    if (value === "") {
+      setError(true);
+
+      return;
+    } 
+    handleSumit(value)
   }
+
+
+  useEffect(() => {
+    if (value !== "") {
+      setError(false);
+    }
+  }, [value])
 
   return(
     <Modal
       isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      onRequestClose={() => {
+        setError(false);
+        onRequestClose()
+      }}
       overlayClassName="react-modal-overlay"
       className="react-modal-content"
     >
@@ -49,13 +64,15 @@ export function ModalFile({ isOpen, onRequestClose, placeholder, title, children
       <h2 className="font-roboto font-medium text-2xl text-blue mb-[30px]">{title}</h2>
 
       <label className="font-roboto font-medium text-blue text-sm">Título</label>
-      <input 
-        className="w-full font-roboto font-normal text-sm px-6 py-3 mb-5 mt-0.5 rounded-t-md	bg-[#F3F4F6] text-[#9CA3AF]"
-        placeholder={placeholder}
-        value={value}
-        onChange={event=> setValue(event.target.value) }
-        />
-        
+      <div className="mb-5">
+        <input 
+          className="w-full font-roboto font-normal text-sm px-6 py-3 mt-0.5 rounded-t-md	bg-[#F3F4F6] text-[#9CA3AF]"
+          placeholder={placeholder}
+          value={value}
+          onChange={event=> setValue(event.target.value) }
+          />
+          { error && <label className="text-red-400 font-medium text-xs">Campo obrigatório*</label> }
+      </div>
       { children }
        
        <button onClick={handlePairing}type="submit">Cadastrar</button>
@@ -64,3 +81,5 @@ export function ModalFile({ isOpen, onRequestClose, placeholder, title, children
     </Modal>
   )
 }
+
+export default ModalFile;

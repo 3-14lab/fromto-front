@@ -1,5 +1,7 @@
-//  csv = codigo, name, recurso
-function csvToObject(csv: any) {
+import { sicgespType, localType } from '../hooks/upload';
+export type fileObject = sicgespType | localType;
+
+function csvToObject(csv: any, type: 'sicgesp' | 'local'): fileObject[] {
   const lines = csv.split(/\r?\n/g);
   if (!lines.length) { return []; }
 
@@ -9,18 +11,33 @@ function csvToObject(csv: any) {
     for (const column of lineColumns) {
       const fields = column.split(/,/)[0].split(/;/);
 
-      const incomeFormatted = {
-        code_model: fields[0],
-        location: fields[1],
-        value: fields[2],
+      let incomeFormatted;
+      if (type === 'local') {
+        incomeFormatted = {
+          model_code: fields[0],
+          place_name: fields[1],
+          value: fields[2],
+        }
+        if (incomeFormatted.model_code && incomeFormatted.value) {
+          income.push(incomeFormatted);
+        }
+      } else {
+        incomeFormatted = {
+          base_code: fields[0],
+          location: fields[1],
+          value: fields[2],
+        }
+        if (incomeFormatted.base_code) {
+          income.push(incomeFormatted);
+        }
       }
-      income.push(incomeFormatted);
     }
   }
 
   income.shift();
+  income.shift();
 
-  return income.filter(value => value.code_model !== "00" && value.location !== undefined);
+  return income;
 }
 
 export { csvToObject };

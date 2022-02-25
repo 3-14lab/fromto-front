@@ -1,33 +1,43 @@
 import React, { createContext, useState, useContext } from 'react';
+import { fileObject } from '../utils/csvFormated';
 
 interface UploadContextData {
-  files: FilesProps;
-  setFiles: any;
-  handleUploadFile(file: any, type: string): void;
+  file: FileProps;
+  setFile: any;
+  handleUploadFile(file: FileProps): void;
 }
 
-interface FilesProps {
-  sicgesp: [],
-  local: [],
+export type localType = {
+  model_code: string;
+  place_name: string;
+  value: string;
+  base_code?: string;
 }
+
+export type sicgespType = {
+  base_code: string;
+  location: string;
+  value: string;
+}
+
+export type FileProps = {
+  sicgesp: sicgespType[];
+  local: localType[];
+};
 
 const UploadContext = createContext({} as UploadContextData);
 
 export const UploadProvider: React.FC = ({ children }) => {
   
-  const [files, setFiles] = useState({} as FilesProps);
+  const [file, setFile] = useState({} as FileProps);
 
-  function handleUploadFile(file: any, type: string) {
-    const filledFile = {
-      [type]: file,
-    }
-    setFiles({ ...files, ...filledFile})
+  function handleUploadFile(file: FileProps) {
+    setFile(file)
   }
-
 
   return (
     <UploadContext.Provider
-      value={{ files, setFiles, handleUploadFile }}
+      value={{ file, setFile, handleUploadFile }}
     >
       {children}
     </UploadContext.Provider>

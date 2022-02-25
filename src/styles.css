@@ -16,3 +16,14 @@ table {
 body {
   background-color: #f0f2f5;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.pairing-select::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.pairing-select {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

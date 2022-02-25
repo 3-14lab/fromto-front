@@ -30,7 +30,6 @@ const SignIn: React.FC = () =>{
 
 
   const handleSubmit = useCallback( async (data: SignInData )=>{
-    console.log(data)
     try {
       formRef.current?.setErrors({});
 
@@ -88,10 +87,7 @@ const SignIn: React.FC = () =>{
               { 
                 isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) :'Entrar' 
               }
-
             </button>
-
-
           <Link className='text-center text-sm font-medium mt-[19px] text-title' to="/signup">Cadastre-se</Link>
           <Link className='text-center text-sm font-medium mt-[50px] p text-title' to="/recover">Esqueci minha senha</Link>
         </Form>

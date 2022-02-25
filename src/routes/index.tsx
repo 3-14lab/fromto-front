@@ -7,9 +7,10 @@ import {SignIn} from '../pages/Signin';
 import {SignUp} from '../pages/Signup';
 import {City} from '../pages/City';
 import {Sector} from '../pages/Sector';
-import { Pairings } from '../pages/pairings';
+import { Pairings } from '../pages/Pairings';
 import { Pairing } from '../pages/Pairing';
 import { RecoverPassword } from '../pages/RecoverPassword';
+import { PairingView } from '../pages/PairingView';
 
 const Routes: React.FC = () => {
   return (
@@ -20,7 +21,7 @@ const Routes: React.FC = () => {
       <Route path="/sector/:city_id" isPrivate exact component={Sector} />
       <Route path="/pairings/:sector_id" isPrivate exact component={Pairings} />
       <Route path="/pairing/:sector_id" isPrivate exact component={Pairing} />
-      {/* <Route path="/pairing" isPrivate exact component={Pairing} /> */}
+      <Route path="/pairing/view/:p_id" isPrivate exact component={PairingView} />
       <Route path="/recover" component={RecoverPassword} />
       <Route component={() => <Redirect to='/' />} />
     </Switch>

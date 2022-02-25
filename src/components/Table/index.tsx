@@ -14,9 +14,6 @@ interface DataProps {
   local?: string;
 }
 function Table({ data, titles, handleDelete }: any) {
-
-  
-
   return (
     <table className="w-full" >
       <thead>
@@ -29,7 +26,6 @@ function Table({ data, titles, handleDelete }: any) {
 
       <tbody>
         {data.map(({ id ,name, amount, arq, local, created_at }: DataProps) => (
-          
           <tr key={id} className="bg-white text-body text-sm"> 
               <Link to={`sector/${id}`} >
                   <td className="font-medium rounded-lg py-6 px-5">{name}</td>

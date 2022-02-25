@@ -2,16 +2,29 @@ import React, { ChangeEvent, useRef, useState } from "react";
 import { useUpload } from "../../hooks/upload";
 import { csvToObject } from "../../utils/csvFormated";
 
-interface FilesProps {
-  sicgesp: [];
-  local: [];
+type FileUploaderProps = {
+  placeholder: string;
+  label: string;
+  type: 'sicgesp' | 'local';
 }
 
-const FileUploader = ({ placeholder, label, type }: any) => {
+const FileUploader = ({ placeholder, label, type }: FileUploaderProps) => {
   
   const importFile = useRef<any>(null);
   const [fileName, setFileName] = useState<string | undefined>("");
-  const { handleUploadFile } = useUpload();
+  const { file: fileObject, handleUploadFile } = useUpload();
+
+  function handleFileChange({ target }: ChangeEvent<HTMLInputElement>) {
+    const files: FileList | null = target.files;
+    const file: File | undefined = files?.[0];
+    const reader = new global.FileReader();
+    reader.onloadend = () => {
+      const csv = csvToObject(reader.result, type);
+      setFileName(file?.name);
+      handleUploadFile({ ...fileObject, [type]: csv });
+    };
+    reader.readAsText(file as Blob);
+  }
 
   return (
     <>
@@ -28,17 +41,7 @@ const FileUploader = ({ placeholder, label, type }: any) => {
               fileName !== "" ? "text-blue" : "text-[#9CA3AF]"
             } px-6 py-3 mb-5 mt-0.5`}
           >
-            <input ref={importFile} onChange={({ target }: ChangeEvent<HTMLInputElement>) => {
-              const files: FileList | null = target.files;
-              const file: File | undefined = files?.[0];
-              const reader = new global.FileReader();
-              reader.onloadend = () => {
-                const csv = csvToObject(reader.result);
-                setFileName(file?.name);
-                handleUploadFile(csv, type);
-              };
-              reader.readAsText(file as Blob);
-            }} type="file" style={{ display: "none" }} />
+            <input ref={importFile} onChange={handleFileChange} type="file" style={{ display: "none" }} />
             {fileName !== "" ? fileName : placeholder}
           </button>
         </>

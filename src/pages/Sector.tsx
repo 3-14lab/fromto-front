@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react"
+import api from "../services/api"
+import { useAuth } from "../hooks/auth"
 
 import { Link, useParams } from 'react-router-dom'
 import LogoImg from '../img/logo.svg'
 import TrashImg from '../img/trash.svg'
-import { NewDataModal } from "../components/Modal"
-import api from "../services/api"
-import { useAuth } from "../hooks/auth"
+import { Modal } from "../components"
+import { Header, Table } from "../components"
+
+const titles = ['Nome', 'Qtde. setores', 'Última Modificação', 'Ação'];
+const mock = [{ name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}, { name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}];
+
 
 
 interface SectorData {
@@ -67,24 +72,11 @@ const Sector: React.FC = () => {
 
   return (
     <>
-      <header className="bg-blue" >
-
-        <div className="mx-auto py-4 px-4 w-[74rem] flex items-center justify-between">
-          <div className="flex items-center">
-            <img  className="h-16" src={LogoImg} alt="logo" />
-            <h1 className="text-white font-semibold text-xl ml-4" >DePara</h1>
-          </div>
-          <div>
-            <h1 className="text-white font-semibold text-sm" >Paulo Henrique Rosa</h1>
-            <p className="text-white font-light text-xs mt-0" >paulohenriquerosa@gmail.com</p>
-          </div>
-        </div>
-
-      </header>
+      <Header />
 
       <main className="mx-auto py-4 px-4 w-[74rem] ">
 
-      <NewDataModal
+      <Modal
         isOpen={isNewDataModalOpen}
         onRequestClose={handleCloseNewDataModal}
         placeholder="Nome"
@@ -115,25 +107,29 @@ const Sector: React.FC = () => {
 
               {sectors.map(sector => (  
 
-              <tr key={sector.id} className="bg-white text-body text-sm" >
-          
-                <Link to={`/pairings/${sector.id}`} >
-                  <td className="bg-white border-0 rounded py-4 px-8 text-body">{sector.name}</td>
+                <Link to={`/pairings/${sector.id}`}>
+                  <tr key={sector.id} className="bg-white text-body text-sm" >
+              
+                    <td className="bg-white border-0 rounded py-4 px-8 text-body">{sector.name}</td>
+                    <td className="bg-white rounded py-4 px-8 text-body">{new Date(sector.created_at).toLocaleDateString('pt-br')}</td>
+                    <td className="bg-white rounded py-4 px-8 text-body">
+                      <div className="flex">
+                        <button onClick={()=> handleDeleteSector(sector.id)} >
+                          <img className="pl-2" src={TrashImg} alt="" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
                 </Link>
-                <td className="bg-white rounded py-4 px-8 text-body">{new Date(sector.created_at).toLocaleDateString('pt-br')}</td>
-                <td className="bg-white rounded py-4 px-8 text-body">
-                  <div className="flex">
-                    <button onClick={()=> handleDeleteSector(sector.id)} >
-                      <img className="pl-2" src={TrashImg} alt="" />
-                    </button>
-                  </div>
-                </td>
-              </tr>
 
             ))}
               
             </tbody>
           </table>
+
+          <div className="mt-4" >
+          <Table data={mock} titles={titles} />
+          </div>
 
         </div>
 
