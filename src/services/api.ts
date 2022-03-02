@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3004/',
+  baseURL: 'https://api.appdepara.com.br/',
 });
 
 export default api;
