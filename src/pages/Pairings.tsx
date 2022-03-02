@@ -134,8 +134,8 @@ export const Pairings: React.FC = () => {
 
 
           {expenseSheets.map(expenseSheet => (
-            <div key={expenseSheet.id} className="w-full mt-5">
-              <div className="flex rounded-md flex-1 bg-white hover:bg-text justify-between">
+            <div className="w-full mt-5">
+              <div key={expenseSheet.id} className="flex rounded-md flex-1 bg-white hover:bg-text justify-between">
                 <Link
                   to={{pathname: `/pairing/view/${expenseSheet.id}`, state: { city_name, sector_name, expensesheet_name: expenseSheet.name }}}
                   className="flex w-full bg-white cursor-pointer hover:bg-text  py-4 px-8 justify-between"
