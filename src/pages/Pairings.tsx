@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FileUploader, Header, ModalFile } from "../components"
+import { BackButton, FileUploader, Header, ModalFile } from "../components"
 import api from "../services/api";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { HiInformationCircle } from "react-icons/hi";
@@ -114,8 +114,9 @@ export const Pairings: React.FC = () => {
       </ModalFile>
 
       <main className="mx-auto py-4 px-4 w-[74rem] ">
+        <BackButton />
         <div className="flex justify-between items-center" >
-          <section className="flex items-end my-10 space-x-8 ">
+          <section className="flex items-end mt-4 mb-10 space-x-8 ">
             <h1 className="text-[#374151] font-roboto font-medium text-4xl">Pareamento</h1>
             <h3 className="font-roboto font-medium text-2xl	text-[#6B7280]">{city_name} | {sector_name}</h3>
           </section>
@@ -123,8 +124,8 @@ export const Pairings: React.FC = () => {
         </div>
 
 
-        <div className="w-full mt-4" >
-          <div className="flex flex-1 w-full justify-between py-4 px-8">
+        <div className="w-full" >
+          <div className="flex flex-1 w-full justify-between py-2 px-8">
             <div className="flex w-full justify-between">
               <div className="text-body font-normal  text-left leading-6">Nome</div>
               <div className="text-body font-normal text-left leading-6">Modificação</div>

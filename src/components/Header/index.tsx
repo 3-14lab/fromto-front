@@ -7,7 +7,7 @@ import { BiLogOut } from 'react-icons/bi';
 import { IoIosClose } from 'react-icons/io';
 
 function Index() {
-  const [isLogoutButtonVisible, setIsLogoutButtonVisible] = useState<boolean>(true);
+  const [isLogoutButtonVisible, setIsLogoutButtonVisible] = useState<boolean>(false);
 
   const { user, signOut } = useAuth()
 

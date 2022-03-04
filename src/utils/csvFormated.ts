@@ -35,7 +35,6 @@ function csvToObject(csv: any, type: 'sicgesp' | 'local'): fileObject[] {
   }
 
   income.shift();
-  income.shift();
 
   return income;
 }
