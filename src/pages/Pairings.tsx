@@ -32,7 +32,7 @@ export const Pairings: React.FC = () => {
 
     async function loadSector() {
       const response = await api.get(`pairings/${sector_id}`);
-      setExpenseSheets(response.data)
+      setExpenseSheets(response.data.reverse())
     }
 
     loadSector()
