@@ -81,7 +81,7 @@ export const PairingView: React.FC = () => {
 
         <div className="w-fit	mx-auto">
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
-            <CSVLink data={formatCSV} filename={"from_to.csv"} headers={headers} separator={";"}>
+            <CSVLink data={formatCSV} filename={`${city_name}_${sector_name}_${expensesheet_name}`} headers={headers} separator={";"}>
               Baixar planilha
             </CSVLink>
           </button>
