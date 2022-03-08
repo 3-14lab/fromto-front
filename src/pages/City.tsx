@@ -28,7 +28,6 @@ const City: React.FC = () => {
   const [isNewSectorModalOpen, setIsNewSectorModalOpen] = useState(false)
   const [cities, setCities] = useState<CityData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState(false);
 
   const { user } = useAuth()
 
