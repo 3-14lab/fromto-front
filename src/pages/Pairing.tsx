@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { Header } from '../components';
+import { BackButton, Header } from '../components';
 import { useUpload } from '../hooks/upload';
 import { CSVLink } from 'react-csv';
 import api from '../services/api';
@@ -29,7 +29,7 @@ export const Pairing: React.FC = () => {
   const history = useHistory();
   const { state: { pairing_name, city_name, sector_name, data } } = useLocation<LocationState>();
   const [isLoading, setIsLoading] = useState(false)
-
+  const [isOpen, setIsOpen] = useState(false);
   const { file } = useUpload();
   
   const [formattedFile, setFormattedFile] = useState({} as FilePropsLocal);
@@ -110,7 +110,8 @@ export const Pairing: React.FC = () => {
     <>
       <Header />
       <div className="mx-auto lg:w-[74rem] md:w-[54rem]">
-        <section className="flex items-end my-10 space-x-8 ">
+        <BackButton />
+        <section className="flex items-end mb-10 space-x-8 ">
           <h1 className="text-[#374151] font-roboto font-medium text-4xl">Pareamento</h1>
           <h3 className="font-roboto font-medium text-2xl	text-[#6B7280]">{city_name} | {sector_name} | {pairing_name}</h3>
         </section>
@@ -148,18 +149,26 @@ export const Pairing: React.FC = () => {
           ))}
         </div>
         <div className="w-[700px] mx-auto flex items-center justify-around">
-          <button onClick={handlePairingSubmit} className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg flex justify-center items-center">
-            {
-              isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) : 'Atualizar planilha'
-            }
-          </button>
+          <div className="relative cursor-pointer" onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
+            <button onClick={handlePairingSubmit} className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg flex justify-center items-center">
+              {
+                isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) : 'Salvar planilha'
+              }
+            </button>
+              {/* <HiInformationCircle color="#5429CC" /> */}
+              {isOpen && (
+                <div className="w-fit absolute bottom-[-6] left-0 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded mt-2">
+                  Salve o pareamento e use-o como template.
+                </div>
+              )}
+          </div>
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
-            <CSVLink data={downloadPairingFilled as []} filename={"from_to.csv"} headers={headers} separator={";"}>
+            <CSVLink data={downloadPairingFilled as []} filename={`${city_name}_${sector_name}_${pairing_name}`} headers={headers} separator={";"}>
               Baixar planilha
             </CSVLink>
           </button>
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-red-400 rounded-lg">
-            <CSVLink data={downloadPairingEmpty as []} filename={"from_to.csv"} headers={headersSecondary} separator={";"}>
+            <CSVLink data={downloadPairingEmpty as []} filename={`${city_name}_${sector_name}_${pairing_name} - NAO PAREADOS`} headers={headersSecondary} separator={";"}>
               Baixar não pareados
             </CSVLink>
           </button>

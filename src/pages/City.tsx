@@ -3,24 +3,18 @@ import api from '../services/api';
 
 import { useAuth } from '../hooks/auth'
 
-import EditImg from '../img/edit.svg'
-import TrashImg from '../img/trash.svg'
-import Add from '../img/Icon.svg'
-
-import { Header, HeaderText, Modal } from "../components"
-
+import { Header, HeaderText, Modal, CityBox } from "../components"
 
 import { Oval } from 'react-loader-spinner'
-import { Link } from "react-router-dom"
 
-interface SectorData {
+export interface SectorData {
   id: string,
   name: string,
   amount: number,
   created_at: Date
 }
 
-interface CityData {
+export interface CityData {
   id: string,
   name: string,
   amount: number,
@@ -28,14 +22,12 @@ interface CityData {
   sectors: SectorData[]
 }
 
-
 const City: React.FC = () => {
   const [isNewCityModalOpen, setIsNewCityModalOpen] = useState(false)
   const [cityIdInModal, setCityIdInModal] = useState<string>()
   const [isNewSectorModalOpen, setIsNewSectorModalOpen] = useState(false)
   const [cities, setCities] = useState<CityData[]>([]);
   const [loading, setLoading] = useState(true);
-  const [open, setOpen] = useState(false);
 
   const { user } = useAuth()
 
@@ -158,49 +150,14 @@ const City: React.FC = () => {
               <div className="flex items-center justify-center text-title font-poppins font-normal">Última Modificação</div>
               <div className="flex items-center justify-end mr-6 text-title font-poppins font-normal">Ação</div>
             </div>
-            {cities?.map(({ name, amount, created_at, id, sectors }) => (
-              <div key={id} className="grid gap-y-0.5">
-                <div className={`overflow-hidden px-5 pb-5 bg-white rounded-lg transition-height duration-500 ease-in-out h-16 hover:h-72 mb-5`} onClick={() => setOpen(prev => !prev)}>
-                  <div className="grid grid-cols-5 w-full h-16">
-                    <div className="flex col-span-2	items-center text-body font-medium">{name}</div>
-                    <div className="flex items-center text-body font-normal">{`${amount} ${amount === 1 ? "setor" : "setores"}`}</div>
-                    <div className="flex items-center text-body font-normal justify-center">{new Date(created_at).toLocaleDateString('pt-br')}</div>
-                    <div className="flex justify-end">
-                      <button>
-                        <img className="w-5 h-5" src={EditImg} alt="" />
-                      </button>
-                      <button onClick={() => handleDelete(id)}>
-                        <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
-                      </button>
-                    </div>
-                  </div>
-                  {sectors?.map(({ name: sector_name, created_at, id }: SectorData) => (
-                    <div key={id} className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
-                      <Link to={{ pathname: `/pairings/${id}`, state: { city_name: name, sector_name } }} className="flex flex-1 justify-between hover:bg-gray/200">
-                        <div className="grid grid-cols-7 bg-gray/100 w-full hover:bg-gray/200">
-                          <div className="flex col-span-3	items-center text-body font-medium">{sector_name}</div>
-                          <div className="flex col-span-2 items-center text-body font-normal">12 pareamentos</div>
-                          <div className="flex items-center text-body font-normal">{new Date(created_at).toLocaleDateString('pt-br')}</div>
-                        </div>
-                      </Link>
-                      <div className="flex justify-end pl-2">
-                        <button>
-                          <img className="w-7 h-5 pl-2" src={EditImg} alt="" />
-                        </button>
-                        <button onClick={() => handleDeleteSector(id)}>
-                          <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                  <div className="bg-gray/100 w-full h-16 rounded-lg mb-2.5 hover:bg-gray/200" onClick={handleOpenNewSectorModal(id)}>
-                    <div className="flex h-full items-center justify-start mx-5 gap-5  cursor-pointer">
-                      <img alt="adicionar setor" src={Add} />
-                      <p className="font-roboto font-medium text-sm	text-blue " >Novo Setor</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {cities?.map((city) => (
+              <CityBox 
+                key={city.id}
+                city={city} 
+                handleDeleteCity={handleDelete}
+                handleDeleteSector={handleDeleteSector}
+                handleOpenNewSectorModal={handleOpenNewSectorModal}
+              />
             ))}
           </>
         )}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { Header } from '../components';
+import { BackButton, Header } from '../components';
 import { CSVLink } from 'react-csv';
 import api from '../services/api';
 
@@ -55,6 +55,7 @@ export const PairingView: React.FC = () => {
     <>
       <Header />
       <div className="mx-auto lg:w-[74rem] md:w-[54rem]">
+        <BackButton />
         <section className="flex items-end my-10 space-x-8 ">
           <h1 className="text-[#374151] font-roboto font-medium text-4xl">Pareamento</h1>
           <h3 className="font-roboto font-medium text-2xl	text-[#6B7280]">{city_name} | {sector_name} | {expensesheet_name}</h3>
@@ -80,7 +81,7 @@ export const PairingView: React.FC = () => {
 
         <div className="w-fit	mx-auto">
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
-            <CSVLink data={formatCSV} filename={"from_to.csv"} headers={headers} separator={";"}>
+            <CSVLink data={formatCSV} filename={`${city_name}_${sector_name}_${expensesheet_name}`} headers={headers} separator={";"}>
               Baixar planilha
             </CSVLink>
           </button>
