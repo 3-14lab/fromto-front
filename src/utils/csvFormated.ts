@@ -1,4 +1,5 @@
 import { sicgespType, localType } from '../hooks/upload';
+import { convertNumber } from './convertNumber';
 export type fileObject = sicgespType | localType;
 
 function csvToObject(csv: any, type: 'sicgesp' | 'local'): fileObject[] {
@@ -14,7 +15,7 @@ function csvToObject(csv: any, type: 'sicgesp' | 'local'): fileObject[] {
         incomeFormatted = {
           model_code: columns[0],
           place_name: columns[1],
-          value: columns[2],
+          value: convertNumber(columns[2]),
         }
 
         if (incomeFormatted.model_code) income.push(incomeFormatted);
@@ -22,7 +23,7 @@ function csvToObject(csv: any, type: 'sicgesp' | 'local'): fileObject[] {
         incomeFormatted = {
           base_code: columns[0],
           location: columns[1],
-          value: columns[2],
+          value: convertNumber(columns[2]),
         }
 
         if (incomeFormatted.base_code) income.push(incomeFormatted);
