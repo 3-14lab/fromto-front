@@ -35,11 +35,11 @@ export const Pairing: React.FC = () => {
   const [formattedFile, setFormattedFile] = useState({} as FilePropsLocal);
   const [sicgespFile, setSicgespFile] = useState({} as FilePropsSicgesp);
 
-  const headers = [
-    { label: "Código Lotação", key: "base_code" },
-    { label: "Descrição Locação", key: "location" },
-    { label: "Valor Realocado", key: "value" }
-  ]
+  // const headers = [
+  //   { label: "Código Lotação", key: "base_code" },
+  //   { label: "Descrição Locação", key: "location" },
+  //   { label: "Valor Realocado", key: "value" }
+  // ]
 
   const headersSecondary = [
     { label: "Código Lotação", key: "model_code" },
@@ -59,19 +59,19 @@ export const Pairing: React.FC = () => {
     }
   }, [data])
 
-  const downloadPairingFilled = useMemo(() => {
-    const aux = formattedFile;
-    return Object.values(aux).filter(item => item.base_code).map(item => {
-      return  { base_code: item.base_code, location: item.place_name, value: item.value }
-    })
-  }, [formattedFile]) 
+  // const downloadPairingFilled = useMemo(() => {
+  //   const aux = formattedFile;
+  //   return Object.values(aux).filter(item => item.base_code).map(item => {
+  //     return  { base_code: item.base_code, location: item.place_name, value: item.value }
+  //   })
+  // }, [formattedFile]) 
 
   const downloadPairingEmpty = useMemo(() => {
     const aux = formattedFile;
     return Object.values(aux).filter(item => !item.base_code).map(item => {
       return  { model_code: item.model_code, location: item.place_name, value: item.value }
     })
-  }, [formattedFile]) 
+  }, [formattedFile]);
 
   function update(code: string) {
     return ({ target }: ChangeEvent<HTMLSelectElement>) => {
@@ -151,9 +151,9 @@ export const Pairing: React.FC = () => {
         <div className="w-[700px] mx-auto flex items-center justify-around">
           <div className="relative cursor-pointer" onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
             <button onClick={handlePairingSubmit} className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg flex justify-center items-center">
-              {
-                isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) : 'Salvar planilha'
-              }
+              <CSVLink data={downloadPairingEmpty as []} filename={`${city_name}_${sector_name}_${pairing_name} - NAO PAREADOS`} headers={headersSecondary} separator={";"}>
+                {isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) : 'Salvar planilha e Baixar não pareados'}
+              </CSVLink>
             </button>
               {/* <HiInformationCircle color="#5429CC" /> */}
               {isOpen && (
@@ -162,7 +162,7 @@ export const Pairing: React.FC = () => {
                 </div>
               )}
           </div>
-          <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
+          {/* <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
             <CSVLink data={downloadPairingFilled as []} filename={`${city_name}_${sector_name}_${pairing_name}`} headers={headers} separator={";"}>
               Baixar planilha
             </CSVLink>
@@ -171,7 +171,7 @@ export const Pairing: React.FC = () => {
             <CSVLink data={downloadPairingEmpty as []} filename={`${city_name}_${sector_name}_${pairing_name} - NAO PAREADOS`} headers={headersSecondary} separator={";"}>
               Baixar não pareados
             </CSVLink>
-          </button>
+          </button> */}
         </div>
       </div>
     </>
