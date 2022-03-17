@@ -1,112 +1,133 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import * as Yup from 'yup';
-import { getValidationErrors } from '../utils/getVAlidationErrors'
-import { Oval } from  'react-loader-spinner'
-
-
-import Input from '../components/Input';
-
+import { Oval } from 'react-loader-spinner'
 
 import { Form } from '@unform/web';
-import { FormHandles } from '@unform/core';
 
-import logo from '../img/logo.svg'
 import api from '../services/api';
-
+import { InputObjectProps } from '../hooks/DTO/useFormsDTO';
+import { useForms } from '../hooks/useForms';
+import { emailRegex } from '../utils/regex/email';
 
 interface SignUpData {
-	username: string,
-	email: string,
-	password: string,
-	registration: string,
-	state: string
+  username: string,
+  registration: string,
+  state: string,
+  email: string,
+  confirmEmail: string,
+  password: string,
+  confirmPassword: string,
 }
 
-const SignUp: React.FC = () =>{
-
-  const formRef = useRef<FormHandles>(null);
+const SignUp: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const history = useHistory()
+  const { createInputs, compareFields, checkFieldPattern, values } = useForms<SignUpData>();
 
-  const handleSubmit = useCallback( async (data: SignUpData )=>{
+  const handleSubmit = useCallback(async () => {
     try {
-      formRef.current?.setErrors({});
-
-        const schema = Yup.object().shape({
-          email: Yup.string()
-            .required('E-mail obrigatório')
-            .email('Digite um e-mail válido'),
-          password: Yup.string().required('Senha obrigatória'),
-          username: Yup.string().required('Nome obrigatório'),
-          registration: Yup.string().required('CPF obrigatório'),
-          state: Yup.string().required('Estado obrigatório'),
-          password_confirm: Yup.string().required('Confirmar senha obrigatório'),
-
-        });
-
-        
-        await schema.validate(data, {
-          abortEarly: false,
-        });
-        
       setIsLoading(true)
-      
-      await api.post('/user', data)
 
-      setIsLoading(false)
+      await api.post('/user', values)
 
       history.push('/');
-
-    } catch (error) {
-
-      
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(error);
-        
-        formRef.current?.setErrors(errors);
-          return;
-        }
-
+    } catch {}
+    finally {
+      setIsLoading(false)
     }
+  }, [history, values])
 
-  }, [history])
+  const inputsObject = useMemo(() => {
+    return {
+      username: {
+        placeholder: 'Nome completo *',
+        validate: {
+          required: 'Nome completo obrigatório'
+        },
+      },
+      registration: {
+        placeholder: 'CPF *',
+        validate: {
+          required: 'CPF obrigatório'
+        },
+      },
+      state: {
+        placeholder: 'Estado *',
+        validate: {
+          required: 'Estado obrigatório',
+        },
+      },
+      email: {
+        placeholder: 'E-mail *',
+        type: 'email',
+        validate: {
+          required: 'Campo Obrigatório',
+          extraValidations: {
+            compareEmails: compareFields('email', 'confirmEmail', 'E-mail não conferem'),
+            isEmailValid: checkFieldPattern(emailRegex, 'E-mail inválido!'),
+          }
+        },
+      },
+      confirmEmail: {
+        placeholder: 'Confirm seu e-mail *',
+        type: 'email',
+        validate: {
+          required: 'Campo Obrigatório',
+          extraValidations: {
+            compareEmails: compareFields('confirmEmail', 'email', 'Emails não conferem'),
+            isEmailValid: checkFieldPattern(emailRegex, 'E-mail inválido!'),
+          }
+        },
+      },
+      password: {
+        placeholder: 'Senha *',
+        type: 'password',
+        validate: {
+          required: 'Campo Obrigatório',
+          extraValidations: {
+            comparePasswords: compareFields('password', 'confirmPassword', 'Senhas não conferem'),
+          }
+        },
+      },
+      confirmPassword: {
+        placeholder: 'Confirme sua senha *',
+        type: 'password',
+        validate: {
+          required: 'Campo Obrigatório',
+          extraValidations: {
+            comparePasswords: compareFields('confirmPassword', 'password', 'Senhas não conferem'),
+          }
+        },
+      },
+    } as InputObjectProps<SignUpData>
+  }, [checkFieldPattern, compareFields]);
 
   return (
     <div className='flex items-center justify-center w-screen h-screen bg-cover bg-center bg-no-repeat bg-background' >
       <div className='w-[382px] flex bg-white flex-col items-center justify-center p-10 rounded-xl' >
-        
-        <Form ref={formRef} onSubmit={handleSubmit} className='w-full flex flex-col mx-auto'>
+
+        <Form onSubmit={handleSubmit} className='w-full flex flex-col mx-auto'>
 
           <h1 className='font-roboto font-bold text-center text-4xl text-title mb-[20px]'>Cadastre-se</h1>
 
-          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="text" name="username" placeholder='Nome completo' />
-          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="text" name="registration" placeholder='CPF' />
-          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="text" name="state" placeholder='Estado' />
-          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="email"name="email" placeholder='E-mail' />
-          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="password" name="password" placeholder='Senha' />
-          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="password" name="password_confirm"placeholder='Confirmar senha' />
-            <button
-              type='submit'
-              disabled= {isLoading}
-              className='bg-blue py-3 text-lg font-bold rounded-md text-white mt-5 flex justify-center items-center'
-              >
-              { 
-                isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) :'Cadastrar' 
-              }
-              
-            </button>
+          {createInputs(['username', 'registration', 'state', 'email', 'confirmEmail', 'password', 'confirmPassword'], inputsObject)}
 
+          <button
+            type='submit'
+            disabled={isLoading}
+            className='bg-blue py-3 text-lg font-bold rounded-md text-white mt-5 flex justify-center items-center'
+          >
+            {isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) : 'Cadastrar'}
+          </button>
 
           <Link className='text-center text-sm font-medium mt-10 text-title' to="/">Já tem uma conta? Fazer login</Link>
 
         </Form>
-
       </div>
     </div>
   )
 
 }
 
-export {SignUp}
+export { SignUp }

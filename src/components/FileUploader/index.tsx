@@ -41,7 +41,12 @@ const FileUploader = ({ placeholder, label, type }: FileUploaderProps) => {
               fileName !== "" ? "text-blue" : "text-[#9CA3AF]"
             } px-6 py-3 mb-5 mt-0.5`}
           >
-            <input ref={importFile} onChange={handleFileChange} type="file" style={{ display: "none" }} />
+            <input 
+              ref={importFile} 
+              onChange={handleFileChange} 
+              type="file" 
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" 
+              style={{ display: "none" }} />
             {fileName !== "" ? fileName : placeholder}
           </button>
         </>

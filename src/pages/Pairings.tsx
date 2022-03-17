@@ -76,42 +76,45 @@ export const Pairings: React.FC = () => {
     <>
       <Header />
 
-      <ModalFile
-        isOpen={isNewDataModalOpen}
-        onRequestClose={handleCloseNewDataModal}
-        placeholder="Nome"
-        title="Cadastrar pareamento"
-        handleSumit={handlePairing}
-      >
-        <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP" label="Arquivo SICGESP" type="sicgesp" />
-        <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv sem padronização" label="Arquivo local" type="local" />
+      {isNewDataModalOpen && (
+        <ModalFile
+          isOpen={isNewDataModalOpen}
+          onRequestClose={handleCloseNewDataModal}
+          placeholder="Nome"
+          title="Cadastrar pareamento"
+          handleSumit={handlePairing}
+        >
+          <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP" label="Arquivo SICGESP" type="sicgesp" />
+          <FileUploader placeholder="Clique aqui ou arraste o arquivo .csv sem padronização" label="Arquivo local" type="local" />
 
-        <div className="flex gap-1 items-center">
-          <label className="font-roboto font-medium text-blue text-sm">
-            Template de pareamento
-          </label>
-          <div className="relative cursor-pointer" onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
-            <HiInformationCircle color="#5429CC" />
-            {isOpen && (
-              <div className="w-80 absolute bottom-[-6] left-1 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
-                Selecione um pareamento anterior e utilize a mesma paridade de lotações para este novo pareamento!
-              </div>
-            )}
+          <div className="flex gap-1 items-center">
+            <label className="font-roboto font-medium text-blue text-sm">
+              Template de pareamento
+            </label>
+            <div className="relative cursor-pointer" onMouseEnter={() => setIsOpen(true)} onMouseLeave={() => setIsOpen(false)}>
+              <HiInformationCircle color="#5429CC" />
+              {isOpen && (
+                <div className="w-80 absolute bottom-[-6] left-1 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
+                  Selecione um pareamento anterior e utilize a mesma paridade de lotações para este novo pareamento!
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        <select
-          onChange={({ target }) => {
-            setTemplateSelect(target.value);
-          }}
-          defaultValue={'DEFAULT'} id="select-primary" className={`lg:w-full md:w-72 px-3.5 py-2.5 mt-0.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}>
-          <option value="DEFAULT" disabled hidden>Nenhum (padrão)</option>
-          {expenseSheets.map(({ id, name }: any) => (
-            <React.Fragment key={id}>
-              <option value={id}>{name}</option>
-            </React.Fragment>
-          ))}
-        </select>
-      </ModalFile>
+          <select
+            onChange={({ target }) => {
+              setTemplateSelect(target.value);
+            }}
+            defaultValue={'DEFAULT'} id="select-primary" className={`lg:w-full md:w-72 px-3.5 py-2.5 mt-0.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}>
+            <option value="DEFAULT" disabled hidden>Nenhum (padrão)</option>
+            {expenseSheets.map(({ id, name }: any) => (
+              <React.Fragment key={id}>
+                <option value={id}>{name}</option>
+              </React.Fragment>
+            ))}
+          </select>
+        </ModalFile>
+      )}
+
 
       <main className="mx-auto py-4 px-4 w-[74rem] ">
         <BackButton />
