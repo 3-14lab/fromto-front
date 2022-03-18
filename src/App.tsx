@@ -4,8 +4,8 @@ import "./styles.css"
 
 import Modal from 'react-modal'
 
-import Routes from './routes';
-import {  AppProvider } from './hooks';
+import Routes from '@routes';
+import {  AppProvider } from '@hooks';
 
 Modal.setAppElement("#root")
 

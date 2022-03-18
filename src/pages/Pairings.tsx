@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { BackButton, FileUploader, Header, ModalFile } from "../components"
-import api from "../services/api";
+import { BackButton, FileUploader, Header, ModalFile } from "@components"
+import api from "@services/api";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { HiInformationCircle } from "react-icons/hi";
 
-import TrashImg from '../img/trash.svg'
+import TrashImg from '@image/trash.svg'
 
 interface ExpenseSheetData {
   id: string,

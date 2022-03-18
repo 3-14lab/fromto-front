@@ -3,14 +3,14 @@ import { Redirect, Switch } from 'react-router-dom';
 
 import Route from './Route';
 
-import {SignIn} from '../pages/Signin';
-import {SignUp} from '../pages/Signup';
-import {City} from '../pages/City';
-import {Sector} from '../pages/Sector';
-import { Pairings } from '../pages/Pairings';
-import { Pairing } from '../pages/Pairing';
-import { RecoverPassword } from '../pages/RecoverPassword';
-import { PairingView } from '../pages/PairingView';
+import {SignIn} from '@pages/Signin';
+import {SignUp} from '@pages/Signup';
+import {City} from '@pages/City';
+import {Sector} from '@pages/Sector';
+import { Pairings } from '@pages/Pairings';
+import { Pairing } from '@pages/Pairing';
+import { RecoverPassword } from '@pages/RecoverPassword';
+import { PairingView } from '@pages/PairingView';
 
 const Routes: React.FC = () => {
   return (

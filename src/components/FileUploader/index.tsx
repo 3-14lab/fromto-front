@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useRef, useState } from "react";
-import { useUpload } from "../../hooks/upload";
-import { csvToObject } from "../../utils/csvFormated";
+import { useUpload } from "@hooks/upload";
+import { csvToObject } from "@utils/csvFormated";
 
 type FileUploaderProps = {
   placeholder: string;

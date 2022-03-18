@@ -1,12 +1,12 @@
 import React, { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { BackButton, Header } from '../components';
-import { useUpload } from '../hooks/upload';
+import { BackButton, Header } from '@components';
+import { useUpload } from '@hooks/upload';
 import { CSVLink } from 'react-csv';
-import api from '../services/api';
+import api from '@services/api';
 import { Oval } from 'react-loader-spinner';
 
-import { sicgespType, localType } from '../hooks/upload';
+import { sicgespType, localType } from '@hooks/upload';
 
 interface LocationState {
   pairing_name: string;
