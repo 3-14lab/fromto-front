@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
-import { BackButton, Header } from '../components';
+import { BackButton, Header } from '@components';
 import { CSVLink } from 'react-csv';
-import api from '../services/api';
+import api from '@services/api';
 
 interface FieldGroupProps {
   code?: string;

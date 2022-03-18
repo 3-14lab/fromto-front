@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react"
-import api from "../services/api"
-import { useAuth } from "../hooks/auth"
+import api from "@services/api"
+import { useAuth } from "@hooks/auth"
 
 import { Link, useParams } from 'react-router-dom'
-import LogoImg from '../img/logo.svg'
-import TrashImg from '../img/trash.svg'
-import { Modal } from "../components"
-import { Header, Table } from "../components"
+import LogoImg from '@image/logo.svg'
+import TrashImg from '@image/trash.svg'
+import { Modal } from "@components"
+import { Header, Table } from "@components"
 
 const titles = ['Nome', 'Qtde. setores', 'Última Modificação', 'Ação'];
 const mock = [{ name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}, { name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}];

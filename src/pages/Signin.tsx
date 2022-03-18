@@ -5,14 +5,14 @@ import { useHistory } from 'react-router-dom';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 
-import { useAuth} from '../hooks/auth'
+import { useAuth} from '@hooks/auth'
 
-import Input from '../components/Input';
+import Input from '@components/Input';
 import { Link } from 'react-router-dom';
 
-import logo from '../img/prov.svg'
+import logo from '@image/prov.svg'
 
-import { getValidationErrors } from '../utils/getVAlidationErrors'
+import { getValidationErrors } from '@utils/getVAlidationErrors'
 import { Oval } from  'react-loader-spinner'
 
 interface SignInData {

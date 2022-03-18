@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../../hooks/auth';
-import logo from '../../img/logo.svg';
+import { useAuth } from '@hooks/auth';
+import logo from '@image/logo.svg';
 
 import { BiLogOut } from 'react-icons/bi';
 import { IoIosClose } from 'react-icons/io';

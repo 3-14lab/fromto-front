@@ -4,7 +4,7 @@ import {
   Route as ReactDOMRoute,
   Redirect,
 } from 'react-router-dom';
-import { useAuth } from '../hooks/auth';
+import { useAuth } from '@hooks/auth';
 
 interface RouteProps extends RouteDOMProps {
   isPrivate?: boolean;

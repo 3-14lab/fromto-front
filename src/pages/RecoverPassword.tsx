@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import logo from '../img/prov.svg'
+import logo from '@image/prov.svg'
 
 const RecoverPassword: React.FC = () =>{
   return (

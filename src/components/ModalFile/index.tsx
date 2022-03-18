@@ -3,7 +3,7 @@ import Modal from 'react-modal'
 
 import './style.css'
 
-import closeImg from '../../img/close.svg'
+import closeImg from '@image/close.svg'
 
 interface NewDataModalProps  {
   isOpen: boolean;

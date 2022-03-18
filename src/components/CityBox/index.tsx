@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
-import { CityData, SectorData } from "../../pages/City";
+import { CityData, SectorData } from "@pages/City";
 
-import EditImg from '../../img/edit.svg'
-import TrashImg from '../../img/trash.svg'
-import Add from '../../img/Icon.svg'
+import EditImg from '@image/edit.svg'
+import TrashImg from '@image/trash.svg'
+import Add from '@image/Icon.svg'
 
 type CityBoxProps = {
   city: CityData
