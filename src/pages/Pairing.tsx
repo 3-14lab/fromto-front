@@ -5,9 +5,8 @@ import { useUpload } from "@hooks/upload";
 import { CSVLink } from "react-csv";
 import api from "@services/api";
 import { Oval } from "react-loader-spinner";
-import { Buffer } from "buffer";
-
 import { sicgespType, localType } from "@hooks/upload";
+import SearchableSelector from "@components/SearchableSelector";
 
 interface LocationState {
   pairing_name: string;
@@ -193,21 +192,15 @@ export const Pairing: React.FC = () => {
                 <div className="font-roboto font-medium text-[#292438] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]">
                   {base_code || "---"}
                 </div>
-                <select
+                <SearchableSelector
+                  data={Object.values(sicgespFile).map(
+                    ({ base_code, location }) => ({
+                      label: location,
+                      value: base_code,
+                    })
+                  )}
                   onChange={update(model_code)}
-                  value={base_code || "DEFAULT"}
-                  id="select-primary"
-                  className="col-span-3 w-full px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none"
-                >
-                  <option value="DEFAULT" disabled hidden>
-                    Nome da instituição
-                  </option>
-                  {Object.values(sicgespFile).map(({ base_code, location }) => (
-                    <option key={base_code} value={base_code}>
-                      {Buffer.from(location, 'latin1').toString('latin1')}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
             )
           )}

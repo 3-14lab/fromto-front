@@ -1,5 +1,4 @@
 import React, { createContext, useState, useContext } from 'react';
-import { fileObject } from '@utils/csvFormated';
 
 interface UploadContextData {
   file: FileProps;
