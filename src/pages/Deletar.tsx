@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Header, LocationTable } from '../components';
+import { Button, Header, LocationTable } from '@components';
 // import { Container } from './styles';
 const mock = [
   {

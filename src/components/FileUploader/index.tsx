@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useRef, useState } from "react";
-import { useUpload } from "../../hooks/upload";
-import { csvToObject } from "../../utils/csvFormated";
+import { useUpload } from "@hooks/upload";
+import { csvToObject } from "@utils/csvFormated";
 
 type FileUploaderProps = {
   placeholder: string;
@@ -17,13 +17,14 @@ const FileUploader = ({ placeholder, label, type }: FileUploaderProps) => {
   function handleFileChange({ target }: ChangeEvent<HTMLInputElement>) {
     const files: FileList | null = target.files;
     const file: File | undefined = files?.[0];
+    console.log(file);
     const reader = new global.FileReader();
     reader.onloadend = () => {
       const csv = csvToObject(reader.result, type);
       setFileName(file?.name);
       handleUploadFile({ ...fileObject, [type]: csv });
     };
-    reader.readAsText(file as Blob);
+    reader.readAsText(file as Blob, 'ISO-8859-1');
   }
 
   return (

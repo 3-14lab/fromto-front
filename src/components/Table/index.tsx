@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import EditImg from '../../img/edit.svg'
-import TrashImg from '../../img/trash.svg'
+import EditImg from '@image/edit.svg'
+import TrashImg from '@image/trash.svg'
 
 
 const titles = ['Nome', 'Quantidade', 'Modificação', 'Ação'];

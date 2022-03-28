@@ -5,14 +5,14 @@ import { getValidationErrors } from '@utils/getVAlidationErrors';
 import { Oval } from  'react-loader-spinner'
 
 
-import Input from '../components/Input';
+import Input from '@components/Input';
 
 
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 
-import logo from '../img/logo.svg'
-import api from '../services/api';
+import logo from '@image/logo.svg'
+import api from '@services/api';
 
 
 interface SignUpData {
