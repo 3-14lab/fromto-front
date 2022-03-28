@@ -1,7 +1,7 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
-import { getValidationErrors } from '../utils/getVAlidationErrors'
+import { getValidationErrors } from '@utils/getVAlidationErrors';
 import { Oval } from  'react-loader-spinner'
 
 
@@ -99,7 +99,7 @@ const SignUp: React.FC = () =>{
             </button>
 
 
-          <Link className='text-center text-sm font-medium mt-10 text-title' to="/">Já tem uma conta? Fazer login</Link>
+          <p className='text-center text-sm font-normal mt-10 text-title'>Já tem uma conta?<Link className='mx-1 font-semibold text-blue' to="/">Fazer login</Link></p>
 
         </Form>
 
