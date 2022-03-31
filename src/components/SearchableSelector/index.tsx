@@ -33,12 +33,7 @@ function SearchableSelector({
   };
 
   return (
-    <div
-      className="col-span-3 w-full py-2.5"
-      style={{
-        position: "relative",
-      }}
-    >
+    <div className="relative col-span-3 w-full py-2.5">
       <div
         onClick={() => {
           setToggle((curr) => !curr);
@@ -52,13 +47,7 @@ function SearchableSelector({
         <div
           ref={dropdownRef}
           tabIndex={1}
-          className="col-span-3 w-full px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none"
-          style={{
-            position: "absolute",
-            top: "100%",
-            left: "0",
-            zIndex: "9999",
-          }}
+          className="absolute top-full left-0 col-span-3 w-full px-3.5 py-2.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none z-[9999]"
           onBlur={(e) => {
             if (!(dropdownRef as any).current.contains(e.relatedTarget)) {
               closeDropdown();
@@ -72,22 +61,10 @@ function SearchableSelector({
               setFilter(props.target.value);
             }}
             placeholder="Filtro..."
-            className="border rounded-md border-[#D1D5DB]"
-            style={{
-              width: "100%",
-              background: "none",
-              outline: "none",
-              padding: "2px 10px",
-            }}
+            className="w-full border rounded-md border-[#D1D5DB] bg-transparent outline-none py-0.5 px-2.5"
             type="text"
           ></input>
-          <div
-            className="py-2.5"
-            style={{
-              maxHeight: "200px",
-              overflowY: "scroll",
-            }}
-          >
+          <div className="py-2.5 max-h-52 overflow-y-scroll">
             {data
               ?.filter((e) =>
                 e.label.toLowerCase().includes(filter.toLocaleLowerCase())

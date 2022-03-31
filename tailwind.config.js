@@ -30,6 +30,9 @@ module.exports = {
         // inter: 'Inter, sans-serif',
         poppins: 'Poppins, sans-serif',
         roboto: 'Roboto, sans-serif',
+      },
+      zIndex: {
+        '9999': '9999'
       }
     },
 
