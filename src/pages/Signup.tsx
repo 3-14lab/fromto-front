@@ -1,19 +1,15 @@
 import React, { useCallback, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
-import { getValidationErrors } from '@utils/getVAlidationErrors';
+import { handleValidationErrors } from '@utils/getValidationErrors';
 import { Oval } from  'react-loader-spinner'
 
-
 import Input from '@components/Input';
-
 
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 
-import logo from '@image/logo.svg'
 import api from '@services/api';
-
 
 interface SignUpData {
 	username: string,
@@ -60,15 +56,7 @@ const SignUp: React.FC = () =>{
       history.push('/');
 
     } catch (error) {
-
-      
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(error);
-        
-        formRef.current?.setErrors(errors);
-          return;
-        }
-
+      handleValidationErrors(error, formRef);
     }
 
   }, [history])

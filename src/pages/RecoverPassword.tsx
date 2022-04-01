@@ -1,10 +1,10 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import Input from '@components/Input';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
-import { getValidationErrors } from '@utils/getVAlidationErrors';
+import { handleValidationErrors } from '@utils/getValidationErrors';
 
 import logo from '@image/prov.svg';
 
@@ -25,16 +25,8 @@ const RecoverPassword: React.FC = () => {
         abortEarly: false,
       });
 
-      //await api.post('/recover-password', email)
-      //history.push('/');
-
-    } catch (error) {
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(error);
-        
-        formRef.current?.setErrors(errors);
-          return;
-      }
+    } catch (error: unknown) {
+      handleValidationErrors(error, formRef);
     }
   }, [])
 
