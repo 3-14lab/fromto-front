@@ -5,18 +5,18 @@ type PossibleValue = { label: string; value: string | null };
 
 function SearchableSelector({
   data,
-  onChange,
+  onSelect,
   value,
 }: {
   data?: PossibleValue[];
-  onChange?: any;
+  onSelect: (value: string | null) => boolean;
   value?: any;
 }) {
   const [toggle, setToggle] = useState(false);
   const [filter, setFilter] = useState("");
   const [currValue, setCurrValue] = useState<PossibleValue>({
     label: "Selecionar",
-    value: null,
+    value,
   });
   const dropdownRef = useRef<null | HTMLDivElement>(null);
 
@@ -31,6 +31,21 @@ function SearchableSelector({
     setToggle(false);
     setFilter("");
   };
+
+  function onClick(e: PossibleValue) {
+    const clearSelect = () => {
+      setCurrValue({
+        label: "Selecionar",
+        value,
+      });
+    }
+    
+    const success = onSelect(e.value);
+
+    success ? setCurrValue(e) : clearSelect();
+
+    closeDropdown();
+  }
 
   return (
     <div className="relative col-span-3 w-full py-2.5">
@@ -72,10 +87,7 @@ function SearchableSelector({
               .map((e) => (
                 <div
                   key={e.value}
-                  onClick={() => {
-                    setCurrValue(e);
-                    closeDropdown();
-                  }}
+                  onClick={() => onClick(e)}
                 >
                   {e.label}
                 </div>
