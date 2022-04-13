@@ -36,7 +36,7 @@ export const PJServicesView: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await api.get(`/pairings/pairing/${p_id}`);
+      const response = await api.get(`pairing?pairing_id=${p_id}`);
       setFile(response.data.data);
     })();
   }, [p_id]);

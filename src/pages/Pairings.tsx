@@ -28,17 +28,19 @@ export const Pairings: React.FC = () => {
 
   const { sector_id } = useParams() as { sector_id: string };
   const {
-    state: { sector_name, city_name },
-  } = useLocation() as { state: { sector_name: string; city_name: string } };
+    state: { sector_name, city_name, type },
+  } = useLocation() as {
+    state: { sector_name: string; city_name: string; type: string };
+  };
 
   useEffect(() => {
     async function loadSector() {
-      const response = await api.get(`pairings/${sector_id}`);
+      const response = await api.get(`pairing/sector?sector_id=${sector_id}`);
       setExpenseSheets(response.data.reverse());
     }
 
     loadSector();
-  }, [sector_id]);
+  }, [sector_id, type]);
 
   function handleOpenNewDataModal() {
     setIsNewDataModalOpen(true);
@@ -76,7 +78,7 @@ export const Pairings: React.FC = () => {
 
   async function handleDelete(expenseSheet_id: string) {
     await api.delete(`pairings/${expenseSheet_id}`);
-    const response = await api.get(`pairings/${sector_id}`);
+    const response = await api.get(`pairing/sector?sector_id=${sector_id}`);
     setExpenseSheets(response.data);
   }
 
@@ -99,18 +101,21 @@ export const Pairings: React.FC = () => {
           label="Arquivo SICGESP"
           type="sicgesp"
         />
-        <FileUploader
-          placeholder="Clique aqui ou arraste o arquivo .csv sem padronização"
-          label="Arquivo local"
-          type="local"
-        />
+
+        {type === "DEFAULT_SECTOR" && (
+          <FileUploader
+            placeholder="Clique aqui ou arraste o arquivo .csv sem padronização"
+            label="Arquivo local"
+            type="local"
+          />
+        )}
 
         <div className="flex gap-1 items-center">
           <label className="font-roboto font-medium text-blue text-sm">
             Template de pareamento
           </label>
           <div
-            className="relative cursor-pointer"
+            className="relative cursor-pointer mt-2.5"
             onMouseEnter={() => setIsOpen(true)}
             onMouseLeave={() => setIsOpen(false)}
           >
@@ -142,27 +147,33 @@ export const Pairings: React.FC = () => {
         </select>
       </ModalFile>
 
-      <Modal 
-        className="react-modal-content flex flex-col" 
-        isOpen={popUp} 
+      <Modal
+        className="react-modal-content flex flex-col"
+        isOpen={popUp}
         overlayClassName="react-modal-overlay"
         onRequestClose={() => setPopUp(false)}
       >
-        <h2 className="font-roboto font-medium text-2xl text-blue mb-[30px]">Atenção</h2>
-        
+        <h2 className="font-roboto font-medium text-2xl text-blue mb-[30px]">
+          Atenção
+        </h2>
+
         <span className="font-roboto text-sm">
           Para que ocorra o funcionamento desejado, certifique que os campos de{" "}
           <strong>Código</strong>, <strong>Descrição da Lotação</strong>,{" "}
-          <strong>Valor Realocado</strong> e{" "}
-          <strong>Quantidade de Postos</strong> estejam presentes nas suas
-          planilhas para importação. Do contrário as linhas com qualquer
-          ausência não serão lidas!
+          <strong>Valor Realocado</strong>
+          {type === "THIRD_SERVICES" && (
+            <strong> e Quantidade de Postos</strong>
+          )}{" "}
+          estejam presentes nas suas planilhas para importação. Do contrário as
+          linhas com qualquer ausência não serão lidas!
         </span>
 
-        <button 
+        <button
           className="text-white font-medium text-base rounded-md bg-blue py-3 mt-[30px]"
           onClick={() => setPopUp(false)}
-        >Avançar</button>
+        >
+          Avançar
+        </button>
       </Modal>
 
       <main className="mx-auto py-4 px-4 w-[74rem] ">
@@ -172,8 +183,28 @@ export const Pairings: React.FC = () => {
             <h1 className="text-[#374151] font-roboto font-medium text-4xl">
               Pareamento
             </h1>
-            <h3 className="font-roboto font-medium text-2xl	text-[#6B7280]">
+            <h3 className="flex font-roboto font-medium text-2xl	text-[#6B7280] items-center">
               {city_name} | {sector_name}
+              <div
+                className="relative cursor-pointer ml-2"
+                onMouseEnter={() => setIsOpen(true)}
+                onMouseLeave={() => setIsOpen(false)}
+              >
+                <HiInformationCircle color="#5429CC" size="16" />
+                {isOpen && (
+                  <div className="w-60 mt-1 absolute bottom-[-6] left-1 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
+                    {type === "DEFAULT_SECTOR" ? (
+                      <small className="font-roboto font-light text-sm">
+                        Demais setores
+                      </small>
+                    ) : (
+                      <small className="font-roboto font-light text-sm">
+                        Serviços de Terceiros - PJ
+                      </small>
+                    )}
+                  </div>
+                )}
+              </div>
             </h3>
           </section>
           <button
@@ -208,6 +239,7 @@ export const Pairings: React.FC = () => {
                     state: {
                       city_name,
                       sector_name,
+                      type,
                       expensesheet_name: expenseSheet.name,
                     },
                   }}

@@ -121,7 +121,7 @@ export const Pairing: React.FC = () => {
   async function handlePairingSubmit() {
     setIsLoading(true);
     try {
-      await api.post("/pairings", {
+      await api.post("/pairing", {
         name: pairing_name,
         sector_id,
         data: [

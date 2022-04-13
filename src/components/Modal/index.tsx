@@ -12,28 +12,40 @@ interface NewDataModalProps  {
   placeholder: string
   children?: any;
   firstLabelText?: string;
-  handleSubmit: (data: string) => void;
+  handleSubmit: (data: string, typeSector: any) => void;
+  sector?: boolean;
 }
 
 
-function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSubmit }:NewDataModalProps){
+function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSubmit, sector }:NewDataModalProps){
   
   const [value, setValue] = useState('')
   const [emptyField, setEmptyField] = useState(true)
+  const [typeSector, setTypeSector] = useState('Default_sector')
 
   function handleCreateNewDataModal (event: FormEvent){
     event.preventDefault()
 
-    if(value){
-      handleSubmit(value)
+    if(value && sector){
+      handleSubmit(value, typeSector)
       setValue('')
+      setTypeSector('Default_sector')
       onRequestClose()
       setEmptyField(false)
 
       return 
     }
-
-    setEmptyField(true)
+    else if(value){
+      handleSubmit(value, null)
+      setValue('')
+      onRequestClose()
+      setEmptyField(false)
+      
+      return 
+    }
+    else {
+      setEmptyField(false)
+    }
   }
 
   useEffect(() => {
@@ -63,8 +75,44 @@ function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, fi
         value={value}
         onChange={event=> setValue(event.target.value) }
         style={{borderColor: !!emptyField ? '#d60f0f' : "" }}
-        />
-        
+      />
+
+      {sector && 
+        <div>
+          <div className="form-check">
+            <input
+              className="form-check-input h-4 w-4 mt-1 float-left mr-2 cursor-pointer"
+              type="radio"
+              name={typeSector}
+              value="Default_sector"
+              checked={ typeSector === "Default_sector" }
+              onChange={() => setTypeSector("Default_sector")}
+            />
+            <label
+              className="form-check-label font-roboto font-medium text-blue text-sm "
+              htmlFor="flexRadioDefault1"
+            >
+              Demais Setores
+            </label>
+          </div>
+          <div className="form-check">
+            <input
+              className="form-check-input h-4 w-4 mt-1 float-left mr-2 cursor-pointer"
+              type="radio"
+              name={typeSector}
+              value="Third_services"
+              checked={ typeSector === "Third_services" }
+              onChange={() => setTypeSector("Third_services")}
+            />
+            <label
+              className="form-check-label font-roboto font-medium text-blue text-sm"
+              htmlFor="flexRadioDefault2"
+            >
+              Serviços de Terceiros - PJ
+            </label>
+          </div>
+        </div>
+      }
       { children }
        
        <button type="submit">Cadastrar</button>

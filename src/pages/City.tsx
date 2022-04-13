@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import api from "@services/api";
-import { createCity } from '@services/city';
 
 import { useAuth } from "@hooks/auth";
 
@@ -11,15 +10,14 @@ import { Oval } from "react-loader-spinner";
 export interface SectorData {
   id: string;
   name: string;
-  amount: number;
-  created_at: Date;
+  type: string;
+  createdTime: Date;
 }
 
 export interface CityData {
   id: string;
   name: string;
-  amount: number;
-  created_at: Date;
+  createdTime: Date;
   sectors: SectorData[];
 }
 
@@ -34,11 +32,12 @@ const City: React.FC = () => {
 
   useEffect(() => {
     async function loadCitiesAndSectors() {
-      const response = await api.get(`city/user/${user.id}`);
+      const response = await api.get("user/cities");
       const citiesWithSectors = await Promise.all(
         response.data?.map(async (city: any) => {
-          const response = await api.get(`sector/city/${city.id}`);
-
+          const response = await api.get(`city/sectors/?city_id=${city.id}`);
+          console.log(response)
+          
           return { ...city, sectors: response.data };
         })
       );
@@ -70,10 +69,10 @@ const City: React.FC = () => {
   }
 
   async function handleUpdateCitiesAndSectors() {
-    const response = await api.get(`city/user/${user.id}`);
+    const response = await api.get("user/cities");
     const citiesWithSectors = await Promise.all(
       response.data?.map(async (city: any) => {
-        const response = await api.get(`sector/city/${city.id}`);
+        const response = await api.get(`city/sectors/?city_id=${city.id}`);
 
         return { ...city, sectors: response.data };
       })
@@ -84,29 +83,31 @@ const City: React.FC = () => {
   }
 
   async function handleModalSubmit(data: string) {
-    await createCity(data);
+    await api.post("city", {
+      name: data,
+      user_id: user.id,
+    });
 
-    const response = await api.get(`city/user/${user.id}`);
-    setCities(response.data);
+    handleUpdateCitiesAndSectors();
   }
 
-  async function handleModalSubmitNewSector(data: string) {
+  async function handleModalSubmitNewSector(data: string, typeSector: string) {
     await api.post("sector", {
       name: data,
+      type: typeSector,
       city_id: cityIdInModal,
     });
     handleUpdateCitiesAndSectors();
   }
 
   async function handleDelete(city_id: string) {
-    await api.delete(`city/${city_id}`);
+    await api.delete(`city/?city_id=${city_id}`);
 
-    const response = await api.get(`city/user/${user.id}`);
-    setCities(response.data);
+    handleUpdateCitiesAndSectors();
   }
 
   async function handleDeleteSector(sector_id: string) {
-    await api.delete(`sector/${sector_id}`);
+    await api.delete(`sector/?sector_id=${sector_id}`);
     handleUpdateCitiesAndSectors();
   }
 
@@ -120,6 +121,7 @@ const City: React.FC = () => {
         placeholder="Nome"
         title="Cadastrar cidade"
         handleSubmit={handleModalSubmit}
+        sector={false}
       />
 
       <Modal
@@ -128,39 +130,9 @@ const City: React.FC = () => {
         placeholder="Nome"
         title="Cadastrar setor"
         handleSubmit={handleModalSubmitNewSector}
-      >
-        <div>
-          <div className="form-check">
-            <input
-              className="form-check-input h-4 w-4 mt-1 float-left mr-2 cursor-pointer"
-              type="radio"
-              name="flexRadioDefault"
-              id="flexRadioDefault1"
-              checked
-            />
-            <label
-              className="form-check-label font-roboto font-medium text-blue text-sm "
-              htmlFor="flexRadioDefault1"
-            >
-              Demais Setores
-            </label>
-          </div>
-          <div className="form-check">
-            <input
-              className="form-check-input h-4 w-4 mt-1 float-left mr-2 cursor-pointer"
-              type="radio"
-              name="flexRadioDefault"
-              id="flexRadioDefault2"
-            />
-            <label
-              className="form-check-label font-roboto font-medium text-blue text-sm"
-              htmlFor="flexRadioDefault2"
-            >
-              Serviços de Terceiros - PJ
-            </label>
-          </div>
-        </div>
-      </Modal>
+        sector={true}
+      />
+
       <main className="mx-auto w-[70rem] ">
         <div className="flex justify-between items-center mt-10">
           <HeaderText>Cidades</HeaderText>
