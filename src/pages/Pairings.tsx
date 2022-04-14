@@ -15,7 +15,7 @@ interface ExpenseSheetData {
   place_name: string;
   base_code: string;
   model_code: string;
-  created_at: Date;
+  createdTime: Date;
   data: any;
 }
 
@@ -98,53 +98,55 @@ export const Pairings: React.FC = () => {
       >
         <FileUploader
           placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP"
-          label="Arquivo SICGESP"
+          label={type === "DEFAULT_SECTOR" ? "Arquivo SICGESP" : "Arquivo SICGESP com número de postos"}
           type="sicgesp"
         />
 
         {type === "DEFAULT_SECTOR" && (
-          <FileUploader
-            placeholder="Clique aqui ou arraste o arquivo .csv sem padronização"
-            label="Arquivo local"
-            type="local"
-          />
-        )}
+          <>
+            <FileUploader
+              placeholder="Clique aqui ou arraste o arquivo .csv sem padronização"
+              label="Arquivo local"
+              type="local"
+            />
 
-        <div className="flex gap-1 items-center">
-          <label className="font-roboto font-medium text-blue text-sm">
-            Template de pareamento
-          </label>
-          <div
-            className="relative cursor-pointer mt-2.5"
-            onMouseEnter={() => setIsOpen(true)}
-            onMouseLeave={() => setIsOpen(false)}
-          >
-            <HiInformationCircle color="#5429CC" />
-            {isOpen && (
-              <div className="w-80 absolute bottom-[-6] left-1 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
-                Selecione um pareamento anterior e utilize a mesma paridade de
-                lotações para este novo pareamento!
+            <div className="flex gap-1 items-center">
+              <label className="font-roboto font-medium text-blue text-sm">
+                Template de pareamento
+              </label>
+              <div
+                className="relative cursor-pointer"
+                onMouseEnter={() => setIsOpen(true)}
+                onMouseLeave={() => setIsOpen(false)}
+              >
+                <HiInformationCircle color="#5429CC" />
+                {isOpen && (
+                  <div className="w-80 absolute bottom-[-6] left-1 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
+                    Selecione um pareamento anterior e utilize a mesma paridade
+                    de lotações para este novo pareamento!
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-        </div>
-        <select
-          onChange={({ target }) => {
-            setTemplateSelect(target.value);
-          }}
-          defaultValue={"DEFAULT"}
-          id="select-primary"
-          className={`lg:w-full md:w-72 px-3.5 py-2.5 mt-0.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}
-        >
-          <option value="DEFAULT" disabled hidden>
-            Nenhum (padrão)
-          </option>
-          {expenseSheets.map(({ id, name }: any) => (
-            <React.Fragment key={id}>
-              <option value={id}>{name}</option>
-            </React.Fragment>
-          ))}
-        </select>
+            </div>
+            <select
+              onChange={({ target }) => {
+                setTemplateSelect(target.value);
+              }}
+              defaultValue={"DEFAULT"}
+              id="select-primary"
+              className={`lg:w-full md:w-72 px-3.5 py-2.5 mt-0.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}
+            >
+              <option value="DEFAULT" disabled hidden>
+                Nenhum (padrão)
+              </option>
+              {expenseSheets.map(({ id, name }: any) => (
+                <React.Fragment key={id}>
+                  <option value={id}>{name}</option>
+                </React.Fragment>
+              ))}
+            </select>
+          </>
+        )}
       </ModalFile>
 
       <Modal
@@ -181,30 +183,12 @@ export const Pairings: React.FC = () => {
         <div className="flex justify-between items-center">
           <section className="flex items-end mt-4 mb-10 space-x-8 ">
             <h1 className="text-[#374151] font-roboto font-medium text-4xl">
-              Pareamento
+              {type === "DEFAULT_SECTOR"
+                ? "Pareamento"
+                : "Serviços de terceiros - PJ"}
             </h1>
             <h3 className="flex font-roboto font-medium text-2xl	text-[#6B7280] items-center">
               {city_name} | {sector_name}
-              <div
-                className="relative cursor-pointer ml-2"
-                onMouseEnter={() => setIsOpen(true)}
-                onMouseLeave={() => setIsOpen(false)}
-              >
-                <HiInformationCircle color="#5429CC" size="16" />
-                {isOpen && (
-                  <div className="w-60 mt-1 absolute bottom-[-6] left-1 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
-                    {type === "DEFAULT_SECTOR" ? (
-                      <small className="font-roboto font-light text-sm">
-                        Demais setores
-                      </small>
-                    ) : (
-                      <small className="font-roboto font-light text-sm">
-                        Serviços de Terceiros - PJ
-                      </small>
-                    )}
-                  </div>
-                )}
-              </div>
             </h3>
           </section>
           <button
@@ -247,7 +231,7 @@ export const Pairings: React.FC = () => {
                 >
                   <div className="bg-white text-body">{expenseSheet.name}</div>
                   <div className="bg-white text-body">
-                    {new Date(expenseSheet.created_at).toLocaleDateString(
+                    {new Date(expenseSheet.createdTime).toLocaleDateString(
                       "pt-br"
                     )}
                   </div>

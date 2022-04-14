@@ -1,4 +1,5 @@
-import Yup, { ValidationError } from 'yup';
+import * as Yup from "yup";
+import { ValidationError } from "yup";
 
 interface Errors {
   [key: string]: string;

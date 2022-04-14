@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { BackButton, Header } from "@components";
 import { useUpload } from "@hooks/upload";
@@ -95,7 +95,7 @@ export const Pairing: React.FC = () => {
 
   function update(model_code: string, target: string | null) {
     // return ({ target }: ChangeEvent<HTMLSelectElement>) => {
-      // const { value } = target;
+    // const { value } = target;
       const pairingAlreadySelect = Object.values(formattedFile).find(
         (item) => target === item.base_code
       );
@@ -113,6 +113,8 @@ export const Pairing: React.FC = () => {
         }));
         return false;
       }
+
+      
 
       const newPairingSelect = formattedFile[model_code];
       setFormattedFile((prev) => ({
