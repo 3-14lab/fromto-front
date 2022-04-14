@@ -5,7 +5,7 @@ import { useUpload } from "@hooks/upload";
 import { CSVLink } from "react-csv";
 import api from "@services/api";
 import { Oval } from "react-loader-spinner";
-import { sicgespType, localType } from "@hooks/upload";
+import { sicgespType, localType, pairingCodesType } from "@hooks/upload";
 import SearchableSelector from "@components/SearchableSelector";
 
 interface LocationState {
@@ -14,6 +14,10 @@ interface LocationState {
   city_name: string;
   data: [];
 }
+
+export type FilePropsPairingCodes = {
+  [field: string]: pairingCodesType;
+};
 
 export type FilePropsSicgesp = {
   [field: string]: sicgespType;
@@ -35,6 +39,7 @@ export const Pairing: React.FC = () => {
 
   const [formattedFile, setFormattedFile] = useState({} as FilePropsLocal);
   const [sicgespFile, setSicgespFile] = useState({} as FilePropsSicgesp);
+  const [pairingCodes, setPairingCodes] = useState([{}]);
 
   const headers = [
     { label: "Código Lotação", key: "base_code" },
@@ -105,6 +110,14 @@ export const Pairing: React.FC = () => {
     );
 
     if (pairingRepeated) {
+      console.log()
+      setPairingCodes([
+        ...pairingCodes,
+        {
+          model_code,
+          base_code: target,
+        },
+      ]);
       return true;
     }
 
@@ -113,8 +126,10 @@ export const Pairing: React.FC = () => {
         ...prev,
         [model_code]: { ...prev[model_code], base_code: undefined },
       }));
+
       return false;
     }
+
 
     const newPairingSelect = formattedFile[model_code];
     setFormattedFile((prev) => ({
@@ -128,10 +143,10 @@ export const Pairing: React.FC = () => {
   async function handlePairingSubmit() {
     setIsLoading(true);
     try {
-      const response = await api.post("/pairing", {
+      /*const response = await api.post("/pairing", {
         name: pairing_name,
         sector_id,
-        pairingCodes: [],
+        pairingCodes: pairingCodes,
         local_file: [
           ...Object.values(formattedFile).filter(
             ({ model_code, place_name, value }) => ({
@@ -150,16 +165,17 @@ export const Pairing: React.FC = () => {
             })
           ),
         ],
-      });
+      });*/
+      console.log(pairingCodes)
     } catch (err) {
       console.log(err);
     }
 
     setIsLoading(false);
-    history.push({
+    /*history.push({
       pathname: `/pairings/${sector_id}`,
       state: { sector_name, city_name },
-    });
+    });*/
   }
 
   if (!Object.values(file).length) {
