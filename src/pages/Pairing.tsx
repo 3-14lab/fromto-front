@@ -96,43 +96,59 @@ export const Pairing: React.FC = () => {
   function update(model_code: string, target: string | null) {
     // return ({ target }: ChangeEvent<HTMLSelectElement>) => {
     // const { value } = target;
-      const pairingAlreadySelect = Object.values(formattedFile).find(
-        (item) => target === item.base_code
-      );
+    const pairingAlreadySelect = Object.values(formattedFile).find(
+      (item) => target === item.base_code
+    );
 
-      const pairingRepeated = Object.values(formattedFile).find((item) => item.base_code === target && item.model_code === model_code)
+    const pairingRepeated = Object.values(formattedFile).find(
+      (item) => item.base_code === target && item.model_code === model_code
+    );
 
-      if (pairingRepeated) {
-        return true;
-      }
+    if (pairingRepeated) {
+      return true;
+    }
 
-      if (pairingAlreadySelect) {
-        setFormattedFile((prev) => ({
-          ...prev,
-          [model_code]: { ...prev[model_code], base_code: undefined },
-        }));
-        return false;
-      }
-
-      
-
-      const newPairingSelect = formattedFile[model_code];
+    if (pairingAlreadySelect) {
       setFormattedFile((prev) => ({
         ...prev,
-        [model_code]: { ...newPairingSelect, base_code: target },
+        [model_code]: { ...prev[model_code], base_code: undefined },
       }));
+      return false;
+    }
 
-      return true;
+    const newPairingSelect = formattedFile[model_code];
+    setFormattedFile((prev) => ({
+      ...prev,
+      [model_code]: { ...newPairingSelect, base_code: target },
+    }));
+
+    return true;
   }
 
   async function handlePairingSubmit() {
     setIsLoading(true);
     try {
-      await api.post("/pairing", {
+      const response = await api.post("/pairing", {
         name: pairing_name,
         sector_id,
-        data: [
-          ...Object.values(formattedFile).filter((item) => item.base_code),
+        pairingCodes: [],
+        local_file: [
+          ...Object.values(formattedFile).filter(
+            ({ model_code, place_name, value }) => ({
+              model_code,
+              place_name,
+              value,
+            })
+          ),
+        ],
+        sicgesp_file: [
+          ...Object.values(sicgespFile).map(
+            ({ base_code, location, value }) => ({
+              base_code,
+              location,
+              value,
+            })
+          ),
         ],
       });
     } catch (err) {
@@ -206,7 +222,9 @@ export const Pairing: React.FC = () => {
                       value: base_code,
                     })
                   )}
-                  onSelect={(target: string | null) => update(model_code, target)}
+                  onSelect={(target: string | null) =>
+                    update(model_code, target)
+                  }
                 />
               </div>
             )

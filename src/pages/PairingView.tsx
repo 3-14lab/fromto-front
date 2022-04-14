@@ -5,18 +5,18 @@ import { CSVLink } from 'react-csv';
 import api from '@services/api';
 
 interface FieldGroupProps {
-  value?: string;
+  code?: string;
   location?: string;
   base_code?: string;
 }
 
-const FieldGroup = ({ value, location }: FieldGroupProps) => {
+const FieldGroup = ({ code, location }: FieldGroupProps) => {
 
   return (
     <div>
-      <div key={value} className="flex items-center space-x-5">
+      <div key={code} className="flex items-center space-x-5">
         <div>
-          <p className={`lg:w-28 md:w-20 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]`}>{value}</p>
+          <p className={`lg:w-28 md:w-20 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]`}>{code}</p>
         </div>
         <div>
             <div className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md text-[#D1D5DB] bg-[#f0f2f5]`}>
@@ -38,17 +38,18 @@ export const PairingView: React.FC = () => {
     (async () => {
       const response = await api.get(`pairing?pairing_id=${p_id}`);
       setFile(response.data.pairing_data);
+      console.log(response.data.pairing_data)
     })();
   }, [p_id]);
 
   const headers = [
     { label: "Código Lotação", key: "code_base" },
-    { label: "Descrição Locação", key: "place_name" },
+    { label: "Descrição Locação", key: "location" },
     { label: "Valor Realocado", key: "value" }
   ]
 
   const formatCSV = file?.map((item: any) => {
-    return { code_base: item.base_code, place_name: item.place_name, value: item.value }
+    return { code_base: item.base_code, location: item.place_name, value: item.value }
   })
 
   return (
@@ -70,11 +71,11 @@ export const PairingView: React.FC = () => {
         </div>
 
         <div className="max-h-[400px] overflow-y-scroll pairing-select">
-          { file?.map(({ base_code, value, place_name }) => (
+          { file?.map(({ base_code, model_code, place_name }) => (
             <div className={`flex justify-center py-5 bg-white rounded-md mb-2.5`}>
-              <FieldGroup key={value + 'b'} value={value} location={place_name} />
+              <FieldGroup key={model_code + 'b'} code={model_code} location={place_name} />
               <h4 className="self-center lg:mx-8 md:mx-2 font-poppins font-bold lg:text-2xl md:text-xl text-[#5429CC]">=</h4>
-              <FieldGroup key={value + 'selected'} value={base_code} location={place_name} base_code={base_code} />
+              <FieldGroup key={model_code + 'selected'} code={base_code} location={place_name} base_code={base_code} />
             </div>
           ))}
         </div>
