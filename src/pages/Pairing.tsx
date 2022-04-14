@@ -51,7 +51,7 @@ export const Pairing: React.FC = () => {
 
   useEffect(() => {
     setFormattedFile(
-      file["local"]?.reduce((p, c) => ({ ...p, [c.model_code]: c }), {})
+      file["local"]?.reduce((p, c) => ({ ...p, [c.model_code!]: c }), {})
     );
     setSicgespFile(
       file["sicgesp"]?.reduce((p, c) => ({ ...p, [c.base_code]: c }), {})
@@ -93,29 +93,34 @@ export const Pairing: React.FC = () => {
       });
   }, [formattedFile]);
 
-  function update(code: string) {
-    return ({ target }: ChangeEvent<HTMLSelectElement>) => {
-      const { value } = target;
-
+  function update(model_code: string, target: string | null) {
+    // return ({ target }: ChangeEvent<HTMLSelectElement>) => {
+      // const { value } = target;
       const pairingAlreadySelect = Object.values(formattedFile).find(
-        (item) => value === item.base_code
+        (item) => target === item.base_code
       );
 
-      if (pairingAlreadySelect) {
-        target.value = "DEFAULT";
-        setFormattedFile((prev) => ({
-          ...prev,
-          [code]: { ...prev[code], base_code: undefined },
-        }));
-        return;
+      const pairingRepeated = Object.values(formattedFile).find((item) => item.base_code === target && item.model_code === model_code)
+
+      if (pairingRepeated) {
+        return true;
       }
 
-      const newPairingSelect = formattedFile[code];
+      if (pairingAlreadySelect) {
+        setFormattedFile((prev) => ({
+          ...prev,
+          [model_code]: { ...prev[model_code], base_code: undefined },
+        }));
+        return false;
+      }
+
+      const newPairingSelect = formattedFile[model_code];
       setFormattedFile((prev) => ({
         ...prev,
-        [code]: { ...newPairingSelect, base_code: value },
+        [model_code]: { ...newPairingSelect, base_code: target },
       }));
-    };
+
+      return true;
   }
 
   async function handlePairingSubmit() {
@@ -199,7 +204,7 @@ export const Pairing: React.FC = () => {
                       value: base_code,
                     })
                   )}
-                  onChange={update(model_code)}
+                  onSelect={(target: string | null) => update(model_code, target)}
                 />
               </div>
             )

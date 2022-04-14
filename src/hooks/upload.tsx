@@ -7,10 +7,10 @@ interface UploadContextData {
 }
 
 export type localType = {
-  model_code: string;
+  model_code?: string | null;
   place_name: string;
   value: string;
-  base_code?: string;
+  base_code?: string | null;
 }
 
 export type sicgespType = {

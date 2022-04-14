@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 
 import logo from '@image/prov.svg'
 
-import { getValidationErrors } from '@utils/getVAlidationErrors'
+import { handleValidationErrors } from '@utils/getValidationErrors'
 import { Oval } from  'react-loader-spinner'
 
 interface SignInData {
@@ -53,16 +53,7 @@ const SignIn: React.FC = () =>{
       history.push('/city');
 
     } catch (error) {
-
-      
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(error);
-        
-        formRef.current?.setErrors(errors);
-          console.log(errors)
-          return;
-        }
-
+      handleValidationErrors(error, formRef);
     }
 
   }, [history, signIn])
