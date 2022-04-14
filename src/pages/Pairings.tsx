@@ -219,7 +219,7 @@ export const Pairings: React.FC = () => {
               <div className="flex rounded-md flex-1 bg-white hover:bg-text justify-between">
                 <Link
                   to={{
-                    pathname: `/pairing/view/${expenseSheet.id}`,
+                    pathname: type === "DEFAULT_SECTOR" ? `/pairing/view/${expenseSheet.id}` : `/pairing/view/${expenseSheet.id}`,
                     state: {
                       city_name,
                       sector_name,

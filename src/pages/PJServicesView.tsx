@@ -38,7 +38,6 @@ export const PJServicesView: React.FC = () => {
     (async () => {
       const response = await api.get(`pairing?pairing_id=${p_id}`);
       setFile(response.data.pairing_data);
-      console.log("aquii -> ", response.data.pairing_data)
     })();
   }, [p_id]);
 
