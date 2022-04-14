@@ -19,10 +19,16 @@ export type sicgespType = {
   value: string;
 }
 
+export type pairingCodesType = {
+  base_code: string;
+  model_code: string;
+}
+
 export type FileProps = {
   sicgesp: sicgespType[];
   local: localType[];
 };
+
 
 const UploadContext = createContext({} as UploadContextData);
 

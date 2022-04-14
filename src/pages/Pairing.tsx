@@ -15,10 +15,6 @@ interface LocationState {
   data: [];
 }
 
-export type FilePropsPairingCodes = {
-  [field: string]: pairingCodesType;
-};
-
 export type FilePropsSicgesp = {
   [field: string]: sicgespType;
 };
@@ -39,7 +35,7 @@ export const Pairing: React.FC = () => {
 
   const [formattedFile, setFormattedFile] = useState({} as FilePropsLocal);
   const [sicgespFile, setSicgespFile] = useState({} as FilePropsSicgesp);
-  const [pairingCodes, setPairingCodes] = useState([{}]);
+  const [pairingCodes, setPairingCodes] = useState<pairingCodesType[]>([]);
 
   const headers = [
     { label: "Código Lotação", key: "base_code" },
@@ -93,33 +89,40 @@ export const Pairing: React.FC = () => {
         return {
           model_code: item.model_code,
           location: item.place_name,
-          value: item.value,
+          value: item.value,city_name
         };
       });
   }, [formattedFile]);
 
   function update(model_code: string, target: string | null) {
-    // return ({ target }: ChangeEvent<HTMLSelectElement>) => {
-    // const { value } = target;
     const pairingAlreadySelect = Object.values(formattedFile).find(
       (item) => target === item.base_code
     );
 
-    const pairingRepeated = Object.values(formattedFile).find(
-      (item) => item.base_code === target && item.model_code === model_code
+
+    const pairingRepeated = pairingCodes.find(
+      (item) => {
+        return (item.base_code === target)
+      }
     );
 
-    if (pairingRepeated) {
-      console.log()
-      setPairingCodes([
-        ...pairingCodes,
-        {
-          model_code,
-          base_code: target,
-        },
-      ]);
-      return true;
+    if (!target) {
+      return false;
     }
+    
+
+    if (pairingRepeated) {
+      return false;
+    }
+
+    setPairingCodes([
+      ...pairingCodes,
+      {
+        model_code,
+        base_code: target,
+      },
+    ]);
+
 
     if (pairingAlreadySelect) {
       setFormattedFile((prev) => ({
@@ -129,7 +132,6 @@ export const Pairing: React.FC = () => {
 
       return false;
     }
-
 
     const newPairingSelect = formattedFile[model_code];
     setFormattedFile((prev) => ({
@@ -143,30 +145,15 @@ export const Pairing: React.FC = () => {
   async function handlePairingSubmit() {
     setIsLoading(true);
     try {
-      /*const response = await api.post("/pairing", {
-        name: pairing_name,
+      const pairingCreateBody = {
         sector_id,
+        name: pairing_name,
         pairingCodes: pairingCodes,
-        local_file: [
-          ...Object.values(formattedFile).filter(
-            ({ model_code, place_name, value }) => ({
-              model_code,
-              place_name,
-              value,
-            })
-          ),
-        ],
-        sicgesp_file: [
-          ...Object.values(sicgespFile).map(
-            ({ base_code, location, value }) => ({
-              base_code,
-              location,
-              value,
-            })
-          ),
-        ],
-      });*/
-      console.log(pairingCodes)
+        local_file: Object.values(formattedFile), 
+        sicgesp_file: Object.values(sicgespFile),
+      }
+      const response = await api.post("/pairing", pairingCreateBody);
+      console.log(response)
     } catch (err) {
       console.log(err);
     }
