@@ -3,15 +3,13 @@ import api from "@services/api"
 import { useAuth } from "@hooks/auth"
 
 import { Link, useParams } from 'react-router-dom'
-import LogoImg from '@image/logo.svg'
 import TrashImg from '@image/trash.svg'
 import { Modal } from "@components"
 import { Header, Table } from "@components"
+import { createSector, deleteSector, getSectorByCity } from "@services/sector"
 
 const titles = ['Nome', 'Qtde. setores', 'Última Modificação', 'Ação'];
 const mock = [{ name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}, { name: "São sebastião", arq: "sicgesp_pareamento...", local: "educacao_goiania_dez...", updatedAt: "01/12/2021"}];
-
-
 
 interface SectorData {
   id: string,
@@ -29,19 +27,14 @@ const Sector: React.FC = () => {
   
   const {city_id} = useParams() as {city_id: string}
 
+  const loadSector = async () => {
+    const response = await getSectorByCity(city_id);
+    setSectors(response)
+  }
 
   useEffect(()=>{
-
-    async function  loadSector(){
-      const response = await api.get(`sector/city/${city_id}`);
-      setSectors(response.data)
-
-    }
-
     loadSector()
-
-  }, [user, city_id])
-
+  }, [])
 
   function handleOpenNewDataModal(){
     setIsNewDataModalOpen(true)
@@ -51,24 +44,16 @@ const Sector: React.FC = () => {
     setIsNewDataModalOpen(false)
   }
 
-  async function handleModalSubmit(data: string){
+  async function handleModalSubmit(name: string, type: string){
+    await createSector({name, city_id, type});
 
-    await api.post('sector', { 
-        name: data,
-        city_id
-    })
-
-    const response = await api.get(`sector/city/${city_id}`);
-    setSectors(response.data)
-    
+    loadSector()
   }
+
   async function handleDeleteSector(sector_id: string) { 
-    await api.delete(`sector/${sector_id}`)
-    const response = await api.get(`sector/city/${city_id}`);
-    setSectors(response.data)
+    await deleteSector(sector_id)
+    loadSector()
   }
-
-  
 
   return (
     <>

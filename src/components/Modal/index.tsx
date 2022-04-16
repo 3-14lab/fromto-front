@@ -12,7 +12,7 @@ interface NewDataModalProps  {
   placeholder: string
   children?: any;
   firstLabelText?: string;
-  handleSubmit: (data: string, typeSector: any) => void;
+  handleSubmit: (name: string, type: any) => void;
   sector?: boolean;
 }
 
