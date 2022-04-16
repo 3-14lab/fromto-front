@@ -6,6 +6,7 @@ import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { HiInformationCircle } from "react-icons/hi";
 
 import TrashImg from "@image/trash.svg";
+import { deletePairing, getPairingBySector } from "@services/pairing";
 
 interface ExpenseSheetData {
   id: string;
@@ -33,14 +34,14 @@ export const Pairings: React.FC = () => {
     state: { sector_name: string; city_name: string; type: string };
   };
 
-  useEffect(() => {
-    async function loadSector() {
-      const response = await api.get(`pairing/sector?sector_id=${sector_id}`);
-      setExpenseSheets(response.data.reverse());
-    }
+  const loadSector = async() => {
+    const response = await getPairingBySector(sector_id);
+    setExpenseSheets(response);
+  }
 
+  useEffect(() => {
     loadSector();
-  }, [sector_id, type]);
+  }, []);
 
   function handleOpenNewDataModal() {
     setIsNewDataModalOpen(true);
@@ -77,9 +78,8 @@ export const Pairings: React.FC = () => {
   }
 
   async function handleDelete(expenseSheet_id: string) {
-    await api.delete(`pairings/${expenseSheet_id}`);
-    const response = await api.get(`pairing/sector?sector_id=${sector_id}`);
-    setExpenseSheets(response.data);
+    await deletePairing(expenseSheet_id);
+    await loadSector();
   }
 
   const [isOpen, setIsOpen] = useState<boolean>(false);

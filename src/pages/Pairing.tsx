@@ -7,6 +7,7 @@ import api from "@services/api";
 import { Oval } from "react-loader-spinner";
 import { sicgespType, localType, pairingCodesType } from "@hooks/upload";
 import SearchableSelector from "@components/SearchableSelector";
+import { createPairing } from "@services/pairing";
 
 interface LocationState {
   pairing_name: string;
@@ -152,17 +153,20 @@ export const Pairing: React.FC = () => {
         local_file: Object.values(formattedFile), 
         sicgesp_file: Object.values(sicgespFile),
       }
-      const response = await api.post("/pairing", pairingCreateBody);
-      console.log(response)
+
+      const response = await createPairing(pairingCreateBody);
+      console.log(response);
+      
     } catch (err) {
       console.log(err);
     }
 
     setIsLoading(false);
-    /*history.push({
+    
+    history.push({
       pathname: `/pairings/${sector_id}`,
       state: { sector_name, city_name },
-    });*/
+    });
   }
 
   if (!Object.values(file).length) {

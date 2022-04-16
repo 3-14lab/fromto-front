@@ -1,9 +1,6 @@
 import api from "./api";
 import { useAuth } from "@hooks/auth";
 
-// auth, city, sector, user
-
-
 export const createCity = async (name: string) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { user } = useAuth();

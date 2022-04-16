@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import { BackButton, Header } from '@components';
 import { CSVLink } from 'react-csv';
-import api from '@services/api';
+import { getPairingById } from '@services/pairing';
 
 interface FieldGroupProps {
   code?: string;
@@ -36,9 +36,8 @@ export const PairingView: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const response = await api.get(`pairing?pairing_id=${p_id}`);
-      setFile(response.data.pairing_data);
-      console.log(response.data.pairing_data)
+      const response = await getPairingById(p_id);
+      setFile(response);
     })();
   }, [p_id]);
 
