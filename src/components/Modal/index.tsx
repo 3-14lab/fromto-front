@@ -32,16 +32,12 @@ function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, fi
       setTypeSector('Default_sector')
       onRequestClose()
       setEmptyField(false)
-
-      return 
     }
     else if(value){
       handleSubmit(value, null)
       setValue('')
       onRequestClose()
       setEmptyField(false)
-      
-      return 
     }
     else {
       setEmptyField(false)

@@ -1,9 +1,12 @@
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { CityData, SectorData } from "@pages/City";
+import { FaCheck } from "react-icons/fa";
 
 import EditImg from "@image/edit.svg";
 import TrashImg from "@image/trash.svg";
 import Add from "@image/Icon.svg";
+import { editCity } from "@services/city";
 
 type CityBoxProps = {
   city: CityData;
@@ -20,14 +23,37 @@ export default function CityBox({
 }: CityBoxProps) {
   const { name, createdTime, id, sectors } = city;
   const amount = sectors.length;
+  const inputRef = useRef(null as any);
+  const [editName, setEditName] = useState<string>(name);
+  const [editDisable, setEditDisable] = useState<boolean>(true);
+
+  function handleEditName(text: string) {
+    setEditName(text);
+  }
+
+  async function handleEditDisable(id: string) {
+    if (name !== editName) {
+      await editCity(id, editName);
+    } else {
+      inputRef?.current?.focus();
+    }
+    setEditDisable((prev: boolean) => !prev);
+  }
+
   return (
     <div key={id} className="grid gap-y-0.5">
       <div
         className={`overflow-hidden px-5 pb-5 bg-white rounded-lg transition-height duration-500 ease-in-out h-16 mb-5 hover:h-fit`}
       >
         <div className={`grid grid-cols-5 w-full h-16`}>
-          <div className="flex col-span-2	items-center text-body font-medium">
-            {name}
+          <div className="flex items-center col-span-2">
+            <input
+              ref={inputRef}
+              value={editName}
+              onChange={({ target }) => handleEditName(target.value)}
+              disabled={editDisable}
+              className="flex items-center text-body font-medium p-2 outline-body"
+            />
           </div>
           <div className="flex items-center text-body font-normal">{`${amount} ${
             amount === 1 ? "setor" : "setores"
@@ -36,9 +62,15 @@ export default function CityBox({
             {new Date(createdTime).toLocaleDateString("pt-br")}
           </div>
           <div className="flex justify-end">
-            <button>
-              <img className="w-5 h-5" src={EditImg} alt="" />
-            </button>
+            {!editDisable ? (
+              <button onClick={() => handleEditDisable(id)}>
+                <FaCheck size={24} color="green" className="mr-2" />
+              </button>
+            ) : (
+              <button onClick={() => handleEditDisable(id)}>
+                <img className="w-5 h-5" src={EditImg} alt="" />
+              </button>
+            )}
             <button onClick={() => handleDeleteCity(id)}>
               <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
             </button>
@@ -58,14 +90,14 @@ export default function CityBox({
                 className="flex flex-1 justify-between hover:bg-gray/200"
               >
                 <div className="grid grid-cols-7 bg-gray/100 w-full hover:bg-gray/200">
-                  <div className="flex col-span-3	items-center text-body font-medium">
+                  <div className="flex col-span-1	items-center text-body font-medium">
                     {sector_name}
-                    <small className="font-roboto font-light text-sm m-auto">
-                      {type === "DEFAULT_SECTOR"
-                        ? "Demais setores"
-                        : "Serviços de terceiros"}
-                    </small>
                   </div>
+                  <small className="flex items-center col-span-2 text-body font-roboto font-light text-sm m-auto">
+                    {type === "DEFAULT_SECTOR"
+                      ? "Demais setores"
+                      : "Serviços de terceiros"}
+                  </small>
                   <div className="flex col-span-2 items-center text-body font-normal">
                     12 pareamentos
                   </div>
