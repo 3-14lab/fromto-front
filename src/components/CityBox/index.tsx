@@ -8,7 +8,7 @@ import TrashImg from "@image/trash.svg";
 import Add from "@image/Icon.svg";
 import { editCity } from "@services/city";
 
-type CityBoxProps = {
+type props = {
   city: CityData;
   handleDeleteCity: (id: string) => void;
   handleDeleteSector: (id: string) => void;
@@ -20,7 +20,7 @@ function CityBox({
   handleDeleteCity,
   handleDeleteSector,
   handleOpenNewSectorModal,
-}: CityBoxProps) {
+}: props) {
   const { name, createdTime, id, sectors, sector_amount } = city;
   const inputRef = useRef(null as any);
   const [editName, setEditName] = useState<string>(name);

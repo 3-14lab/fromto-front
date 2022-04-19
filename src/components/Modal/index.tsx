@@ -5,7 +5,7 @@ import './style.css'
 
 import closeImg from '@image/close.svg'
 
-interface NewDataModalProps  {
+interface props  {
   isOpen: boolean;
   onRequestClose: () => void;
   title: string;
@@ -21,7 +21,7 @@ enum TypeSector {
   Third_services
 }
 
-function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSubmit, sector }:NewDataModalProps){
+function NewDataModal(props: props){
   
   const [value, setValue] = useState('')
   const [emptyField, setEmptyField] = useState(true)
@@ -30,17 +30,17 @@ function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, fi
   function handleCreateNewDataModal (event: FormEvent){
     event.preventDefault()
 
-    if(value && sector){
-      handleSubmit(value, TypeSector[typeSector])
+    if(value && props.sector){
+      props.handleSubmit(value, TypeSector[typeSector])
       setValue('')
       setTypeSector(0)
-      onRequestClose()
+      props.onRequestClose()
       setEmptyField(false)
     }
     else if(value){
-      handleSubmit(value, null)
+      props.handleSubmit(value, null)
       setValue('')
-      onRequestClose()
+      props.onRequestClose()
       setEmptyField(false)
     }
     else {
@@ -54,30 +54,30 @@ function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, fi
 
   return(
     <Modal
-      isOpen={isOpen}
-      onRequestClose={onRequestClose}
+      isOpen={props.isOpen}
+      onRequestClose={props.onRequestClose}
       overlayClassName="react-modal-overlay"
       className="react-modal-content"
       // ariaHideApp={false}
     >
-      <button type='button' onClick={() => { setEmptyField(false); onRequestClose()}} className='react-modal-close' >
+      <button type='button' onClick={() => { setEmptyField(false); props.onRequestClose()}} className='react-modal-close' >
         <img src={closeImg} alt="Fechar modal" />
       </button>
 
       <form onSubmit={handleCreateNewDataModal}>
 
-      <h2 className="font-roboto font-medium text-2xl text-blue mb-[30px]">{title}</h2>
+      <h2 className="font-roboto font-medium text-2xl text-blue mb-[30px]">{props.title}</h2>
 
-      <label className="font-roboto font-medium text-blue text-sm">{!!firstLabelText ? firstLabelText : "Título"}</label>
+      <label className="font-roboto font-medium text-blue text-sm">{!!props.firstLabelText ? props.firstLabelText : "Título"}</label>
       <input 
         className="w-full font-roboto font-medium text-sm px-6 py-3 mb-5 mt-0.5 rounded-t-md	bg-[#F3F4F6] text-[#9CA3AF]"
-        placeholder={placeholder}
+        placeholder={props.placeholder}
         value={value}
         onChange={event=> setValue(event.target.value) }
         style={{borderColor: !!emptyField ? '#d60f0f' : "" }}
       />
 
-      {sector && 
+      {props.sector && 
         <div>
           <div className="form-check">
             <input
@@ -111,7 +111,7 @@ function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, fi
           </div>
         </div>
       }
-      { children }
+      { props.children }
        
        <button type="submit">Cadastrar</button>
 
