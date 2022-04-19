@@ -12,24 +12,28 @@ interface NewDataModalProps  {
   placeholder: string
   children?: any;
   firstLabelText?: string;
-  handleSubmit: (name: string, type: any) => void;
   sector?: boolean;
+  handleSubmit: (name: string, type: any) => void;
 }
 
+enum TypeSector {
+  Default_sector,
+  Third_services
+}
 
 function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, firstLabelText, handleSubmit, sector }:NewDataModalProps){
   
   const [value, setValue] = useState('')
   const [emptyField, setEmptyField] = useState(true)
-  const [typeSector, setTypeSector] = useState('Default_sector')
+  const [typeSector, setTypeSector] = useState<TypeSector>(0)
 
   function handleCreateNewDataModal (event: FormEvent){
     event.preventDefault()
 
     if(value && sector){
-      handleSubmit(value, typeSector)
+      handleSubmit(value, TypeSector[typeSector])
       setValue('')
-      setTypeSector('Default_sector')
+      setTypeSector(0)
       onRequestClose()
       setEmptyField(false)
     }
@@ -79,10 +83,9 @@ function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, fi
             <input
               className="form-check-input h-4 w-4 mt-1 float-left mr-2 cursor-pointer"
               type="radio"
-              name={typeSector}
-              value="Default_sector"
-              checked={ typeSector === "Default_sector" }
-              onChange={() => setTypeSector("Default_sector")}
+              value={0}
+              checked={ typeSector === 0 }
+              onChange={() => setTypeSector(0)}
             />
             <label
               className="form-check-label font-roboto font-medium text-blue text-sm "
@@ -95,10 +98,9 @@ function NewDataModal({ isOpen, onRequestClose, placeholder, title, children, fi
             <input
               className="form-check-input h-4 w-4 mt-1 float-left mr-2 cursor-pointer"
               type="radio"
-              name={typeSector}
-              value="Third_services"
-              checked={ typeSector === "Third_services" }
-              onChange={() => setTypeSector("Third_services")}
+              value={1}
+              checked={ typeSector === 1 }
+              onChange={() => setTypeSector(1)}
             />
             <label
               className="form-check-label font-roboto font-medium text-blue text-sm"
