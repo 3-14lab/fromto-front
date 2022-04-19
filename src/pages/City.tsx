@@ -171,6 +171,7 @@ const City: React.FC = () => {
                 key={city.id}
                 city={city}
                 labelTextButton="Novo Setor"
+                pathname="/pairings"
                 handleDeleteCity={handleDelete}
                 handleDeleteSector={handleDeleteSector}
                 handleOpenNewSectorModal={handleOpenNewSectorModal}

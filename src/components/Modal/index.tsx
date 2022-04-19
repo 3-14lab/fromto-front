@@ -5,7 +5,7 @@ import './style.css'
 
 import closeImg from '@image/close.svg'
 
-interface props  {
+interface props {
   isOpen: boolean;
   onRequestClose: () => void;
   title: string;

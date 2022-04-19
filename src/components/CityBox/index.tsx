@@ -11,6 +11,7 @@ import { editCity } from "@services/city";
 type props = {
   city: CityData;
   labelTextButton: string;
+  pathname: string;
   handleDeleteCity: (id: string) => void;
   handleDeleteSector: (id: string) => void;
   handleOpenNewSectorModal: (id: string) => () => void;
@@ -19,6 +20,7 @@ type props = {
 function CityBox({
   city,
   labelTextButton,
+  pathname,
   handleDeleteCity,
   handleDeleteSector,
   handleOpenNewSectorModal,
@@ -91,7 +93,7 @@ function CityBox({
             >
               <Link
                 to={{
-                  pathname: `/pairings/${id}`,
+                  pathname: `${pathname}/${id}`,
                   state: { city_name: name, sector_name, type },
                 }}
                 className="flex flex-1 justify-between hover:bg-gray/200"
