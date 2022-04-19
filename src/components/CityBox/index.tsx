@@ -54,9 +54,9 @@ export default function CityBox({
               className="flex items-center text-body font-medium p-2 outline-body"
             />
           </div>
-          <div className="flex items-center text-body font-normal">{`${sector_amount} ${
-            sector_amount === 1 ? "setor" : "setores"
-          }`}</div>
+          <div className="flex items-center text-body font-normal">
+            {`${sector_amount} ${sector_amount === 1 ? "setor" : "setores"}`}
+          </div>
           <div className="flex items-center text-body font-normal justify-center">
             {new Date(createdTime).toLocaleDateString("pt-br")}
           </div>
@@ -128,7 +128,7 @@ export default function CityBox({
           className="bg-gray/100 w-full h-16 rounded-lg mb-2.5 hover:bg-gray/200"
           onClick={handleOpenNewSectorModal(id)}
         >
-          <div className="flex h-full items-center justify-start mx-5 gap-5  cursor-pointer">
+          <div className="flex h-full items-center justify-start mx-5 gap-5 cursor-pointer">
             <img alt="adicionar setor" src={Add} />
             <p className="font-roboto font-medium text-sm	text-blue ">
               Novo Setor
