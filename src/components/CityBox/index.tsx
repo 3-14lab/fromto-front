@@ -104,9 +104,7 @@ export default function CityBox({
                       : "Serviços de terceiros"}
                   </small>
                   <div className="flex col-span-2 items-center text-body font-normal">
-                    {`${pairing_amount} ${
-                      pairing_amount > 1 ? "pareamentos" : "pareamento"
-                    }`}
+                    {`${pairing_amount} ${pairing_amount > 1 ? "pareamentos" : "pareamento"}`}
                   </div>
                   <div className="flex items-center text-body font-normal">
                     {new Date(createdTime).toLocaleDateString("pt-br")}
