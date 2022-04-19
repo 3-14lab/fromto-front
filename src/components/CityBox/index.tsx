@@ -21,8 +21,7 @@ export default function CityBox({
   handleDeleteSector,
   handleOpenNewSectorModal,
 }: CityBoxProps) {
-  const { name, createdTime, id, sectors } = city;
-  const amount = sectors.length;
+  const { name, createdTime, id, sectors, sector_amount } = city;
   const inputRef = useRef(null as any);
   const [editName, setEditName] = useState<string>(name);
   const [editDisable, setEditDisable] = useState<boolean>(true);
@@ -55,8 +54,8 @@ export default function CityBox({
               className="flex items-center text-body font-medium p-2 outline-body"
             />
           </div>
-          <div className="flex items-center text-body font-normal">{`${amount} ${
-            amount === 1 ? "setor" : "setores"
+          <div className="flex items-center text-body font-normal">{`${sector_amount} ${
+            sector_amount === 1 ? "setor" : "setores"
           }`}</div>
           <div className="flex items-center text-body font-normal justify-center">
             {new Date(createdTime).toLocaleDateString("pt-br")}
@@ -77,7 +76,13 @@ export default function CityBox({
           </div>
         </div>
         {sectors?.map(
-          ({ name: sector_name, createdTime, type, id }: SectorData) => (
+          ({
+            name: sector_name,
+            createdTime,
+            type,
+            id,
+            pairing_amount,
+          }: SectorData) => (
             <div
               key={id}
               className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200"
@@ -99,7 +104,9 @@ export default function CityBox({
                       : "Serviços de terceiros"}
                   </small>
                   <div className="flex col-span-2 items-center text-body font-normal">
-                    12 pareamentos
+                    {`${pairing_amount} ${
+                      pairing_amount > 1 ? "pareamentos" : "pareamento"
+                    }`}
                   </div>
                   <div className="flex items-center text-body font-normal">
                     {new Date(createdTime).toLocaleDateString("pt-br")}

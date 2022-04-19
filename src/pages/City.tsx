@@ -12,6 +12,7 @@ export interface SectorData {
   name: string;
   type: string;
   createdTime: Date;
+  pairing_amount: number;
 }
 
 export interface CityData {
@@ -19,6 +20,7 @@ export interface CityData {
   name: string;
   createdTime: Date;
   sectors: SectorData[];
+  sector_amount: number;
 }
 
 const City: React.FC = () => {
