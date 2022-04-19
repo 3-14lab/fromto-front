@@ -170,6 +170,7 @@ const City: React.FC = () => {
               <CityBox
                 key={city.id}
                 city={city}
+                labelTextButton="Novo Setor"
                 handleDeleteCity={handleDelete}
                 handleDeleteSector={handleDeleteSector}
                 handleOpenNewSectorModal={handleOpenNewSectorModal}

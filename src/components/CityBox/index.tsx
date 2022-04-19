@@ -2,14 +2,15 @@ import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { CityData, SectorData } from "@pages/City";
 import { FaCheck } from "react-icons/fa";
+import { IoMdAddCircle } from 'react-icons/io'
 
 import EditImg from "@image/edit.svg";
 import TrashImg from "@image/trash.svg";
-import Add from "@image/Icon.svg";
 import { editCity } from "@services/city";
 
 type props = {
   city: CityData;
+  labelTextButton: string;
   handleDeleteCity: (id: string) => void;
   handleDeleteSector: (id: string) => void;
   handleOpenNewSectorModal: (id: string) => () => void;
@@ -17,6 +18,7 @@ type props = {
 
 function CityBox({
   city,
+  labelTextButton,
   handleDeleteCity,
   handleDeleteSector,
   handleOpenNewSectorModal,
@@ -126,10 +128,10 @@ function CityBox({
           className="bg-gray/100 w-full h-16 rounded-lg mb-2.5 hover:bg-gray/200"
           onClick={handleOpenNewSectorModal(id)}
         >
-          <div className="flex h-full items-center justify-start mx-5 gap-5 cursor-pointer">
-            <img alt="adicionar setor" src={Add} />
+          <div className="flex h-full items-center justify-start mx-5 gap-2 cursor-pointer">
+            <IoMdAddCircle size={32} className="text-blue" />
             <p className="font-roboto font-medium text-sm	text-blue ">
-              Novo Setor
+              {labelTextButton}
             </p>
           </div>
         </div>
