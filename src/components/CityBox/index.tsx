@@ -15,7 +15,7 @@ type CityBoxProps = {
   handleOpenNewSectorModal: (id: string) => () => void;
 };
 
-export default function CityBox({
+function CityBox({
   city,
   handleDeleteCity,
   handleDeleteSector,
@@ -137,3 +137,5 @@ export default function CityBox({
     </div>
   );
 }
+
+export default CityBox;
