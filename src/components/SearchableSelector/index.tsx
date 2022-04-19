@@ -16,7 +16,7 @@ function SearchableSelector({
   const [filter, setFilter] = useState("");
   const [currValue, setCurrValue] = useState<PossibleValue>({
     label: "Selecionar",
-    value,
+    value: null,
   });
   const dropdownRef = useRef<null | HTMLDivElement>(null);
 
@@ -36,7 +36,7 @@ function SearchableSelector({
     const clearSelect = () => {
       setCurrValue({
         label: "Selecionar",
-        value,
+        value: null,
       });
     }
     
