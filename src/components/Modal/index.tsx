@@ -13,6 +13,8 @@ interface props  {
   children?: any;
   firstLabelText?: string;
   sector?: boolean;
+  firstLabelRadio?: string;
+  secondLabelRadio?: string;
   handleSubmit: (name: string, type: any) => void;
 }
 
@@ -91,7 +93,7 @@ function NewDataModal(props: props){
               className="form-check-label font-roboto font-medium text-blue text-sm "
               htmlFor="flexRadioDefault1"
             >
-              Demais Setores
+              {props.firstLabelRadio}
             </label>
           </div>
           <div className="form-check">
@@ -106,7 +108,7 @@ function NewDataModal(props: props){
               className="form-check-label font-roboto font-medium text-blue text-sm"
               htmlFor="flexRadioDefault2"
             >
-              Serviços de Terceiros - PJ
+              {props.secondLabelRadio}
             </label>
           </div>
         </div>

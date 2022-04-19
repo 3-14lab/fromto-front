@@ -131,6 +131,8 @@ const City: React.FC = () => {
         onRequestClose={handleCloseNewSectorModal}
         placeholder="Nome"
         title="Cadastrar setor"
+        firstLabelRadio="Demais setores"
+        secondLabelRadio="Serviços de Terceiros - PJ"
         handleSubmit={handleModalSubmitNewSector}
         sector={true}
       />
