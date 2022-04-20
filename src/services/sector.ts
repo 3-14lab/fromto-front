@@ -24,6 +24,16 @@ const createSector = async ({ name, city_id, type }: CreateSectorInterface) => {
   }
 };
 
+const editSector = async (sector_id: string, type: string, name: string) => {
+  try {
+    const response = await api.put(`sector?sector_id=${sector_id}`, {name, type})
+
+    return response
+  } catch(error){
+    console.log(error)
+  }
+}
+
 const deleteSector = async (sector_id: string) => {
   try {
     const response = await api.delete(`sector/${sector_id}`)
@@ -44,4 +54,4 @@ const getSectorByCity = async (city_id: string) => {
   }
 }
 
-export { createSector, getSectorByCity, deleteSector }
+export { createSector, getSectorByCity, deleteSector, editSector }
