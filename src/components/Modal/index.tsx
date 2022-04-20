@@ -26,7 +26,6 @@ enum TypeSector {
 function NewDataModal(props: props){
   
   const [value, setValue] = useState('')
-  const [emptyField, setEmptyField] = useState(true)
   const [typeSector, setTypeSector] = useState<TypeSector>(0)
 
   function handleCreateNewDataModal (event: FormEvent){
@@ -37,16 +36,11 @@ function NewDataModal(props: props){
       setValue('')
       setTypeSector(0)
       props.onRequestClose()
-      setEmptyField(false)
     }
     else if(value){
       props.handleSubmit(value, null)
       setValue('')
       props.onRequestClose()
-      setEmptyField(false)
-    }
-    else {
-      setEmptyField(false)
     }
   }
 
@@ -62,7 +56,7 @@ function NewDataModal(props: props){
       className="react-modal-content"
       // ariaHideApp={false}
     >
-      <button type='button' onClick={() => { setEmptyField(false); props.onRequestClose()}} className='react-modal-close' >
+      <button type='button' onClick={() => { props.onRequestClose()}} className='react-modal-close' >
         <img src={closeImg} alt="Fechar modal" />
       </button>
 
@@ -76,7 +70,6 @@ function NewDataModal(props: props){
         placeholder={props.placeholder}
         value={value}
         onChange={event=> setValue(event.target.value) }
-        style={{borderColor: !!emptyField ? '#d60f0f' : "" }}
       />
 
       {props.sector && 
