@@ -60,10 +60,8 @@ const City: React.FC = () => {
   }
 
   function handleOpenNewSectorModal(city_id: string) {
-    return () => {
-      setIsNewSectorModalOpen(true);
-      setCityIdInModal(city_id);
-    };
+    setIsNewSectorModalOpen(true);
+    setCityIdInModal(city_id);
   }
 
   function handleCloseNewSectorModal() {

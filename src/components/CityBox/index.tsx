@@ -15,7 +15,7 @@ type props = {
   pathname: string;
   handleDeleteCity: (id: string) => void;
   handleDeleteSector: (id: string) => void;
-  handleOpenNewSectorModal: (id: string) => () => void;
+  handleOpenNewSectorModal: (id: string) => void;
 };
 
 function SectorList({
@@ -41,77 +41,62 @@ function SectorList({
   }, [isEditing]);
 
   return (
-    <>
-      <div className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
-        <Link
-          to={{
-            pathname: `${pathname}/${id}`,
-            state: { city_name: name, sector_name, type },
-          }}
-          className="flex flex-1 justify-between hover:bg-gray/200"
-        >
-          <div className="grid grid-cols-7 bg-gray/100 w-full hover:bg-gray/200">
-            <div className="flex items-center">
-              <input
-                ref={inputRef}
-                value={editName}
-                onChange={({ target }) => setEditName(target.value)}
-                disabled={!isEditing}
-                className="outline-body flex items-center text-body font-medium p-2 bg-transparent"
-              />
-            </div>
-            <small className="flex items-center col-span-2 text-body font-roboto font-light text-sm m-auto">
-              {type === "DEFAULT_SECTOR"
-                ? "Demais setores"
-                : "Serviços de terceiros"}
-            </small>
-            <div className="flex col-span-2 items-center text-body font-normal">
-              {`${pairing_amount} ${
-                pairing_amount > 1 ? "pareamentos" : "pareamento"
-              }`}
-            </div>
-            <div className="flex items-center text-body font-normal">
-              {new Date(createdTime).toLocaleDateString("pt-br")}
-            </div>
+    <div className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
+      <Link
+        to={{
+          pathname: `${pathname}/${id}`,
+          state: { city_name: name, sector_name, type },
+        }}
+        className="flex flex-1 justify-between hover:bg-gray/200"
+      >
+        <div className="grid grid-cols-7 bg-gray/100 w-full hover:bg-gray/200">
+          <div className="flex items-center">
+            <input
+              ref={inputRef}
+              value={editName}
+              onChange={({ target }) => setEditName(target.value)}
+              disabled={!isEditing}
+              className="outline-body flex items-center text-body font-medium p-2 bg-transparent"
+            />
           </div>
-        </Link>
-        <div className="flex justify-end pl-2">
-          {isEditing ? (
-            <button onClick={() => handleEditDisable(id)}>
-              <FaCheck size={24} color="green" className="mr-2" />
-            </button>
-          ) : (
-            <button
-              onClick={() => {
-                handleEditDisable(id);
-              }}
-            >
-              <img className="w-7 h-5 pl-2" src={EditImg} alt="" />
-            </button>
-          )}
+          <small className="flex items-center col-span-2 text-body font-roboto font-light text-sm m-auto">
+            {type === "DEFAULT_SECTOR"
+              ? "Demais setores"
+              : "Serviços de terceiros"}
+          </small>
+          <div className="flex col-span-2 items-center text-body font-normal">
+            {`${pairing_amount} ${
+              pairing_amount > 1 ? "pareamentos" : "pareamento"
+            }`}
+          </div>
+          <div className="flex items-center text-body font-normal">
+            {new Date(createdTime).toLocaleDateString("pt-br")}
+          </div>
+        </div>
+      </Link>
+      <div className="flex justify-end pl-2">
+        {isEditing ? (
+          <button onClick={() => handleEditDisable(id)}>
+            <FaCheck size={24} color="green" className="mr-2" />
+          </button>
+        ) : (
           <button
             onClick={() => {
-              //handleDeleteSector(id)
+              handleEditDisable(id);
             }}
           >
-            <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
+            <img className="w-7 h-5 pl-2" src={EditImg} alt="" />
           </button>
-        </div>
+        )}
+        <button
+          onClick={() => {
+            //handleDeleteSector(id)
+          }}
+        >
+          <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
+        </button>
       </div>
-      <div
-        className="bg-gray/100 w-full h-16 rounded-lg mb-2.5 hover:bg-gray/200"
-        onClick={() => {
-          //handleOpenNewSectorModal(id)
-        }}
-      >
-        <div className="flex h-full items-center justify-start mx-5 gap-2 cursor-pointer">
-          <IoMdAddCircle size={32} className="text-blue" />
-          <p className="font-roboto font-medium text-sm	text-blue ">
-            {labelTextButton}
-          </p>
-        </div>
-      </div>
-    </>
+    </div>
   );
 }
 
@@ -185,8 +170,22 @@ function CityBox({
             pathname={pathname}
             labelTextButton={labelTextButton}
             sector={sector}
+            handleOpenNewSectorModal={handleOpenNewSectorModal}
           />
         ))}
+        <div
+          className="bg-gray/100 w-full h-16 rounded-lg mb-2.5 hover:bg-gray/200"
+          onClick={() => {
+            handleOpenNewSectorModal(id);
+          }}
+        >
+          <div className="flex h-full items-center justify-start mx-5 gap-2 cursor-pointer">
+            <IoMdAddCircle size={32} className="text-blue" />
+            <p className="font-roboto font-medium text-sm	text-blue ">
+              {labelTextButton}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
