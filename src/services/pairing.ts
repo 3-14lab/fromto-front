@@ -56,4 +56,14 @@ const deletePairing = async (expenseSheet_id: string) => {
   }
 }
 
-export { createPairing, getPairingById, getPairingBySector, deletePairing }
+const getPairingBySectorThirdService = async (sector_id: string) => {
+  try {
+    const response = await api.get(`service_third?service_third_id=${sector_id}`);
+
+    return response.data.local_file;
+  } catch(error){
+    console.log(error)
+  }
+}
+
+export { createPairing, getPairingById, getPairingBySector, deletePairing, getPairingBySectorThirdService }
