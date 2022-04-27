@@ -11,6 +11,7 @@ import { Pairing } from '@pages/Pairing';
 import { RecoverPassword } from '@pages/RecoverPassword';
 import { PairingView } from '@pages/PairingView';
 import { PJServicesView } from '@pages/PJServicesView';
+import { PairingsPJ } from '@pages/PairingsPJ';
 
 const Routes: React.FC = () => {
   return (
@@ -19,6 +20,7 @@ const Routes: React.FC = () => {
       <Route path="/signup" exact component={SignUp} />
       <Route path="/city" isPrivate exact component={City} />
       <Route path="/pairings/:sector_id" isPrivate exact component={Pairings} />
+      <Route path="/pairings/pj/:sector_id" isPrivate exact component={PairingsPJ} />
       <Route path="/pairing/:sector_id" isPrivate exact component={Pairing} />
       <Route path="/pairing/view/:p_id" isPrivate exact component={PairingView} />
       <Route path="/pairing/view/pj/:p_id" isPrivate exact component={PJServicesView} />

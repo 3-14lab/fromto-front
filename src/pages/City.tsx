@@ -76,7 +76,7 @@ const City: React.FC = () => {
 
         return { ...city, sectors: response.data };
       })
-    );
+    );  
 
     setCities(citiesWithSectors);
     setLoading(false);

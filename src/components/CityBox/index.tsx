@@ -44,7 +44,7 @@ function SectorList({
     <div className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
       <Link
         to={{
-          pathname: `${pathname}/${id}`,
+          pathname: type === "DEFAULT_SECTOR" ? `${pathname}/${id}` : `${pathname}/pj/${id}`,
           state: { city_name: name, sector_name, type },
         }}
         className="flex flex-1 justify-between hover:bg-gray/200"

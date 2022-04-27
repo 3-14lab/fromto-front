@@ -5,21 +5,17 @@ import { Link, useHistory, useLocation, useParams } from "react-router-dom";
 import { HiInformationCircle } from "react-icons/hi";
 
 import TrashImg from "@image/trash.svg";
-import { deletePairing, getPairingBySector } from "@services/pairing";
+import { deletePairing, getPairingBySectorPJ } from "@services/pairing";
 
 interface ExpenseSheetData {
   id: string;
-  value: number;
-  sector_id: string;
   name: string;
-  place_name: string;
-  base_code: string;
-  model_code: string;
+  local_file: string;
+  sector_id: number;
   createdTime: Date;
-  data: any;
 }
 
-export const Pairings: React.FC = () => {
+export const PairingsPJ: React.FC = () => {
   const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false);
   const [expenseSheets, setExpenseSheets] = useState<ExpenseSheetData[]>([]);
   const [templateSelect, setTemplateSelect] = useState("");
@@ -34,9 +30,8 @@ export const Pairings: React.FC = () => {
   };
 
   const loadSector = async() => {
-    const response = await getPairingBySector(sector_id);
+    const response = await getPairingBySectorPJ(sector_id);
     console.log("Sorry, ", response)
-
     setExpenseSheets(response);
   }
 
@@ -54,28 +49,12 @@ export const Pairings: React.FC = () => {
   }
 
   function handlePairing(name: string) {
-    if (templateSelect !== "") {
-      const templ = expenseSheets
-        .find((item) => item.id === templateSelect)!
-        .data.map((item: any) => {
-          delete item.created_at;
-          delete item.id;
-          delete item.pairing_id;
-          delete item.updated_at;
+    //TELA PRA CONFIRMAR OS DADOS E SALVAR E BAIXAR PLANILHA
 
-          return item;
-        });
-      history.push({
-        pathname: `/pairing/${sector_id}`,
-        state: { pairing_name: name, data: templ, city_name, sector_name },
-      });
-      return;
-    }
-
-    history.push({
+    /*history.push({
       pathname: `/pairing/${sector_id}`,
       state: { pairing_name: name, city_name, sector_name },
-    });
+    });*/
   }
 
   async function handleDelete(expenseSheet_id: string) {
@@ -99,53 +78,9 @@ export const Pairings: React.FC = () => {
       >
         <FileUploader
           placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP"
-          label="Arquivo SICGESP"
+          label="Arquivo SICGESP com número de postos"
           type="sicgesp"
         />
-
-        <>
-          <FileUploader
-            placeholder="Clique aqui ou arraste o arquivo .csv sem padronização"
-            label="Arquivo local"
-            type="local"
-          />
-
-          <div className="flex gap-1 items-center">
-            <label className="font-roboto font-medium text-blue text-sm">
-              Template de pareamento
-            </label>
-            <div
-              className="relative cursor-pointer"
-              onMouseEnter={() => setIsOpen(true)}
-              onMouseLeave={() => setIsOpen(false)}
-            >
-              <HiInformationCircle color="#5429CC" />
-              {isOpen && (
-                <div className="w-80 absolute bottom-[-6] left-1 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
-                  Selecione um pareamento anterior e utilize a mesma paridade
-                  de lotações para este novo pareamento!
-                </div>
-              )}
-            </div>
-          </div>
-          <select
-            onChange={({ target }) => {
-              setTemplateSelect(target.value);
-            }}
-            defaultValue={"DEFAULT"}
-            id="select-primary"
-            className={`lg:w-full md:w-72 px-3.5 py-2.5 mt-0.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}
-          >
-            <option value="DEFAULT" disabled hidden>
-              Nenhum (padrão)
-            </option>
-            {expenseSheets.map(({ id, name }: any) => (
-              <React.Fragment key={id}>
-                <option value={id}>{name}</option>
-              </React.Fragment>
-            ))}
-          </select>
-        </>
       </ModalFile>
 
       <Modal
@@ -162,6 +97,7 @@ export const Pairings: React.FC = () => {
           Para que ocorra o funcionamento desejado, certifique que os campos de{" "}
           <strong>Código</strong>, <strong>Descrição da Lotação</strong>,{" "}
           <strong>Valor Realocado</strong>
+          <strong> e Quantidade de Postos</strong>
           estejam presentes nas suas planilhas para importação. Do contrário as
           linhas com qualquer ausência não serão lidas!
         </span>
@@ -179,7 +115,7 @@ export const Pairings: React.FC = () => {
         <div className="flex justify-between items-center">
           <section className="flex items-end mt-4 mb-10 space-x-8 ">
             <h1 className="text-[#374151] font-roboto font-medium text-4xl">
-              Pareamento
+              Serviços de terceiros - PJ
             </h1>
             <h3 className="flex font-roboto font-medium text-2xl	text-[#6B7280] items-center">
               {city_name} | {sector_name}
@@ -213,7 +149,7 @@ export const Pairings: React.FC = () => {
               <div className="flex rounded-md flex-1 bg-white hover:bg-text justify-between">
                 <Link
                   to={{
-                    pathname: `/pairing/view/${expenseSheet.id}`,
+                    pathname: `/pairing/view/pj/${expenseSheet.id}`,
                     state: {
                       city_name,
                       sector_name,
