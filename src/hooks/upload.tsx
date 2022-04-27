@@ -13,6 +13,13 @@ export type localType = {
   base_code?: string | null;
 }
 
+export type localTypePJ = {
+  stocking_code: string;
+  description_stocking: string;
+  reallocated_value: string;
+  number_posts: string;
+}
+
 export type sicgespType = {
   base_code: string;
   location: string;
@@ -27,6 +34,7 @@ export type pairingCodesType = {
 export type FileProps = {
   sicgesp: sicgespType[];
   local: localType[];
+  localPJ: localTypePJ[];
 };
 
 

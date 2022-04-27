@@ -2,10 +2,12 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { BackButton, FileUploader, Header, ModalFile } from "@components";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
-import { HiInformationCircle } from "react-icons/hi";
+import { useUpload } from "@hooks/upload";
+
+import { localTypePJ } from "@hooks/upload";
 
 import TrashImg from "@image/trash.svg";
-import { deletePairing, getPairingBySectorPJ } from "@services/pairing";
+import { createPairingPJ, deletePairing, getPairingBySectorPJ } from "@services/pairing";
 
 interface ExpenseSheetData {
   id: string;
@@ -15,12 +17,19 @@ interface ExpenseSheetData {
   createdTime: Date;
 }
 
+
+type FilePropsLocalPJ = {
+  [field: string]: localTypePJ;
+};
+
 export const PairingsPJ: React.FC = () => {
   const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false);
   const [expenseSheets, setExpenseSheets] = useState<ExpenseSheetData[]>([]);
-  const [templateSelect, setTemplateSelect] = useState("");
-
+  const [popUp, setPopUp] = useState<boolean>(false);
   const history = useHistory();
+  const { file } = useUpload();
+
+  const [formattedFilePJ, setFormattedFilePJ] = useState({} as FilePropsLocalPJ);
 
   const { sector_id } = useParams() as { sector_id: string };
   const {
@@ -31,13 +40,8 @@ export const PairingsPJ: React.FC = () => {
 
   const loadSector = async() => {
     const response = await getPairingBySectorPJ(sector_id);
-    console.log("Sorry, ", response)
     setExpenseSheets(response);
   }
-
-  useEffect(() => {
-    loadSector();
-  }, []);
 
   function handleOpenNewDataModal() {
     setIsNewDataModalOpen(true);
@@ -48,22 +52,31 @@ export const PairingsPJ: React.FC = () => {
     setIsNewDataModalOpen(false);
   }
 
-  function handlePairing(name: string) {
-    //TELA PRA CONFIRMAR OS DADOS E SALVAR E BAIXAR PLANILHA
+  async function handlePairing(name: string) {
+    const pairingCreateBody = {
+      name,
+      sector_id,
+      local_file: Object.values(formattedFilePJ),
+    }
+    const response = await createPairingPJ(pairingCreateBody);
 
-    /*history.push({
-      pathname: `/pairing/${sector_id}`,
+    history.push({
+      pathname: `/pairing/view/pj/${response?.data.id}`,
       state: { pairing_name: name, city_name, sector_name },
-    });*/
+    });
   }
+
+  useEffect(() => {
+    loadSector();
+    setFormattedFilePJ(
+      file["localPJ"]?.reduce((p, c) => ({ ...p, [c.stocking_code!]: c }), {})
+    );
+  }, [file]);
 
   async function handleDelete(expenseSheet_id: string) {
     await deletePairing(expenseSheet_id);
     await loadSector();
   }
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [popUp, setPopUp] = useState<boolean>(false);
 
   return (
     <>
@@ -79,7 +92,7 @@ export const PairingsPJ: React.FC = () => {
         <FileUploader
           placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP"
           label="Arquivo SICGESP com número de postos"
-          type="sicgesp"
+          type="localPJ"
         />
       </ModalFile>
 

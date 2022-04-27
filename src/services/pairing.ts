@@ -8,6 +8,12 @@ interface createPairingInterface {
   sicgesp_file: Object
 }
 
+interface createPairingPJInterface {
+  name: string,
+  sector_id: string,
+  local_file: Object
+}
+
 const createPairing = async ({ sector_id, name, pairingCodes, local_file, sicgesp_file }: createPairingInterface) => {
 
   try {
@@ -56,6 +62,21 @@ const deletePairing = async (expenseSheet_id: string) => {
   }
 }
 
+const createPairingPJ = async ({ name, sector_id, local_file }: createPairingPJInterface) => {
+
+  try {
+    const response = await api.post("/service_third", {
+      name,
+      sector_id,
+      local_file,
+    });
+
+    return response
+
+  } catch (error) {
+    console.log(error) 
+  }
+};
 
 const getPairingBySectorPJ = async (sector_id: string) => {
   try {
@@ -67,4 +88,4 @@ const getPairingBySectorPJ = async (sector_id: string) => {
   }
 }
 
-export { createPairing, getPairingById, getPairingBySector, deletePairing, getPairingBySectorPJ }
+export { createPairing, getPairingById, getPairingBySector, deletePairing, getPairingBySectorPJ, createPairingPJ }

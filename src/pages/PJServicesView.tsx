@@ -53,11 +53,10 @@ export const PJServicesView: React.FC = () => {
   const [amount, setAmount] = useState<number>(0);
 
   const { p_id } = useParams<any>();
-  //const { state: { city_name, sector_name, expensesheet_name } } = useLocation<any>();
+  const { state: { city_name, sector_name, expensesheet_name } } = useLocation<any>();
 
   useEffect(() => {
     (async () => {
-      console.log(p_id);
       const response = await api.get(`service_third?service_third_id=${p_id}`);
       setFile(response.data.local_file);
       setAmount(file.map((item) => item.reallocated_value).reduce((prev, curr) => Number(prev) + Number(curr), 0));
@@ -96,7 +95,7 @@ export const PJServicesView: React.FC = () => {
             Pareamento
           </h1>
           <h3 className="font-roboto font-medium text-2xl	text-[#6B7280]">
-            cidade | nome | excel
+            {city_name} | {sector_name} | {expensesheet_name}
           </h3>
         </section>
 

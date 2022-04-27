@@ -5,7 +5,7 @@ import { csvToObject } from "@utils/csvFormated";
 type FileUploaderProps = {
   placeholder: string;
   label: string;
-  type: 'sicgesp' | 'local';
+  type: 'sicgesp' | 'local' | 'localPJ';
 }
 
 const FileUploader = ({ placeholder, label, type }: FileUploaderProps) => {
