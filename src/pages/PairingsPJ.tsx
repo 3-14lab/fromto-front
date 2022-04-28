@@ -86,7 +86,7 @@ export const PairingsPJ: React.FC = () => {
         isOpen={isNewDataModalOpen}
         onRequestClose={handleCloseNewDataModal}
         placeholder="Nome"
-        title="Cadastrar pareamento"
+        title="Cadastrar Serviços de Terceiros - PJ"
         handleSumit={handlePairing}
       >
         <FileUploader
@@ -138,7 +138,7 @@ export const PairingsPJ: React.FC = () => {
             onClick={handleOpenNewDataModal}
             className="text-white font-medium text-xs border rounded-md bg-blue py-3 px-16 hover:brightness-90"
           >
-            Novo Pareamento
+            Novo PJ
           </button>
         </div>
 

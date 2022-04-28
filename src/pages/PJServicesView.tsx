@@ -92,7 +92,7 @@ export const PJServicesView: React.FC = () => {
         </div>
         <section className="flex items-end my-10 space-x-8 ">
           <h1 className="text-[#374151] font-roboto font-medium text-4xl">
-            Pareamento
+            Serviços de Terceiros - PJ
           </h1>
           <h3 className="font-roboto font-medium text-2xl	text-[#6B7280]">
             {city_name} | {sector_name} | {expensesheet_name}
