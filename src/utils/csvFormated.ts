@@ -32,7 +32,6 @@ function csvToObject(csv: any, type: "sicgesp" | "local" | "localPJ"): fileObjec
 
       
       if (incomeFormatted.stocking_code) income.push(incomeFormatted);
-      console.log("entrou e testando, ", income)
     } else {
       incomeFormatted = {
         base_code: columns[0],

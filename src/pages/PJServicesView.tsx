@@ -130,7 +130,7 @@ export const PJServicesView: React.FC = () => {
 
         <div className="w-fit	mx-auto mb-6">
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
-            <CSVLink data={formatCSV} filename={`planilha teste`} headers={headers} separator={";"}>
+            <CSVLink data={formatCSV} filename={`${city_name}_${sector_name}_${expensesheet_name}`} headers={headers} separator={";"}>
               Baixar planilha
             </CSVLink>
           </button>

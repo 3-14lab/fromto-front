@@ -38,7 +38,6 @@ const City: React.FC = () => {
       const citiesWithSectors = await Promise.all(
         response.data?.map(async (city: any) => {
           const response = await api.get(`city/sectors/?city_id=${city.id}`);
-          console.log(response)
           
           return { ...city, sectors: response.data };
         })

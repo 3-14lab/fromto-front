@@ -35,7 +35,6 @@ export const Pairings: React.FC = () => {
 
   const loadSector = async() => {
     const response = await getPairingBySector(sector_id);
-    console.log("Sorry, ", response)
 
     setExpenseSheets(response);
   }
