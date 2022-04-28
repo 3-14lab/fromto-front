@@ -161,7 +161,7 @@ export const Pairings: React.FC = () => {
         <span className="font-roboto text-sm">
           Para que ocorra o funcionamento desejado, certifique que os campos de{" "}
           <strong>Código</strong>, <strong>Descrição da Lotação</strong>,{" "}
-          <strong>Valor Realocado</strong>
+          <strong>Valor Realocado </strong>
           estejam presentes nas suas planilhas para importação. Do contrário as
           linhas com qualquer ausência não serão lidas!
         </span>

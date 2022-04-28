@@ -53,15 +53,8 @@ export const PairingsPJ: React.FC = () => {
   }
 
   async function handlePairing(name: string) {
-    const pairingCreateBody = {
-      name,
-      sector_id,
-      local_file: Object.values(formattedFilePJ),
-    }
-    const response = await createPairingPJ(pairingCreateBody);
-
     history.push({
-      pathname: `/pairing/view/pj/${response?.data.id}`,
+      pathname: `/pairing/pj/${sector_id}`,
       state: { pairing_name: name, city_name, sector_name },
     });
   }

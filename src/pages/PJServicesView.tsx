@@ -12,8 +12,8 @@ interface FieldGroupProps {
 
 const FieldGroup = ({ code, location, value }: FieldGroupProps) => {
   return (
-    <div>
-      <div key={code} className="flex items-center space-x-5">
+    <div className="flex w-full">
+      <div key={code} className="px-8 flex w-full justify-between items-center space-x-5">
         <div>
           <p
             className={`lg:w-28 md:w-20 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]`}
@@ -21,11 +21,11 @@ const FieldGroup = ({ code, location, value }: FieldGroupProps) => {
             {code}
           </p>
         </div>
-        <div>
+        <div className="w-full">
           <div
-            className={`lg:w-96 md:w-72 px-3.5 py-2.5 border rounded-md text-[#D1D5DB] bg-[#f0f2f5]`}
+            className={`w-full px-3.5 py-2.5 border rounded-md text-[#D1D5DB] bg-[#f0f2f5]`}
           >
-            <p className="font-roboto font-medium text-[#6B7280]">
+            <p className="font-roboto w-full font-medium text-[#6B7280]">
               {location}
             </p>
           </div>
@@ -99,14 +99,13 @@ export const PJServicesView: React.FC = () => {
           </h3>
         </section>
 
-        <div className="flex justify-center mx-10 gap-5 mb-2.5">
+        <div className="flex justify-between mx-10 gap-5 mb-2.5">
           <h4 className="lg:w-24 md:w-20 font-poppins font-normal text-center text-[#5429CC]">
             codigo
           </h4>
           <h4 className="lg:w-96 md:w-72 font-poppins font-normal text-center text-[#5429CC]">
             nome do setor
           </h4>
-          <div className="lg:mx-7 md:mx"></div>
           <h4 className="lg:w-24 md:w-20 font-poppins font-normal text-center text-[#5429CC]">
             valor
           </h4>
@@ -129,7 +128,7 @@ export const PJServicesView: React.FC = () => {
           )}
         </div>
 
-        <div className="w-fit	mx-auto">
+        <div className="w-fit	mx-auto mb-6">
           <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
             <CSVLink data={formatCSV} filename={`planilha teste`} headers={headers} separator={";"}>
               Baixar planilha
