@@ -1,13 +1,10 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { BackButton, Header } from "@components";
 import { useUpload } from "@hooks/upload";
 import { CSVLink } from "react-csv";
-//import api from "@services/api";
-import { Oval } from "react-loader-spinner";
-import { localTypePJ, pairingCodesType } from "@hooks/upload";
-import SearchableSelector from "@components/SearchableSelector";
-import { createPairing, createPairingPJ } from "@services/pairing";
+import { localTypePJ } from "@hooks/upload";
+import { createPairingPJ } from "@services/pairing";
 
 interface LocationState {
   pairing_name: string;
@@ -23,20 +20,22 @@ type FilePJPropsLocal = {
 export const PairingPJ: React.FC = () => {
   const { sector_id } = useParams() as { sector_id: string };
   const history = useHistory();
+
+  const [fileView, setFileView] = useState<any[]>([{
+    stocking_code: "",
+    description_stocking: "",
+    reallocated_value: ""
+  }]);
   const {
     state: { pairing_name, city_name, sector_name, data },
   } = useLocation<LocationState>();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const { file } = useUpload();
-
   const [formattedFile, setFormattedFile] = useState({} as FilePJPropsLocal);
 
   const headers = [
     { label: "Código Lotação", key: "stocking_code" },
     { label: "Descrição Locação", key: "description_stocking" },
     { label: "Valor Realocado", key: "reallocated_value" },
-    { label: "Postos", key: "number_posts" },
   ];
 
   useEffect(() => {
@@ -54,49 +53,7 @@ export const PairingPJ: React.FC = () => {
     }
   }, [data]);
 
-  const downloadPairingFilled = useMemo(() => {
-    const aux = formattedFile;
-    return Object.values(aux)
-      .map((item) => {
-        return {
-          stocking_code: item.stocking_code,
-          description_stocking: item.description_stocking,
-          reallocated_value: item.reallocated_value,
-          number_posts: item.number_posts
-        };
-      });
-  }, [formattedFile]);
-
-  function update(model_code: string, target: string | null) {
-    const pairingAlreadySelect = Object.values(formattedFile).find(
-      (item) => target === item.stocking_code
-    );
-
-    if (!target) {
-      return false;
-    }
-
-    if (pairingAlreadySelect) {
-      setFormattedFile((prev) => ({
-        ...prev,
-        [model_code]: { ...prev[model_code], base_code: undefined },
-      }));
-
-      return false;
-    }
-
-    const newPairingSelect = formattedFile[model_code];
-    setFormattedFile((prev) => ({
-      ...prev,
-      [model_code]: { ...newPairingSelect, base_code: target },
-    }));
-
-    return true;
-  }
-
   async function handlePairingSubmit() {
-    setIsLoading(true);
-
     try {
       const pairingCreateBody = {
         name: pairing_name,
@@ -104,14 +61,13 @@ export const PairingPJ: React.FC = () => {
         local_file: Object.values(formattedFile), 
       }
       
-      await createPairingPJ(pairingCreateBody);
+      const response = await createPairingPJ(pairingCreateBody);
+      setFileView(response?.data.local_file.reverse());
       
     } catch (err) {
       console.log(err);
     }
 
-    setIsLoading(false);
-    
     history.push({
       pathname: `/pairings/pj/${sector_id}`,
       state: { sector_name, city_name },
@@ -121,6 +77,14 @@ export const PairingPJ: React.FC = () => {
   if (!Object.values(file).length) {
     history.push("/pairings");
   }
+
+  const formatCSV = fileView?.map((item: any) => {
+    return {
+      stocking_code: item.stocking_code,
+      description_stocking: item.description_stocking,
+      reallocated_value: item.reallocated_value,
+    };
+  });
 
   return (
     <>
@@ -176,36 +140,15 @@ export const PairingPJ: React.FC = () => {
           )}
         </div>
         <div className="w-[700px] mx-auto flex items-center justify-around">
-          <div
-            className="relative cursor-pointer"
-            onMouseEnter={() => setIsOpen(true)}
-            onMouseLeave={() => setIsOpen(false)}
-          >
-            <button
-              onClick={handlePairingSubmit}
-              className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg flex justify-center items-center"
-            >
-              {isLoading ? (
-                <Oval color="#ffffff" height={24} strokeWidth={4} width={24} />
-              ) : (
-                "Salvar planilha"
-              )}
-            </button>
-
-            {isOpen && (
-              <div className="w-fit absolute bottom-[-6] left-0 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded mt-2">
-                Salve o serviço de terceiro - PJ e use-o como template.
-              </div>
-            )}
-          </div>
-          <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
+          <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg">
             <CSVLink
-              data={downloadPairingFilled as []}
+              onClick={handlePairingSubmit}
+              data={formatCSV}
               filename={`${city_name}_${sector_name}_${pairing_name}`}
               headers={headers}
               separator={";"}
             >
-              Baixar planilha
+              Salvar e Baixar planilha
             </CSVLink>
           </button>
         </div>
