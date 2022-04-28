@@ -58,7 +58,7 @@ export const PJServicesView: React.FC = () => {
   useEffect(() => {
     (async () => {
       const response = await api.get(`service_third?service_third_id=${p_id}`);
-      setFile(response.data.local_file);
+      setFile(response.data.local_file.reverse());
       setAmount(file.map((item) => item.reallocated_value).reduce((prev, curr) => Number(prev) + Number(curr), 0));
     })();
   }, [p_id, file]);

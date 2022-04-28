@@ -11,7 +11,7 @@ function csvToObject(csv: any, type: "sicgesp" | "local" | "localPJ"): fileObjec
   const income = [];
   for (const line of lines) {
     const columns = line.split(/;/);
-    console.log("type ->", type)
+
     let incomeFormatted;
     if (type === "local") {
       incomeFormatted = {
@@ -23,17 +23,17 @@ function csvToObject(csv: any, type: "sicgesp" | "local" | "localPJ"): fileObjec
       if (incomeFormatted.model_code) income.push(incomeFormatted);
     } 
     else if(type === "localPJ") {
-      console.log("entrou no localPJ")
       incomeFormatted = {
-        stocking_code: columns[0],
+        stocking_code: convertNumber(columns[0]),
         description_stocking: columns[1],
         reallocated_value: convertNumber(columns[2]),
         number_posts: convertNumber(columns[3])
       };
 
+      
       if (incomeFormatted.stocking_code) income.push(incomeFormatted);
+      console.log("entrou e testando, ", income)
     } else {
-      console.log("entrou no else do localPJ")
       incomeFormatted = {
         base_code: columns[0],
         location: columns[1],

@@ -82,10 +82,20 @@ const getPairingBySectorPJ = async (sector_id: string) => {
   try {
     const response = await api.get(`sector/service_third?sector_id=${sector_id}`);
 
-    return response.data;
+    return response.data.reverse();
   } catch(error){
     console.log(error)
   }
 }
 
-export { createPairing, getPairingById, getPairingBySector, deletePairing, getPairingBySectorPJ, createPairingPJ }
+const deletePairingPJ = async (expenseSheet_id: string) => {
+  try {
+    const response = await api.delete(`service_third?service_third_id=${expenseSheet_id}`)
+
+    return response;
+  } catch(error){
+    console.log(error)
+  }
+}
+
+export { createPairing, getPairingById, getPairingBySector, deletePairing, getPairingBySectorPJ, createPairingPJ, deletePairingPJ }

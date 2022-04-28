@@ -7,7 +7,7 @@ import { useUpload } from "@hooks/upload";
 import { localTypePJ } from "@hooks/upload";
 
 import TrashImg from "@image/trash.svg";
-import { createPairingPJ, deletePairing, getPairingBySectorPJ } from "@services/pairing";
+import { createPairingPJ, deletePairing, deletePairingPJ, getPairingBySectorPJ } from "@services/pairing";
 
 interface ExpenseSheetData {
   id: string;
@@ -74,7 +74,7 @@ export const PairingsPJ: React.FC = () => {
   }, [file]);
 
   async function handleDelete(expenseSheet_id: string) {
-    await deletePairing(expenseSheet_id);
+    await deletePairingPJ(expenseSheet_id);
     await loadSector();
   }
 
