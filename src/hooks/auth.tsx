@@ -3,22 +3,34 @@ import api from '@services/api';
 
 interface User {
   id: string;
-  username: string;
-  email: string;
-  avatar_url: string;
+  firstName: string,
+  lastName: string,
+  phoneNumber: string,
+  emailAddress: string;
+  //avatar_url: string;
 }
+
 interface AuthState {
-  token: string;
+  jwt: string;
   user: User;
 }
 
+interface SignUpCredentials {
+  firstName: string;
+  lastName: string;
+  emailAddress: string;
+  phoneNumber: string;
+  password: string;
+}
+
 interface SignInCredentials {
-  email: string;
+  emailAddress: string;
   password: string;
 }
 
 interface AuthContextData {
   user: User;
+  signUp(credentials: SignUpCredentials): void;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
   updateUser(user: User): void;
@@ -28,33 +40,57 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 export const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
-    const token = localStorage.getItem('@fromto:token');
+    const jwt = localStorage.getItem('@fromto:jwt');
     const user = localStorage.getItem('@fromto:user');
 
-    if (token && user) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      return { token, user: JSON.parse(user) };
+    if (jwt && user) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
+      return { jwt, user: JSON.parse(user) };
     }
 
     return {} as AuthState;
   });
 
-  const signIn = useCallback(async ({ email, password }: SignInCredentials) => {
+  const signUp = useCallback(async ({ firstName, lastName, emailAddress, phoneNumber, password }: SignUpCredentials) => {
+    try {
+      await api.post('signup', {
+        firstName,
+        lastName,
+        emailAddress,
+        phoneNumber,
+        password
+      });
+    } catch(error){
+      console.log(error)
+    }
+  }, []);
+
+  const signIn = useCallback(async ({ emailAddress, password }: SignInCredentials) => {
 
     try {
-      const response = await api.post('session', {
-        email,
+      const response = await api.post('login', {
+        emailAddress,
         password,
       });
+
+      console.log(response.data)
+
+      const user: User = {
+        id: response.data.id,
+        firstName: response.data.firstName,
+        lastName: response.data.lastName,
+        phoneNumber: response.data.phoneNumber,
+        emailAddress: response.data.emailAddress
+      }
   
-      const { token, user } = response.data;
+      const { jwt } = response.data;
   
-      if(token && user){ 
-        localStorage.setItem('@fromto:token', token);
+      if(jwt && user){ 
+        localStorage.setItem('@fromto:jwt', jwt);
         localStorage.setItem('@fromto:user', JSON.stringify(user));
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        api.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
         
-        setData({ token, user });
+        setData({ jwt, user });
       }
     } catch (error) {
      console.log(error) 
@@ -62,7 +98,7 @@ export const AuthProvider: React.FC = ({ children }) => {
   }, []);
 
   const signOut = useCallback(() => {
-    localStorage.removeItem('@fromto:token');
+    localStorage.removeItem('@fromto:jwt');
     localStorage.removeItem('@fromto:user');
     setData({} as AuthState);
   }, []);
@@ -71,16 +107,16 @@ export const AuthProvider: React.FC = ({ children }) => {
     (user: User) => {
       localStorage.setItem('@fromto:user', JSON.stringify(user));
       setData({
-        token: data.token,
+        jwt: data.jwt,
         user,
       });
     },
-    [setData, data.token],
+    [setData, data.jwt],
   );
 
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, updateUser }}
+      value={{ user: data.user, signUp, signIn, signOut, updateUser }}
     >
       {children}
     </AuthContext.Provider>

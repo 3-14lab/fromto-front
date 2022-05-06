@@ -1,4 +1,5 @@
-import { ValidationError } from 'yup';
+import * as Yup from "yup";
+import { ValidationError } from "yup";
 
 interface Errors {
   [key: string]: string;
@@ -12,4 +13,12 @@ export function getValidationErrors(err: ValidationError): Record<string, string
   });
 
   return validationErrors;
+}
+
+export function handleValidationErrors(error: unknown, formRef : any) {
+  if (error instanceof Yup.ValidationError) {
+    const errors = getValidationErrors(error);
+    
+    formRef.current?.setErrors(errors);
+  }
 }

@@ -28,13 +28,13 @@ function Index() {
             className="flex justify-between items-center gap-3 cursor-pointer"
             onClick={handleToggleIsLogoutButtonVisible}
           >
-            <div className="w-[48px] h-[48px] bg-white rounded-full text-blue flex items-center justify-center font-roboto font-bold text-lg">{user.username.split('')[0]}</div>
+            <div className="w-[48px] h-[48px] bg-white rounded-full text-blue flex items-center justify-center font-roboto font-bold text-lg">{user.firstName.split('')[0]}</div>
             <div>
               <p className="font-roboto text-xs text-white font-bold">
-                {user.username}
+                {user.firstName} {user.lastName}
               </p>
               <p className="font-roboto text-white text-xs font-normal	">
-                {user.email}
+                {user.emailAddress}
               </p>
             </div>
           </div>

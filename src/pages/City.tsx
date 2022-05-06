@@ -10,16 +10,17 @@ import { Oval } from "react-loader-spinner";
 export interface SectorData {
   id: string;
   name: string;
-  amount: number;
-  created_at: Date;
+  type: string;
+  createdTime: Date;
+  pairing_amount: number;
 }
 
 export interface CityData {
   id: string;
   name: string;
-  amount: number;
-  created_at: Date;
+  createdTime: Date;
   sectors: SectorData[];
+  sector_amount: number;
 }
 
 const City: React.FC = () => {
@@ -33,11 +34,11 @@ const City: React.FC = () => {
 
   useEffect(() => {
     async function loadCitiesAndSectors() {
-      const response = await api.get(`city/user/${user.id}`);
+      const response = await api.get("user/cities");
       const citiesWithSectors = await Promise.all(
         response.data?.map(async (city: any) => {
-          const response = await api.get(`sector/city/${city.id}`);
-
+          const response = await api.get(`city/sectors/?city_id=${city.id}`);
+          
           return { ...city, sectors: response.data };
         })
       );
@@ -58,10 +59,8 @@ const City: React.FC = () => {
   }
 
   function handleOpenNewSectorModal(city_id: string) {
-    return () => {
-      setIsNewSectorModalOpen(true);
-      setCityIdInModal(city_id);
-    };
+    setIsNewSectorModalOpen(true);
+    setCityIdInModal(city_id);
   }
 
   function handleCloseNewSectorModal() {
@@ -69,14 +68,14 @@ const City: React.FC = () => {
   }
 
   async function handleUpdateCitiesAndSectors() {
-    const response = await api.get(`city/user/${user.id}`);
+    const response = await api.get("user/cities");
     const citiesWithSectors = await Promise.all(
       response.data?.map(async (city: any) => {
-        const response = await api.get(`sector/city/${city.id}`);
+        const response = await api.get(`city/sectors/?city_id=${city.id}`);
 
         return { ...city, sectors: response.data };
       })
-    );
+    );  
 
     setCities(citiesWithSectors);
     setLoading(false);
@@ -88,27 +87,26 @@ const City: React.FC = () => {
       user_id: user.id,
     });
 
-    const response = await api.get(`city/user/${user.id}`);
-    setCities(response.data);
+    handleUpdateCitiesAndSectors();
   }
 
-  async function handleModalSubmitNewSector(data: string) {
+  async function handleModalSubmitNewSector(data: string, typeSector: string) {
     await api.post("sector", {
       name: data,
+      type: typeSector,
       city_id: cityIdInModal,
     });
     handleUpdateCitiesAndSectors();
   }
 
   async function handleDelete(city_id: string) {
-    await api.delete(`city/${city_id}`);
+    await api.delete(`city/?city_id=${city_id}`);
 
-    const response = await api.get(`city/user/${user.id}`);
-    setCities(response.data);
+    handleUpdateCitiesAndSectors();
   }
 
   async function handleDeleteSector(sector_id: string) {
-    await api.delete(`sector/${sector_id}`);
+    await api.delete(`sector/?sector_id=${sector_id}`);
     handleUpdateCitiesAndSectors();
   }
 
@@ -122,6 +120,7 @@ const City: React.FC = () => {
         placeholder="Nome"
         title="Cadastrar cidade"
         handleSubmit={handleModalSubmit}
+        sector={false}
       />
 
       <Modal
@@ -129,8 +128,12 @@ const City: React.FC = () => {
         onRequestClose={handleCloseNewSectorModal}
         placeholder="Nome"
         title="Cadastrar setor"
+        firstLabelRadio="Demais setores"
+        secondLabelRadio="Serviços de Terceiros - PJ"
         handleSubmit={handleModalSubmitNewSector}
+        sector={true}
       />
+
       <main className="mx-auto w-[70rem] ">
         <div className="flex justify-between items-center mt-10">
           <HeaderText>Cidades</HeaderText>
@@ -164,6 +167,8 @@ const City: React.FC = () => {
               <CityBox
                 key={city.id}
                 city={city}
+                labelTextButton="Novo Setor"
+                pathname="/pairings"
                 handleDeleteCity={handleDelete}
                 handleDeleteSector={handleDeleteSector}
                 handleOpenNewSectorModal={handleOpenNewSectorModal}

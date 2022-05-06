@@ -1,12 +1,13 @@
-import React, { ChangeEvent, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useHistory, useLocation, useParams } from "react-router-dom";
 import { BackButton, Header } from "@components";
 import { useUpload } from "@hooks/upload";
 import { CSVLink } from "react-csv";
 import api from "@services/api";
 import { Oval } from "react-loader-spinner";
-import { sicgespType, localType } from "@hooks/upload";
+import { sicgespType, localType, pairingCodesType } from "@hooks/upload";
 import SearchableSelector from "@components/SearchableSelector";
+import { createPairing } from "@services/pairing";
 
 interface LocationState {
   pairing_name: string;
@@ -35,6 +36,7 @@ export const Pairing: React.FC = () => {
 
   const [formattedFile, setFormattedFile] = useState({} as FilePropsLocal);
   const [sicgespFile, setSicgespFile] = useState({} as FilePropsSicgesp);
+  const [pairingCodes, setPairingCodes] = useState<pairingCodesType[]>([]);
 
   const headers = [
     { label: "Código Lotação", key: "base_code" },
@@ -51,7 +53,7 @@ export const Pairing: React.FC = () => {
 
   useEffect(() => {
     setFormattedFile(
-      file["local"]?.reduce((p, c) => ({ ...p, [c.model_code]: c }), {})
+      file["local"]?.reduce((p, c) => ({ ...p, [c.model_code!]: c }), {})
     );
     setSicgespFile(
       file["sicgesp"]?.reduce((p, c) => ({ ...p, [c.base_code]: c }), {})
@@ -88,51 +90,79 @@ export const Pairing: React.FC = () => {
         return {
           model_code: item.model_code,
           location: item.place_name,
-          value: item.value,
+          value: item.value,city_name
         };
       });
   }, [formattedFile]);
 
-  function update(code: string) {
-    return ({ target }: ChangeEvent<HTMLSelectElement>) => {
-      const { value } = target;
+  function update(model_code: string, target: string | null) {
+    const pairingAlreadySelect = Object.values(formattedFile).find(
+      (item) => target === item.base_code
+    );
 
-      const pairingAlreadySelect = Object.values(formattedFile).find(
-        (item) => value === item.base_code
-      );
 
-      if (pairingAlreadySelect) {
-        target.value = "DEFAULT";
-        setFormattedFile((prev) => ({
-          ...prev,
-          [code]: { ...prev[code], base_code: undefined },
-        }));
-        return;
+    const pairingRepeated = pairingCodes.find(
+      (item) => {
+        return (item.base_code === target)
       }
+    );
 
-      const newPairingSelect = formattedFile[code];
+    if (!target) {
+      return false;
+    }
+    
+
+    if (pairingRepeated) {
+      return false;
+    }
+
+    setPairingCodes([
+      ...pairingCodes,
+      {
+        model_code,
+        base_code: target,
+      },
+    ]);
+
+
+    if (pairingAlreadySelect) {
       setFormattedFile((prev) => ({
         ...prev,
-        [code]: { ...newPairingSelect, base_code: value },
+        [model_code]: { ...prev[model_code], base_code: undefined },
       }));
-    };
+
+      return false;
+    }
+
+    const newPairingSelect = formattedFile[model_code];
+    setFormattedFile((prev) => ({
+      ...prev,
+      [model_code]: { ...newPairingSelect, base_code: target },
+    }));
+
+    return true;
   }
 
   async function handlePairingSubmit() {
     setIsLoading(true);
     try {
-      await api.post("/pairings", {
-        name: pairing_name,
+      const pairingCreateBody = {
         sector_id,
-        data: [
-          ...Object.values(formattedFile).filter((item) => item.base_code),
-        ],
-      });
+        name: pairing_name,
+        pairingCodes: pairingCodes,
+        local_file: Object.values(formattedFile), 
+        sicgesp_file: Object.values(sicgespFile),
+      }
+
+      const response = await createPairing(pairingCreateBody);
+      console.log(response);
+      
     } catch (err) {
       console.log(err);
     }
 
     setIsLoading(false);
+    
     history.push({
       pathname: `/pairings/${sector_id}`,
       state: { sector_name, city_name },
@@ -199,7 +229,9 @@ export const Pairing: React.FC = () => {
                       value: base_code,
                     })
                   )}
-                  onChange={update(model_code)}
+                  onSelect={(target: string | null) =>
+                    update(model_code, target)
+                  }
                 />
               </div>
             )

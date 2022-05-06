@@ -7,10 +7,17 @@ interface UploadContextData {
 }
 
 export type localType = {
-  model_code: string;
+  model_code?: string | null;
   place_name: string;
   value: string;
-  base_code?: string;
+  base_code?: string | null;
+}
+
+export type localTypePJ = {
+  stocking_code: string;
+  description_stocking: string;
+  reallocated_value: string;
+  number_posts: string;
 }
 
 export type sicgespType = {
@@ -19,10 +26,17 @@ export type sicgespType = {
   value: string;
 }
 
+export type pairingCodesType = {
+  base_code: string;
+  model_code: string;
+}
+
 export type FileProps = {
   sicgesp: sicgespType[];
   local: localType[];
+  localPJ: localTypePJ[];
 };
+
 
 const UploadContext = createContext({} as UploadContextData);
 

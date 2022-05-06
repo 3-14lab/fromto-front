@@ -2,29 +2,34 @@ import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { BackButton, FileUploader, Header, ModalFile } from "@components";
 import { Link, useHistory, useLocation, useParams } from "react-router-dom";
-import { HiInformationCircle } from "react-icons/hi";
+import { useUpload } from "@hooks/upload";
+
+import { localTypePJ } from "@hooks/upload";
 
 import TrashImg from "@image/trash.svg";
-import { deletePairing, getPairingBySector } from "@services/pairing";
+import { createPairingPJ, deletePairing, deletePairingPJ, getPairingBySectorPJ } from "@services/pairing";
 
 interface ExpenseSheetData {
   id: string;
-  value: number;
-  sector_id: string;
   name: string;
-  place_name: string;
-  base_code: string;
-  model_code: string;
+  local_file: string;
+  sector_id: number;
   createdTime: Date;
-  data: any;
 }
 
-export const Pairings: React.FC = () => {
+
+type FilePropsLocalPJ = {
+  [field: string]: localTypePJ;
+};
+
+export const PairingsPJ: React.FC = () => {
   const [isNewDataModalOpen, setIsNewDataModalOpen] = useState(false);
   const [expenseSheets, setExpenseSheets] = useState<ExpenseSheetData[]>([]);
-  const [templateSelect, setTemplateSelect] = useState("");
-
+  const [popUp, setPopUp] = useState<boolean>(false);
   const history = useHistory();
+  const { file } = useUpload();
+
+  const [formattedFilePJ, setFormattedFilePJ] = useState({} as FilePropsLocalPJ);
 
   const { sector_id } = useParams() as { sector_id: string };
   const {
@@ -34,14 +39,9 @@ export const Pairings: React.FC = () => {
   };
 
   const loadSector = async() => {
-    const response = await getPairingBySector(sector_id);
-
+    const response = await getPairingBySectorPJ(sector_id);
     setExpenseSheets(response);
   }
-
-  useEffect(() => {
-    loadSector();
-  }, []);
 
   function handleOpenNewDataModal() {
     setIsNewDataModalOpen(true);
@@ -52,38 +52,24 @@ export const Pairings: React.FC = () => {
     setIsNewDataModalOpen(false);
   }
 
-  function handlePairing(name: string) {
-    if (templateSelect !== "") {
-      const templ = expenseSheets
-        .find((item) => item.id === templateSelect)!
-        .data.map((item: any) => {
-          delete item.created_at;
-          delete item.id;
-          delete item.pairing_id;
-          delete item.updated_at;
-
-          return item;
-        });
-      history.push({
-        pathname: `/pairing/${sector_id}`,
-        state: { pairing_name: name, data: templ, city_name, sector_name },
-      });
-      return;
-    }
-
+  async function handlePairing(name: string) {
     history.push({
-      pathname: `/pairing/${sector_id}`,
+      pathname: `/pairing/pj/${sector_id}`,
       state: { pairing_name: name, city_name, sector_name },
     });
   }
 
+  useEffect(() => {
+    loadSector();
+    setFormattedFilePJ(
+      file["localPJ"]?.reduce((p, c) => ({ ...p, [c.stocking_code!]: c }), {})
+    );
+  }, [file]);
+
   async function handleDelete(expenseSheet_id: string) {
-    await deletePairing(expenseSheet_id);
+    await deletePairingPJ(expenseSheet_id);
     await loadSector();
   }
-
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [popUp, setPopUp] = useState<boolean>(false);
 
   return (
     <>
@@ -93,58 +79,14 @@ export const Pairings: React.FC = () => {
         isOpen={isNewDataModalOpen}
         onRequestClose={handleCloseNewDataModal}
         placeholder="Nome"
-        title="Cadastrar pareamento"
+        title="Cadastrar Serviços de Terceiros - PJ"
         handleSumit={handlePairing}
       >
         <FileUploader
           placeholder="Clique aqui ou arraste o arquivo .csv no padrão SICGESP"
-          label="Arquivo SICGESP"
-          type="sicgesp"
+          label="Arquivo SICGESP com número de postos"
+          type="localPJ"
         />
-
-        <>
-          <FileUploader
-            placeholder="Clique aqui ou arraste o arquivo .csv sem padronização"
-            label="Arquivo local"
-            type="local"
-          />
-
-          <div className="flex gap-1 items-center">
-            <label className="font-roboto font-medium text-blue text-sm">
-              Template de pareamento
-            </label>
-            <div
-              className="relative cursor-pointer"
-              onMouseEnter={() => setIsOpen(true)}
-              onMouseLeave={() => setIsOpen(false)}
-            >
-              <HiInformationCircle color="#5429CC" />
-              {isOpen && (
-                <div className="w-80 absolute bottom-[-6] left-1 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
-                  Selecione um pareamento anterior e utilize a mesma paridade
-                  de lotações para este novo pareamento!
-                </div>
-              )}
-            </div>
-          </div>
-          <select
-            onChange={({ target }) => {
-              setTemplateSelect(target.value);
-            }}
-            defaultValue={"DEFAULT"}
-            id="select-primary"
-            className={`lg:w-full md:w-72 px-3.5 py-2.5 mt-0.5 border rounded-md border-[#D1D5DB] text-[#6B7280] bg-[#f0f2f5] text[#fff] ont-roboto font-medium outline-none`}
-          >
-            <option value="DEFAULT" disabled hidden>
-              Nenhum (padrão)
-            </option>
-            {expenseSheets.map(({ id, name }: any) => (
-              <React.Fragment key={id}>
-                <option value={id}>{name}</option>
-              </React.Fragment>
-            ))}
-          </select>
-        </>
       </ModalFile>
 
       <Modal
@@ -160,7 +102,8 @@ export const Pairings: React.FC = () => {
         <span className="font-roboto text-sm">
           Para que ocorra o funcionamento desejado, certifique que os campos de{" "}
           <strong>Código</strong>, <strong>Descrição da Lotação</strong>,{" "}
-          <strong>Valor Realocado </strong>
+          <strong>Valor Realocado</strong>
+          <strong> e Quantidade de Postos </strong>
           estejam presentes nas suas planilhas para importação. Do contrário as
           linhas com qualquer ausência não serão lidas!
         </span>
@@ -178,7 +121,7 @@ export const Pairings: React.FC = () => {
         <div className="flex justify-between items-center">
           <section className="flex items-end mt-4 mb-10 space-x-8 ">
             <h1 className="text-[#374151] font-roboto font-medium text-4xl">
-              Pareamento
+              Serviços de terceiros - PJ
             </h1>
             <h3 className="flex font-roboto font-medium text-2xl	text-[#6B7280] items-center">
               {city_name} | {sector_name}
@@ -188,7 +131,7 @@ export const Pairings: React.FC = () => {
             onClick={handleOpenNewDataModal}
             className="text-white font-medium text-xs border rounded-md bg-blue py-3 px-16 hover:brightness-90"
           >
-            Novo Pareamento
+            Novo PJ
           </button>
         </div>
 
@@ -212,7 +155,7 @@ export const Pairings: React.FC = () => {
               <div className="flex rounded-md flex-1 bg-white hover:bg-text justify-between">
                 <Link
                   to={{
-                    pathname: `/pairing/view/${expenseSheet.id}`,
+                    pathname: `/pairing/view/pj/${expenseSheet.id}`,
                     state: {
                       city_name,
                       sector_name,

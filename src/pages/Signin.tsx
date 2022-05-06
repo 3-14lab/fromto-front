@@ -5,18 +5,18 @@ import { useHistory } from 'react-router-dom';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 
-import { useAuth} from '@hooks/auth'
+import { useAuth } from '@hooks/auth'
 
 import Input from '@components/Input';
 import { Link } from 'react-router-dom';
 
 import logo from '@image/prov.svg'
 
-import { getValidationErrors } from '@utils/getVAlidationErrors'
+import { handleValidationErrors } from '@utils/getValidationErrors'
 import { Oval } from  'react-loader-spinner'
 
 interface SignInData {
-  email: string,
+  emailAddress: string,
   password: string
 }
 
@@ -34,7 +34,7 @@ const SignIn: React.FC = () =>{
       formRef.current?.setErrors({});
 
         const schema = Yup.object().shape({
-          email: Yup.string()
+          emailAddress: Yup.string()
             .required('E-mail obrigatório')
             .email('Digite um e-mail válido'),
           password: Yup.string().required('Senha obrigatória'),
@@ -53,16 +53,7 @@ const SignIn: React.FC = () =>{
       history.push('/city');
 
     } catch (error) {
-
-      
-      if (error instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(error);
-        
-        formRef.current?.setErrors(errors);
-          console.log(errors)
-          return;
-        }
-
+      handleValidationErrors(error, formRef);
     }
 
   }, [history, signIn])
@@ -77,7 +68,7 @@ const SignIn: React.FC = () =>{
         <Form ref={formRef} onSubmit={handleSubmit} className='w-full flex flex-col '>
 
           <h1 className='font-roboto font-bold mb-5 text-center text-4xl text-[#374151]'>Entrar</h1>
-          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' name='email' type="email" placeholder='E-mail' />
+          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' name='emailAddress' type="email" placeholder='E-mail' />
           <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' name='password' type="password" placeholder='Senha' />
             <button 
               type='submit'
