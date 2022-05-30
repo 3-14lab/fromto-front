@@ -231,11 +231,25 @@ export const Pairings: React.FC = () => {
                 </Link>
                 <div className="flex w-full justify-end">
                   <button
-                    className="cursor-pointer px-8"
+                    className="cursor-pointer px-2"
                     onClick={() => handleDelete(expenseSheet.id)}
                   >
                     <img src={TrashImg} alt="" />
                   </button>
+                  <Link
+                    to={{
+                      pathname: `/pairing/view/${expenseSheet.id}`,
+                      state: {
+                        city_name,
+                        sector_name,
+                        type,
+                        expensesheet_name: expenseSheet.name,
+                      },
+                    }}
+                    className="d-flex py-4"
+                  >
+                    <p className="w-7 h-7 pl-2 font-roboto font-medium text-lg	text-blue mr-4 ">P</p>
+                  </Link>
                 </div>
               </div>
             </div>
