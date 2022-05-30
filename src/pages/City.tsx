@@ -105,10 +105,10 @@ const City: React.FC = () => {
     handleUpdateCitiesAndSectors();
   }
 
-  async function handleDeleteSector(sector_id: string) {
-    await api.delete(`sector/?sector_id=${sector_id}`);
-    handleUpdateCitiesAndSectors();
-  }
+  // async function handleDeleteSector(sector_id: string) {
+  //   await api.delete(`sector/?sector_id=${sector_id}`);
+  //   handleUpdateCitiesAndSectors();
+  // }
 
   return (
     <>
@@ -170,7 +170,7 @@ const City: React.FC = () => {
                 labelTextButton="Novo Setor"
                 pathname="/pairings"
                 handleDeleteCity={handleDelete}
-                handleDeleteSector={handleDeleteSector}
+                // handleDeleteSector={handleDeleteSector}
                 handleOpenNewSectorModal={handleOpenNewSectorModal}
               />
             ))}

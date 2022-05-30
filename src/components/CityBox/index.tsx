@@ -14,7 +14,7 @@ type props = {
   labelTextButton: string;
   pathname: string;
   handleDeleteCity: (id: string) => void;
-  handleDeleteSector: (id: string) => void;
+  // handleDeleteSector: (id: string) => void;
   handleOpenNewSectorModal: (id: string) => void;
 };
 
@@ -88,13 +88,13 @@ function SectorList({
             <img className="w-7 h-5 pl-2" src={EditImg} alt="" />
           </button>
         )}
-        <button
+        {/* <button
           onClick={() => {
-            //handleDeleteSector(id)
+            handleDeleteSector(id)
           }}
         >
           <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
-        </button>
+        </button> */}
       </div>
     </div>
   );
@@ -105,7 +105,7 @@ function CityBox({
   labelTextButton,
   pathname,
   handleDeleteCity,
-  handleDeleteSector,
+  // handleDeleteSector,
   handleOpenNewSectorModal,
 }: props) {
   const { name, createdTime, id, sectors, sector_amount } = city;
