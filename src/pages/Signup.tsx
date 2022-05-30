@@ -10,9 +10,6 @@ import Input from '@components/Input';
 import { Form } from '@unform/web';
 import { FormHandles } from '@unform/core';
 
-//import logo from '@image/logo.svg'
-//import api from '@services/api';
-
 interface SignUpData {
   firstName: string,
   lastName: string,
