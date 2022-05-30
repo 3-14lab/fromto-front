@@ -5,14 +5,16 @@ import React, {
   useRef,
 } from 'react';
 import { useField } from '@unform/core';
-
+import InputMask from 'react-input-mask';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
+  masked?: string;
 }
 
 const Input: React.FC<InputProps> = ({
   name,
+  masked,
   ...rest
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,7 +30,13 @@ const Input: React.FC<InputProps> = ({
   }, [fieldName, registerField]);
 
   return(
-    <input ref={inputRef} style={{borderColor: !!error ? '#d60f0f' : "" }} {...rest} />
+    <>
+      {masked ? 
+        <InputMask mask={masked} inputRef={inputRef} style={{borderColor: !!error ? '#d60f0f' : "" }} {...rest} />
+      :
+        <input ref={inputRef} style={{borderColor: !!error ? '#d60f0f' : "" }} {...rest} />
+      }
+    </>
   )
 };
 
