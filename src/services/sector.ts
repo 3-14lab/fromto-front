@@ -36,7 +36,7 @@ const editSector = async (sector_id: string, type: string, name: string) => {
 
 const deleteSector = async (sector_id: string) => {
   try {
-    const response = await api.delete(`sector/${sector_id}`)
+    const response = await api.delete(`sector/?sector_id=${sector_id}`)
 
     return response;
   } catch(error){

@@ -22,6 +22,7 @@ function SectorList({
   sector: { name: sector_name, type, id, pairing_amount, createdTime },
   pathname,
   labelTextButton,
+  deleteSector,
   name,
 }: any) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -90,7 +91,7 @@ function SectorList({
         )}
         <button
           onClick={() => {
-            //handleDeleteSector(id)
+            deleteSector(id)
           }}
         >
           <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
@@ -171,6 +172,7 @@ function CityBox({
             labelTextButton={labelTextButton}
             sector={sector}
             handleOpenNewSectorModal={handleOpenNewSectorModal}
+            deleteSector={handleDeleteSector}
           />
         ))}
         <div
