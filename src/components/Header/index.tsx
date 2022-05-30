@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@hooks/auth';
 import logo from '@image/logo.svg';
 
+import OptionsImg from "@image/options.svg";
 import { BiLogOut } from 'react-icons/bi';
 import { IoIosClose } from 'react-icons/io';
 
@@ -25,8 +26,7 @@ function Index() {
         <div className="relative">
 
           <div
-            className="flex justify-between items-center gap-3 cursor-pointer"
-            onClick={handleToggleIsLogoutButtonVisible}
+            className="flex justify-between items-center gap-3"
           >
             <div className="w-[48px] h-[48px] bg-white rounded-full text-blue flex items-center justify-center font-roboto font-bold text-lg">{user.firstName.split('')[0]}</div>
             <div>
@@ -37,6 +37,13 @@ function Index() {
                 {user.emailAddress}
               </p>
             </div>
+            <img 
+              src={OptionsImg} 
+              onClick={handleToggleIsLogoutButtonVisible}
+              width={6} 
+              className="cursor-pointer"
+              alt="Settings"
+            />
           </div>
 
           {isLogoutButtonVisible && (
