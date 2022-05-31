@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { handleValidationErrors } from '@utils/getValidationErrors';
 import { Oval } from  'react-loader-spinner'
 import { useAuth } from '@hooks/auth'
+import { useToasts } from 'react-toast-notifications';
 
 import Input from '@components/Input';
 
@@ -16,12 +17,14 @@ interface SignUpData {
 	emailAddress: string,
   phoneNumber: string,
 	password: string
+  password_confirm: string;
 }
 
 const SignUp: React.FC = () =>{
+  const { addToast } = useToasts();
+
   const formRef = useRef<FormHandles>(null);
   const [isLoading, setIsLoading] = useState(false)
-  
   const {signUp} = useAuth()
 
   const history = useHistory()
@@ -30,25 +33,31 @@ const SignUp: React.FC = () =>{
     try {
       formRef.current?.setErrors({});
 
-        const schema = Yup.object().shape({
-          firstName: Yup.string().required('Primeiro nome obrigatório'),
-          lastName: Yup.string().required('último nome obrigatório'),
-          emailAddress: Yup.string()
-            .required('E-mail obrigatório')
-            .email('Digite um e-mail válido'),
-          phoneNumber: Yup.string().required('Telefone obrigatório'),
-          password: Yup.string().required('Senha obrigatória'),
-          password_confirm: Yup.string().required('Confirmar senha obrigatório'),
-        });
+      const schema = Yup.object().shape({
+        firstName: Yup.string().required('Primeiro nome obrigatório'),
+        lastName: Yup.string().required('último nome obrigatório'),
+        emailAddress: Yup.string()
+          .required('E-mail obrigatório')
+          .email('Digite um e-mail válido'),
+        phoneNumber: Yup.string().required('Telefone obrigatório'),
+        password: Yup.string().required('Senha obrigatória'),
+        password_confirm: Yup.string().required('Confirmar senha obrigatório'),
+      });
+      
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+      
+      if(data.password !== data.password_confirm) return addToast('As senhas não conferem!', { appearance: 'warning', autoDismiss: true });
 
-        
-        await schema.validate(data, {
-          abortEarly: false,
-        });
-        
       setIsLoading(true)
       
-      await signUp(data)
+      const response = await signUp(data)
+
+      if(response === undefined) {
+        setIsLoading(false)
+        return addToast('Erro ao criar a conta!', { appearance: 'error', autoDismiss: true });
+      }
 
       setIsLoading(false)
 
@@ -73,7 +82,7 @@ const SignUp: React.FC = () =>{
           <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="email"name="emailAddress" placeholder='E-mail' />
           <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="text" name="phoneNumber" placeholder='Telefone' masked={true} />
           <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="password" name="password" placeholder='Senha' />
-          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="password" name="password_confirm"placeholder='Confirmar senha' />
+          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="password" name="password_confirm" placeholder='Confirmar senha' />
             <button
               type='submit'
               disabled= {isLoading}

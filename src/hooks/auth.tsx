@@ -53,13 +53,15 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   const signUp = useCallback(async ({ firstName, lastName, emailAddress, phoneNumber, password }: SignUpCredentials) => {
     try {
-      await api.post('signup', {
+      const response = await api.post('signup', {
         firstName,
         lastName,
         emailAddress,
         phoneNumber,
         password
       });
+
+      return response;
     } catch(error){
       console.log(error)
     }
