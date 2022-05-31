@@ -1,15 +1,16 @@
 
 import React, {
   InputHTMLAttributes,
+  useCallback,
   useEffect,
   useRef,
 } from 'react';
 import { useField } from '@unform/core';
-import InputMask from 'react-input-mask';
+import { telephone } from './mask';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
-  masked?: string;
+  masked?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -21,6 +22,10 @@ const Input: React.FC<InputProps> = ({
 
   const { fieldName, registerField, error} = useField(name);
 
+  const handleKeyUp = useCallback((e: React.FormEvent<HTMLInputElement>) => {
+    telephone(e);
+  }, [])
+
   useEffect(() => {
     registerField({
       name: fieldName,
@@ -30,13 +35,7 @@ const Input: React.FC<InputProps> = ({
   }, [fieldName, registerField]);
 
   return(
-    <>
-      {masked ? 
-        <InputMask mask={masked} inputRef={inputRef} style={{borderColor: !!error ? '#d60f0f' : "" }} {...rest} />
-      :
-        <input ref={inputRef} style={{borderColor: !!error ? '#d60f0f' : "" }} {...rest} />
-      }
-    </>
+    <input ref={inputRef} onKeyUp={masked ? handleKeyUp : undefined} style={{borderColor: !!error ? '#d60f0f' : "" }} {...rest} />
   )
 };
 
