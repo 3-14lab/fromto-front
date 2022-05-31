@@ -55,8 +55,8 @@ export const Pairings: React.FC = () => {
   function handlePairing(name: string) {
     if (templateSelect !== "") {
       const templ = expenseSheets
-        .find((item) => item.id === templateSelect)!
-        .data.map((item: any) => {
+        .find((item) => item.id.toString() === templateSelect)!
+        .data?.map((item: any) => {
           delete item.created_at;
           delete item.id;
           delete item.pairing_id;
