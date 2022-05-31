@@ -162,11 +162,10 @@ export const Pairing: React.FC = () => {
     }
 
     setIsLoading(false);
-    
-    history.push({
-      pathname: `/pairings/${sector_id}`,
-      state: { sector_name, city_name },
-    });
+
+    const button = document.getElementById("buttonPareamento") as HTMLButtonElement | null;
+    button!.disabled = true;
+    button!.style.backgroundColor = "#C4C4C4";
   }
 
   if (!Object.values(file).length) {
@@ -244,6 +243,8 @@ export const Pairing: React.FC = () => {
             onMouseLeave={() => setIsOpen(false)}
           >
             <button
+              id="buttonPareamento"
+              disabled={false}
               onClick={handlePairingSubmit}
               className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg flex justify-center items-center"
             >
