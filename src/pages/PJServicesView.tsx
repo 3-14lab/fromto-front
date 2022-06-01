@@ -32,7 +32,7 @@ const FieldGroup = ({ code, location, value }: FieldGroupProps) => {
         </div>
         <div>
           <p
-            className={`lg:w-28 md:w-20 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]`}
+            className={`font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]`}
           >
             {Number(value).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
           </p>
@@ -58,7 +58,7 @@ export const PJServicesView: React.FC = () => {
   useEffect(() => {
     (async () => {
       const response = await api.get(`service_third?service_third_id=${p_id}`);
-      setFile(response.data.local_file.reverse());
+      setFile(response.data.local_file);
       setAmount(file.map((item) => item.reallocated_value).reduce((prev, curr) => Number(prev) + Number(curr), 0));
     })();
   }, [p_id, file]);
@@ -83,7 +83,7 @@ export const PJServicesView: React.FC = () => {
       <div className="mx-auto lg:w-[74rem] md:w-[54rem]">
         <div className="flex justify-between items-center">
           <BackButton />
-          <h4 className="bg-white leading-6 border rounded-md text-center font-poppins font-normal text-[#5429CC] lg:w-28 md:w-20 font-roboto ">
+          <h4 className="bg-white leading-6 border rounded-md text-center font-poppins font-normal text-[#5429CC] flex flex-col p-1 font-roboto ">
             Valor total {` `} 
             <strong>
               {amount.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
