@@ -37,29 +37,16 @@ function SectorList({
     setEditing((prev: boolean) => !prev);
   }
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isEditing]);
-
-  return (
-    <div className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
-      <Link
-        to={{
-          pathname: type === "DEFAULT_SECTOR" ? `${pathname}/${id}` : `${pathname}/pj/${id}`,
-          state: { city_name: name, sector_name, type },
-        }}
-        className="flex flex-1 justify-between hover:bg-gray/200"
-      >
-        <div className="grid grid-cols-7 bg-gray/100 w-full hover:bg-gray/200">
+  function buttonPairings() {
+    return (
+      <div className="grid grid-cols-7 bg-gray/100 w-full hover:bg-gray/200">
           <div className="flex items-center">
             <input
               ref={inputRef}
               value={editName}
               onChange={({ target }) => setEditName(target.value)}
               disabled={!isEditing}
-              className="outline-body flex items-center text-body font-medium p-2 bg-transparent"
+              className={`${!isEditing && "cursor-pointer"} outline-body flex items-center text-body font-medium p-2 bg-transparent`}
             />
           </div>
           <small className="flex items-center col-span-2 text-body font-roboto font-light text-sm m-auto">
@@ -76,7 +63,32 @@ function SectorList({
             {new Date(createdTime).toLocaleDateString("pt-br")}
           </div>
         </div>
-      </Link>
+    )
+  } 
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
+
+  return (
+    <div className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
+      {!isEditing ?
+          <Link
+            to={{
+              pathname: type === "DEFAULT_SECTOR" ? `${pathname}/${id}` : `${pathname}/pj/${id}`,
+              state: { city_name: name, sector_name, type },
+            }}
+            className="flex flex-1 justify-between hover:bg-gray/200"
+          >
+            {buttonPairings()}
+          </Link>
+        :
+          <div className="cursor-default flex flex-1 justify-between hover:bg-gray/200">
+            {buttonPairings()}
+          </div>
+      }
       <div className="flex justify-end pl-2">
         {isEditing ? (
           <button onClick={() => handleEditDisable(id)}>
