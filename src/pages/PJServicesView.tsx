@@ -13,7 +13,10 @@ interface FieldGroupProps {
 const FieldGroup = ({ code, location, value }: FieldGroupProps) => {
   return (
     <div className="flex w-full">
-      <div key={code} className="px-8 flex w-full justify-between items-center space-x-5">
+      <div
+        key={code}
+        className="px-8 flex w-full justify-between items-center space-x-5"
+      >
         <div>
           <p
             className={`lg:w-28 md:w-20 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]`}
@@ -34,7 +37,10 @@ const FieldGroup = ({ code, location, value }: FieldGroupProps) => {
           <p
             className={`font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]`}
           >
-            {Number(value).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
+            {Number(value).toLocaleString("pt-br", {
+              style: "currency",
+              currency: "BRL",
+            })}
           </p>
         </div>
       </div>
@@ -53,15 +59,21 @@ export const PJServicesView: React.FC = () => {
   const [amount, setAmount] = useState<number>(0);
 
   const { p_id } = useParams<any>();
-  const { state: { city_name, sector_name, expensesheet_name } } = useLocation<any>();
+  const {
+    state: { city_name, sector_name, expensesheet_name },
+  } = useLocation<any>();
 
   useEffect(() => {
     (async () => {
       const response = await api.get(`service_third?service_third_id=${p_id}`);
       setFile(response.data.local_file);
-      setAmount(file.map((item) => item.reallocated_value).reduce((prev, curr) => Number(prev) + Number(curr), 0));
+      setAmount(
+        file
+          .map((item) => item.reallocated_value)
+          .reduce((prev, curr) => Number(prev) + Number(curr), 0)
+      );
     })();
-  }, [p_id, file]);
+  }, [p_id]);
 
   const headers = [
     { label: "Código Lotação", key: "stocking_code" },
@@ -73,7 +85,7 @@ export const PJServicesView: React.FC = () => {
     return {
       stocking_code: item.stocking_code,
       description_stocking: item.description_stocking,
-      reallocated_value: item.reallocated_value,
+      reallocated_value: Number(item.reallocated_value).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
     };
   });
 
@@ -84,9 +96,12 @@ export const PJServicesView: React.FC = () => {
         <div className="flex justify-between items-center">
           <BackButton />
           <h4 className="bg-white leading-6 border rounded-md text-center font-poppins font-normal text-[#5429CC] flex flex-col p-1 font-roboto ">
-            Valor total {` `} 
+            Valor total {` `}
             <strong>
-              {amount.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
+              {amount.toLocaleString("pt-br", {
+                style: "currency",
+                currency: "BRL",
+              })}
             </strong>
           </h4>
         </div>
@@ -129,7 +144,12 @@ export const PJServicesView: React.FC = () => {
         </div>
 
         <div className="w-fit	mx-auto mb-6 mt-10">
-          <CSVLink className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg" data={formatCSV} filename={`${city_name}_${sector_name}_${expensesheet_name}`} headers={headers} separator={";"}>
+          <CSVLink
+            data={formatCSV}
+            filename={`${city_name}_${sector_name}_${expensesheet_name}`}
+            headers={headers}
+            className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg"
+          >
             Baixar planilha
           </CSVLink>
         </div>
