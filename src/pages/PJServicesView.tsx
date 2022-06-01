@@ -73,7 +73,7 @@ export const PJServicesView: React.FC = () => {
           .reduce((prev, curr) => Number(prev) + Number(curr), 0)
       );
     })();
-  }, [p_id]);
+  }, [p_id, file]);
 
   const headers = [
     { label: "Código Lotação", key: "stocking_code" },
