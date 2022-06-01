@@ -77,7 +77,7 @@ export const Pairing: React.FC = () => {
         return {
           base_code: item.base_code,
           location: item.place_name,
-          value: item.value,
+          value: Number(item.value).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
         };
       });
   }, [formattedFile]);
@@ -90,7 +90,7 @@ export const Pairing: React.FC = () => {
         return {
           model_code: item.model_code,
           location: item.place_name,
-          value: item.value,city_name
+          value: Number(item.value).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
         };
       });
   }, [formattedFile]);
@@ -266,7 +266,6 @@ export const Pairing: React.FC = () => {
               data={downloadPairingFilled as []}
               filename={`${city_name}_${sector_name}_${pairing_name}`}
               headers={headers}
-              separator={";"}
             >
               Baixar planilha
             </CSVLink>
@@ -276,7 +275,6 @@ export const Pairing: React.FC = () => {
               data={downloadPairingEmpty as []}
               filename={`${city_name}_${sector_name}_${pairing_name} - NAO PAREADOS`}
               headers={headersSecondary}
-              separator={";"}
             >
               Baixar não pareados
             </CSVLink>
