@@ -1,6 +1,8 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import "./styles.css"
+import { ToastProvider } from 'react-toast-notifications';
+
 
 import Modal from 'react-modal'
 
@@ -15,7 +17,9 @@ const App: React.FC = () => {
   return (
     <BrowserRouter>
       <AppProvider>
-        <Routes />
+        <ToastProvider>
+          <Routes />
+        </ToastProvider>
       </AppProvider>
     </BrowserRouter>
   );

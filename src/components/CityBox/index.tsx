@@ -22,41 +22,31 @@ function SectorList({
   sector: { name: sector_name, type, id, pairing_amount, createdTime },
   pathname,
   labelTextButton,
+  deleteSector,
   name,
 }: any) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [editName, setEditName] = useState(sector_name);
   const [isEditing, setEditing] = useState(false);
+  const [editIsOpen, setEditIsOpen] = useState(false);
+  const [deleteIsOpen, setDeleteIsOpen] = useState(false);
 
   async function handleEditDisable(id: string) {
     if (sector_name !== editName) await editSector(id, type, editName);
     setEditing((prev: boolean) => !prev);
   }
 
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [isEditing]);
-
-  return (
-    <div className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
-      <Link
-        to={{
-          pathname: type === "DEFAULT_SECTOR" ? `${pathname}/${id}` : `${pathname}/pj/${id}`,
-          state: { city_name: name, sector_name, type },
-        }}
-        className="flex flex-1 justify-between hover:bg-gray/200"
-      >
-        <div className="grid grid-cols-7 bg-gray/100 w-full hover:bg-gray/200">
+  function buttonPairings() {
+    return (
+      <div className="grid grid-cols-7 bg-gray/100 w-full hover:bg-gray/200">
           <div className="flex items-center">
             <input
               ref={inputRef}
               value={editName}
               onChange={({ target }) => setEditName(target.value)}
               disabled={!isEditing}
-              className="outline-body flex items-center text-body font-medium p-2 bg-transparent"
+              className={`${!isEditing && "cursor-pointer"} outline-body flex items-center text-body font-medium p-2 bg-transparent`}
             />
           </div>
           <small className="flex items-center col-span-2 text-body font-roboto font-light text-sm m-auto">
@@ -73,7 +63,32 @@ function SectorList({
             {new Date(createdTime).toLocaleDateString("pt-br")}
           </div>
         </div>
-      </Link>
+    )
+  } 
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isEditing]);
+
+  return (
+    <div className="flex bg-gray/100 w-full h-16 rounded-lg mb-2.5 px-5 hover:bg-gray/200">
+      {!isEditing ?
+          <Link
+            to={{
+              pathname: type === "DEFAULT_SECTOR" ? `${pathname}/${id}` : `${pathname}/pj/${id}`,
+              state: { city_name: name, sector_name, type },
+            }}
+            className="flex flex-1 justify-between hover:bg-gray/200"
+          >
+            {buttonPairings()}
+          </Link>
+        :
+          <div className="cursor-default flex flex-1 justify-between hover:bg-gray/200">
+            {buttonPairings()}
+          </div>
+      }
       <div className="flex justify-end pl-2">
         {isEditing ? (
           <button onClick={() => handleEditDisable(id)}>
@@ -81,18 +96,32 @@ function SectorList({
           </button>
         ) : (
           <button
+            onMouseEnter={() => setEditIsOpen(true)}
+            onMouseLeave={() => setEditIsOpen(false)}
             onClick={() => {
               handleEditDisable(id);
             }}
           >
+            {editIsOpen && (
+              <div className="w-15 absolute bottom-12 bottom-[-6] bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
+                Editar
+              </div>
+            )}
             <img className="w-7 h-5 pl-2" src={EditImg} alt="" />
           </button>
         )}
         <button
+          onMouseEnter={() => setDeleteIsOpen(true)}
+          onMouseLeave={() => setDeleteIsOpen(false)}
           onClick={() => {
-            //handleDeleteSector(id)
+            deleteSector(id)
           }}
         >
+          {deleteIsOpen && (
+            <div className="w-15 absolute bottom-12 bottom-[-6] bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
+              Excluir
+            </div>
+          )}
           <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
         </button>
       </div>
@@ -112,6 +141,9 @@ function CityBox({
   const inputRef = useRef<HTMLInputElement>(null);
   const [editName, setEditName] = useState<string>(name);
   const [editDisable, setEditDisable] = useState<boolean>(true);
+  const [editIsOpen, setEditIsOpen] = useState<boolean>(false);
+  const [deleteIsOpen, setDeleteIsOpen] = useState<boolean>(false);
+
 
   function handleEditName(text: string) {
     setEditName(text);
@@ -155,12 +187,30 @@ function CityBox({
                 <FaCheck size={24} color="green" className="mr-2" />
               </button>
             ) : (
-              <button onClick={() => handleEditDisable(id)}>
+              <button 
+                onMouseEnter={() => setEditIsOpen(true)}
+                onMouseLeave={() => setEditIsOpen(false)}
+                onClick={() => handleEditDisable(id)}
+              >
                 <img className="w-5 h-5" src={EditImg} alt="" />
+                {editIsOpen && (
+                  <div className="w-15 absolute bottom-12 bottom-[-6] bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
+                    Editar
+                  </div>
+                )}
               </button>
             )}
-            <button onClick={() => handleDeleteCity(id)}>
+            <button 
+              onMouseEnter={() => setDeleteIsOpen(true)}
+              onMouseLeave={() => setDeleteIsOpen(false)}
+              onClick={() => handleDeleteCity(id)}
+            >
               <img className="w-7 h-7 pl-2" src={TrashImg} alt="" />
+              {deleteIsOpen && (
+                <div className="w-15 absolute bottom-12 bottom-[-6] bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
+                  Excluir
+                </div>
+              )}
             </button>
           </div>
         </div>
@@ -171,6 +221,7 @@ function CityBox({
             labelTextButton={labelTextButton}
             sector={sector}
             handleOpenNewSectorModal={handleOpenNewSectorModal}
+            deleteSector={handleDeleteSector}
           />
         ))}
         <div

@@ -20,23 +20,11 @@ type FilePJPropsLocal = {
 export const PairingPJ: React.FC = () => {
   const { sector_id } = useParams() as { sector_id: string };
   const history = useHistory();
-
-  const [fileView, setFileView] = useState<any[]>([{
-    stocking_code: "",
-    description_stocking: "",
-    reallocated_value: ""
-  }]);
   const {
     state: { pairing_name, city_name, sector_name, data },
   } = useLocation<LocationState>();
   const { file } = useUpload();
   const [formattedFile, setFormattedFile] = useState({} as FilePJPropsLocal);
-
-  const headers = [
-    { label: "Código Lotação", key: "stocking_code" },
-    { label: "Descrição Locação", key: "description_stocking" },
-    { label: "Valor Realocado", key: "reallocated_value" },
-  ];
 
   useEffect(() => {
     setFormattedFile(
@@ -48,43 +36,36 @@ export const PairingPJ: React.FC = () => {
     if (data) {
       setFormattedFile((prev) => ({
         ...prev,
-        ...data.reduce((p: any, c: any) => ({ ...p, [c.stocking_code]: c }), {}),
+        ...data.reduce(
+          (p: any, c: any) => ({ ...p, [c.stocking_code]: c }),
+          {}
+        ),
       }));
     }
   }, [data]);
 
   async function handlePairingSubmit() {
-    try {
-      const pairingCreateBody = {
-        name: pairing_name,
-        sector_id,
-        local_file: Object.values(formattedFile), 
-      }
-      
-      const response = await createPairingPJ(pairingCreateBody);
-      setFileView(response?.data.local_file.reverse());
-      
-    } catch (err) {
-      console.log(err);
-    }
+    const pairingCreateBody = {
+      name: pairing_name,
+      sector_id,
+      local_file: Object.values(formattedFile),
+    };
 
+    const response = await createPairingPJ(pairingCreateBody);
     history.push({
-      pathname: `/pairings/pj/${sector_id}`,
-      state: { sector_name, city_name },
+      pathname: `/pairing/view/pj/${response?.data.id}`,
+      state: {
+        sector_name,
+        city_name,
+        type: "localPJ",
+        expensesheet_name: response?.data.name,
+      },
     });
   }
 
   if (!Object.values(file).length) {
     history.push("/pairings");
   }
-
-  const formatCSV = fileView?.map((item: any) => {
-    return {
-      stocking_code: item.stocking_code,
-      description_stocking: item.description_stocking,
-      reallocated_value: item.reallocated_value,
-    };
-  });
 
   return (
     <>
@@ -118,7 +99,12 @@ export const PairingPJ: React.FC = () => {
 
         <div className="max-h-[400px] overflow-y-scroll pairing-select">
           {Object.values(formattedFile).map(
-            ({ stocking_code, description_stocking, reallocated_value, number_posts }: any) => (
+            ({
+              stocking_code,
+              description_stocking,
+              reallocated_value,
+              number_posts,
+            }: any) => (
               <div
                 key={stocking_code}
                 className="grid grid-cols-9 w-full p-5 gap-5 mb-2.5 bg-white"
@@ -130,7 +116,10 @@ export const PairingPJ: React.FC = () => {
                   {description_stocking}
                 </div>
                 <div className="col-span-2 font-roboto font-medium text-[#5429CC] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]">
-                  {Number(reallocated_value).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
+                  {Number(reallocated_value).toLocaleString("pt-br", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
                 </div>
                 <div className="col-span-1 font-roboto font-medium text-[#292438] px-3.5 py-2.5 leading-6 border rounded-md text-center bg-[#f0f2f5]">
                   {number_posts}
@@ -140,16 +129,11 @@ export const PairingPJ: React.FC = () => {
           )}
         </div>
         <div className="w-[700px] mx-auto flex items-center justify-around">
-          <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg">
-            <CSVLink
-              onClick={handlePairingSubmit}
-              data={formatCSV}
-              filename={`${city_name}_${sector_name}_${pairing_name}`}
-              headers={headers}
-              separator={";"}
-            >
-              Salvar e Baixar planilha
-            </CSVLink>
+          <button
+            onClick={handlePairingSubmit}
+            className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-blue rounded-lg"
+          >
+            Salvar planilha
           </button>
         </div>
       </div>

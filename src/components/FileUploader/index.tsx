@@ -17,7 +17,7 @@ const FileUploader = ({ placeholder, label, type }: FileUploaderProps) => {
   function handleFileChange({ target }: ChangeEvent<HTMLInputElement>) {
     const files: FileList | null = target.files;
     const file: File | undefined = files?.[0];
-    console.log(file);
+
     const reader = new global.FileReader();
     reader.onloadend = () => {
       const csv = csvToObject(reader.result, type);
@@ -42,7 +42,7 @@ const FileUploader = ({ placeholder, label, type }: FileUploaderProps) => {
               fileName !== "" ? "text-blue" : "text-[#9CA3AF]"
             } px-6 py-3 mb-5 mt-0.5`}
           >
-            <input ref={importFile} onChange={handleFileChange} type="file" style={{ display: "none" }} />
+            <input ref={importFile} onChange={handleFileChange} type="file" style={{ display: "none" }} accept=".csv" />
             {fileName !== "" ? fileName : placeholder}
           </button>
         </>
