@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import Input from '@components/Input';
@@ -7,13 +7,18 @@ import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { handleValidationErrors } from '@utils/getValidationErrors';
 import { useToasts } from 'react-toast-notifications';
+import { Oval } from  'react-loader-spinner'
 
 import logo from '@image/prov.svg';
 
 const RecoverPassword: React.FC = () => {
   const { addToast } = useToasts();
-  const formRef = useRef<FormHandles>(null);
+  
   const { forgotPassword } = useAuth();
+
+  const formRef = useRef<FormHandles>(null);
+  const [isLoading, setIsLoading] = useState(false)
+
 
   const handleSubmit = useCallback( async ({ email }) => {
     try {
@@ -29,12 +34,16 @@ const RecoverPassword: React.FC = () => {
         abortEarly: false,
       });
 
+      setIsLoading(true)
+
       try {
         await forgotPassword(email);
         addToast(`E-mail enviado para ${email} verifique a Caixa de Entrada ou Spam`, { appearance: 'success', autoDismiss: true });
       } catch(err){
         addToast(`Erro ao enviar o e-mail de recuperação para ${email}`, { appearance: 'error', autoDismiss: true });
       }
+
+      setIsLoading(false)
 
     } catch (error: unknown) {
       handleValidationErrors(error, formRef);
@@ -59,9 +68,12 @@ const RecoverPassword: React.FC = () => {
         
           <button
             type='submit'
-            className='bg-blue py-3 text-lg font-bold rounded-md text-white mt-5 mb-[49px]'
+            disabled= {isLoading}
+            className='flex items-center justify-center bg-blue py-3 text-lg font-bold rounded-md text-white mt-5 mb-[49px]'
             >
-            Enviar e-mail de recuperação
+            { 
+              isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) :'Enviar e-mail de recuperação' 
+            }
           </button>
 
           {/* <a className='text-center text-sm mt-8 text-green-700' href="login">Esqueci minha senha</a> */}
