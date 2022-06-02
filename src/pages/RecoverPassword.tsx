@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
 import Input from '@components/Input';
+import { useAuth } from '@hooks/auth';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { handleValidationErrors } from '@utils/getValidationErrors';
@@ -10,6 +11,7 @@ import logo from '@image/prov.svg';
 
 const RecoverPassword: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
+  const { forgotPassword } = useAuth();
 
   const handleSubmit = useCallback( async ({ email }) => {
     try {
@@ -20,15 +22,22 @@ const RecoverPassword: React.FC = () => {
           .required('E-mail obrigatório')
           .email('Digite um e-mail válido'),
       });
-
-      await schema.validate(email, {
+      
+      await schema.validate({email}, {
         abortEarly: false,
       });
+
+      try {
+        await forgotPassword(email);
+        window.alert("Se o e-mail existir, verifique a caixa de entrada do e-mail ou Spam")
+      } catch(err){
+        window.alert("Erro no e-mail")
+      }
 
     } catch (error: unknown) {
       handleValidationErrors(error, formRef);
     }
-  }, [])
+  }, [forgotPassword])
 
   return (
     <div className='flex flex-col items-center justify-center w-screen h-screen bg-cover bg-center bg-no-repeat bg-background' >

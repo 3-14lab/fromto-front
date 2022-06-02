@@ -13,6 +13,7 @@ import { PairingView } from '@pages/PairingView';
 import { PJServicesView } from '@pages/PJServicesView';
 import { PairingsPJ } from '@pages/PairingsPJ';
 import { PairingPJ } from '@pages/PairingPJ';
+import { ResetPassword } from '@pages/ResetPassword';
 
 const Routes: React.FC = () => {
   return (
@@ -27,6 +28,7 @@ const Routes: React.FC = () => {
       <Route path="/pairing/view/:p_id" isPrivate exact component={PairingView} />
       <Route path="/pairing/view/pj/:p_id" isPrivate exact component={PJServicesView} />
       <Route path="/recover" component={RecoverPassword} />
+      <Route path="/reset/:token" component={ResetPassword} />
       <Route component={() => <Redirect to='/' />} />
     </Switch>
   );

@@ -34,6 +34,8 @@ interface AuthContextData {
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
   updateUser(user: User): void;
+  forgotPassword(email: string): void;
+  confirmReset(token: string, password: string): void;
 }
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
@@ -75,8 +77,6 @@ export const AuthProvider: React.FC = ({ children }) => {
         password,
       });
 
-      console.log(response.data)
-
       const user: User = {
         id: response.data.id,
         firstName: response.data.firstName,
@@ -116,9 +116,30 @@ export const AuthProvider: React.FC = ({ children }) => {
     [setData, data.jwt],
   );
 
+  const forgotPassword = useCallback(async (email: string) => {
+    const response = await api.post(`initiate-reset/${email}`);
+    
+    return response;
+  }, []);
+
+  const confirmReset = useCallback(async (token: string, password: string) => {
+    signOut();
+
+    const response = await api.post(`confirm-reset/${token}`);
+
+    const { jwt } = response.data;
+
+    if(jwt){ 
+      localStorage.setItem('@fromto:jwt', jwt);
+      api.defaults.headers.common['Authorization'] = `Bearer ${jwt}`;
+    }
+    const data = await api.put('account', {password: password});
+    return data;
+  }, [])
+
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signUp, signIn, signOut, updateUser }}
+      value={{ user: data.user, signUp, signIn, signOut, updateUser, forgotPassword, confirmReset }}
     >
       {children}
     </AuthContext.Provider>
