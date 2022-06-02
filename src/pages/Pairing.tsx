@@ -34,14 +34,9 @@ export const Pairing: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { file } = useUpload();
 
-  console.log("data", JSON.stringify(data));
-
   const [formattedFile, setFormattedFile] = useState({} as FilePropsLocal);
   const [sicgespFile, setSicgespFile] = useState({} as FilePropsSicgesp);
   const [pairingCodes, setPairingCodes] = useState<pairingCodesType[]>([]);
-
-  console.log("form", formattedFile);
-  console.log("sic", sicgespFile);
 
   const headers = [
     { label: "Código Lotação", key: "base_code" },
@@ -151,20 +146,15 @@ export const Pairing: React.FC = () => {
 
   async function handlePairingSubmit() {
     setIsLoading(true);
-    try {
-      const pairingCreateBody = {
-        sector_id,
-        name: pairing_name,
-        pairingCodes: pairingCodes,
-        local_file: Object.values(formattedFile),
-        sicgesp_file: Object.values(sicgespFile),
-      };
+    const pairingCreateBody = {
+      sector_id,
+      name: pairing_name,
+      pairingCodes: pairingCodes,
+      local_file: Object.values(formattedFile),
+      sicgesp_file: Object.values(sicgespFile),
+    };
 
-      const response = await createPairing(pairingCreateBody);
-      console.log(response);
-    } catch (err) {
-      console.log(err);
-    }
+    await createPairing(pairingCreateBody);
 
     setIsLoading(false);
 

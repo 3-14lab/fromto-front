@@ -17,7 +17,7 @@ const FileUploader = ({ placeholder, label, type }: FileUploaderProps) => {
   function handleFileChange({ target }: ChangeEvent<HTMLInputElement>) {
     const files: FileList | null = target.files;
     const file: File | undefined = files?.[0];
-    console.log(file);
+
     const reader = new global.FileReader();
     reader.onloadend = () => {
       const csv = csvToObject(reader.result, type);

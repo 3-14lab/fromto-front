@@ -15,7 +15,7 @@ const ResetPassword: React.FC = () => {
 
   const { token } = useParams<any>();
   const { confirmReset } = useAuth();
-  console.log("token ", token);
+
   const handleSubmit = useCallback(async ({ password, password_confirm }) => {
     try {
       formRef.current?.setErrors({});

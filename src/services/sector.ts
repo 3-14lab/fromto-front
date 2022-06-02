@@ -1,4 +1,4 @@
-import api from '@services/api';
+import api from "@services/api";
 
 interface CreateSectorInterface {
   name: string;
@@ -7,51 +7,34 @@ interface CreateSectorInterface {
 }
 
 const createSector = async ({ name, city_id, type }: CreateSectorInterface) => {
+  const response = await api.post("sector", {
+    name,
+    city_id,
+    type,
+  });
 
-  try {
-    const response = await api.post('sector', {
-      name,
-      city_id,
-      type
-    });
-
-    console.log(response.data)
-
-    return response.data;
-
-  } catch (error) {
-    console.log(error) 
-  }
+  return response.data;
 };
 
 const editSector = async (sector_id: string, type: string, name: string) => {
-  try {
-    const response = await api.put(`sector?sector_id=${sector_id}`, {name, type})
+  const response = await api.put(`sector?sector_id=${sector_id}`, {
+    name,
+    type,
+  });
 
-    return response
-  } catch(error){
-    console.log(error)
-  }
-}
+  return response;
+};
 
 const deleteSector = async (sector_id: string) => {
-  try {
-    const response = await api.delete(`sector/?sector_id=${sector_id}`)
+  const response = await api.delete(`sector/?sector_id=${sector_id}`);
 
-    return response;
-  } catch(error){
-    console.log(error)
-  }
-}
+  return response;
+};
 
 const getSectorByCity = async (city_id: string) => {
-  try {
-    const response = await api.get(`city/sectors/?city_id=${city_id}`)
-    
-    return response.data;
-  } catch(error){
-    console.log(error);
-  }
-}
+  const response = await api.get(`city/sectors/?city_id=${city_id}`);
 
-export { createSector, getSectorByCity, deleteSector, editSector }
+  return response.data;
+};
+
+export { createSector, getSectorByCity, deleteSector, editSector };
