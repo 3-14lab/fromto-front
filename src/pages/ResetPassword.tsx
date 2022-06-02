@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { Link, useHistory, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import Input from "@components/Input";
@@ -9,14 +9,16 @@ import { handleValidationErrors } from "@utils/getValidationErrors";
 import { useToasts } from 'react-toast-notifications';
 
 import logo from "@image/prov.svg";
+import { Oval } from "react-loader-spinner";
 
 const ResetPassword: React.FC = () => {
   const { addToast } = useToasts();
   const formRef = useRef<FormHandles>(null);
   const history = useHistory();
-
-  const { token } = useParams<any>();
   const { confirmReset } = useAuth();
+  const { token } = useParams<any>();
+  const [isLoading, setIsLoading] = useState(false)
+
 
   const handleSubmit = useCallback(async ({ password, password_confirm }) => {
     try {
@@ -36,6 +38,8 @@ const ResetPassword: React.FC = () => {
 
       if(password !== password_confirm) return addToast('As senhas não conferem!', { appearance: 'warning', autoDismiss: true });
 
+      setIsLoading(true)
+
       try {
         await confirmReset(token, password);
         
@@ -45,8 +49,11 @@ const ResetPassword: React.FC = () => {
           pathname: "/",
         });
       } catch (err) {
-        return addToast("Você já alterou sua senha, se achar que isso é um erro, contacte o suporte!", { appearance: 'error', autoDismiss: true });
+        addToast("Você já alterou sua senha, se achar que isso é um erro, contacte o suporte!", { appearance: 'error', autoDismiss: true });
       }
+
+      setIsLoading(false)
+
     } catch (error: unknown) {
       handleValidationErrors(error, formRef);
     }
@@ -86,9 +93,12 @@ const ResetPassword: React.FC = () => {
 
           <button
             type="submit"
-            className="bg-blue py-3 text-lg font-bold rounded-md text-white mt-5 mb-[49px]"
+            disabled= {isLoading}
+            className="flex justify-center items-center bg-blue py-3 text-lg font-bold rounded-md text-white mt-5 mb-[49px]"
           >
-            Salvar
+            { 
+              isLoading ? (<Oval color="#ffffff" height={24} strokeWidth={4} width={24} />) :'Salvar' 
+            }
           </button>
         </Form>
 
