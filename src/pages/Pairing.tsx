@@ -34,9 +34,14 @@ export const Pairing: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { file } = useUpload();
 
+  console.log("data", JSON.stringify(data));
+
   const [formattedFile, setFormattedFile] = useState({} as FilePropsLocal);
   const [sicgespFile, setSicgespFile] = useState({} as FilePropsSicgesp);
   const [pairingCodes, setPairingCodes] = useState<pairingCodesType[]>([]);
+
+  console.log("form", formattedFile);
+  console.log("sic", sicgespFile);
 
   const headers = [
     { label: "Código Lotação", key: "base_code" },
@@ -77,7 +82,10 @@ export const Pairing: React.FC = () => {
         return {
           base_code: item.base_code,
           location: item.place_name,
-          value: Number(item.value).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
+          value: Number(item.value).toLocaleString("pt-br", {
+            style: "currency",
+            currency: "BRL",
+          }),
         };
       });
   }, [formattedFile]);
@@ -90,7 +98,10 @@ export const Pairing: React.FC = () => {
         return {
           model_code: item.model_code,
           location: item.place_name,
-          value: Number(item.value).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
+          value: Number(item.value).toLocaleString("pt-br", {
+            style: "currency",
+            currency: "BRL",
+          }),
         };
       });
   }, [formattedFile]);
@@ -100,17 +111,13 @@ export const Pairing: React.FC = () => {
       (item) => target === item.base_code
     );
 
-
-    const pairingRepeated = pairingCodes.find(
-      (item) => {
-        return (item.base_code === target)
-      }
-    );
+    const pairingRepeated = pairingCodes.find((item) => {
+      return item.base_code === target;
+    });
 
     if (!target) {
       return false;
     }
-    
 
     if (pairingRepeated) {
       return false;
@@ -123,7 +130,6 @@ export const Pairing: React.FC = () => {
         base_code: target,
       },
     ]);
-
 
     if (pairingAlreadySelect) {
       setFormattedFile((prev) => ({
@@ -150,20 +156,21 @@ export const Pairing: React.FC = () => {
         sector_id,
         name: pairing_name,
         pairingCodes: pairingCodes,
-        local_file: Object.values(formattedFile), 
+        local_file: Object.values(formattedFile),
         sicgesp_file: Object.values(sicgespFile),
-      }
+      };
 
       const response = await createPairing(pairingCreateBody);
       console.log(response);
-      
     } catch (err) {
       console.log(err);
     }
 
     setIsLoading(false);
 
-    const button = document.getElementById("buttonPareamento") as HTMLButtonElement | null;
+    const button = document.getElementById(
+      "buttonPareamento"
+    ) as HTMLButtonElement | null;
     button!.disabled = true;
     button!.style.backgroundColor = "#C4C4C4";
   }
@@ -231,6 +238,7 @@ export const Pairing: React.FC = () => {
                   onSelect={(target: string | null) =>
                     update(model_code, target)
                   }
+                  value={base_code}
                 />
               </div>
             )
@@ -261,24 +269,24 @@ export const Pairing: React.FC = () => {
               </div>
             )}
           </div>
-          <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
-            <CSVLink
-              data={downloadPairingFilled as []}
-              filename={`${city_name}_${sector_name}_${pairing_name}`}
-              headers={headers}
-            >
+          <CSVLink
+            data={downloadPairingFilled as []}
+            filename={`${city_name}_${sector_name}_${pairing_name}`}
+            headers={headers}
+          >
+            <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
               Baixar planilha
-            </CSVLink>
-          </button>
-          <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-red-400 rounded-lg">
-            <CSVLink
-              data={downloadPairingEmpty as []}
-              filename={`${city_name}_${sector_name}_${pairing_name} - NAO PAREADOS`}
-              headers={headersSecondary}
-            >
+            </button>
+          </CSVLink>
+          <CSVLink
+            data={downloadPairingEmpty as []}
+            filename={`${city_name}_${sector_name}_${pairing_name} - NAO PAREADOS`}
+            headers={headersSecondary}
+          >
+            <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-red-400 rounded-lg">
               Baixar não pareados
-            </CSVLink>
-          </button>
+            </button>
+          </CSVLink>
         </div>
       </div>
     </>

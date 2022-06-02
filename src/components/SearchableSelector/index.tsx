@@ -21,6 +21,17 @@ function SearchableSelector({
   const dropdownRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
+    if (value) {
+      const selectedValue = data?.find((item) => item.value === value);
+
+      setCurrValue({
+        label: selectedValue!.label,
+        value: selectedValue!.value,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     if (toggle) {
       const dropdown: HTMLElement | null = dropdownRef?.current;
       (dropdown as any)?.focus();
@@ -38,8 +49,8 @@ function SearchableSelector({
         label: "Selecionar",
         value: null,
       });
-    }
-    
+    };
+
     const success = onSelect(e.value);
 
     success ? setCurrValue(e) : clearSelect();
@@ -85,10 +96,7 @@ function SearchableSelector({
                 e.label.toLowerCase().includes(filter.toLocaleLowerCase())
               )
               .map((e) => (
-                <div
-                  key={e.value}
-                  onClick={() => onClick(e)}
-                >
+                <div key={e.value} onClick={() => onClick(e)}>
                   {e.label}
                 </div>
               ))}

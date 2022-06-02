@@ -7,16 +7,27 @@ import { HiInformationCircle } from "react-icons/hi";
 import TrashImg from "@image/trash.svg";
 import { deletePairing, getPairingBySector } from "@services/pairing";
 
-interface ExpenseSheetData {
-  id: string;
-  value: number;
-  sector_id: string;
-  name: string;
-  place_name: string;
+interface PairingData {
   base_code: string;
   model_code: string;
+  place_name: string;
+  value: string;
+}
+
+interface UnpairingData {
+  base_code: string;
+  location: string;
+  value: string;
+}
+
+interface ExpenseSheetData {
+  id: string;
+  sector_id: string;
+  name: string;
   createdTime: Date;
-  data: any;
+  status: boolean;
+  pairing_data: PairingData[];
+  unpaired_data: UnpairingData[];
 }
 
 export const Pairings: React.FC = () => {
@@ -33,11 +44,11 @@ export const Pairings: React.FC = () => {
     state: { sector_name: string; city_name: string; type: string };
   };
 
-  const loadSector = async() => {
+  const loadSector = async () => {
     const response = await getPairingBySector(sector_id);
 
     setExpenseSheets(response);
-  }
+  };
 
   useEffect(() => {
     loadSector();
@@ -54,16 +65,12 @@ export const Pairings: React.FC = () => {
 
   function handlePairing(name: string) {
     if (templateSelect !== "") {
-      const templ = expenseSheets
-        .find((item) => item.id.toString() === templateSelect)!
-        .data?.map((item: any) => {
-          delete item.created_at;
-          delete item.id;
-          delete item.pairing_id;
-          delete item.updated_at;
+      const template = expenseSheets.find(
+        (pairing) => String(pairing.id) === templateSelect
+      );
 
-          return item;
-        });
+      const templ = template ? template.pairing_data : [];
+
       history.push({
         pathname: `/pairing/${sector_id}`,
         state: { pairing_name: name, data: templ, city_name, sector_name },
@@ -121,8 +128,8 @@ export const Pairings: React.FC = () => {
               <HiInformationCircle color="#5429CC" />
               {isOpen && (
                 <div className="w-80 absolute bottom-[-6] left-1 bg-[#0000008e] text-white text-xs font-medium px-2 py-1 border-none rounded">
-                  Selecione um pareamento anterior e utilize a mesma paridade
-                  de lotações para este novo pareamento!
+                  Selecione um pareamento anterior e utilize a mesma paridade de
+                  lotações para este novo pareamento!
                 </div>
               )}
             </div>
