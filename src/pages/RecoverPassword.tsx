@@ -6,10 +6,12 @@ import { useAuth } from '@hooks/auth';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { handleValidationErrors } from '@utils/getValidationErrors';
+import { useToasts } from 'react-toast-notifications';
 
 import logo from '@image/prov.svg';
 
 const RecoverPassword: React.FC = () => {
+  const { addToast } = useToasts();
   const formRef = useRef<FormHandles>(null);
   const { forgotPassword } = useAuth();
 
@@ -29,9 +31,9 @@ const RecoverPassword: React.FC = () => {
 
       try {
         await forgotPassword(email);
-        window.alert("Se o e-mail existir, verifique a caixa de entrada do e-mail ou Spam")
+        addToast(`E-mail enviado para ${email} verifique a Caixa de Entrada ou Spam`, { appearance: 'success', autoDismiss: true });
       } catch(err){
-        window.alert("Erro no e-mail")
+        addToast(`Erro ao enviar o e-mail de recuperação para ${email}`, { appearance: 'error', autoDismiss: true });
       }
 
     } catch (error: unknown) {

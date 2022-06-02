@@ -6,10 +6,12 @@ import { useAuth } from "@hooks/auth";
 import { FormHandles } from "@unform/core";
 import { Form } from "@unform/web";
 import { handleValidationErrors } from "@utils/getValidationErrors";
+import { useToasts } from 'react-toast-notifications';
 
 import logo from "@image/prov.svg";
 
 const ResetPassword: React.FC = () => {
+  const { addToast } = useToasts();
   const formRef = useRef<FormHandles>(null);
   const history = useHistory();
 
@@ -32,17 +34,18 @@ const ResetPassword: React.FC = () => {
         }
       );
 
-      if (password !== password_confirm)
-        return window.alert("Senhas não correspondem");
+      if(password !== password_confirm) return addToast('As senhas não conferem!', { appearance: 'warning', autoDismiss: true });
 
       try {
         await confirmReset(token, password);
-        window.alert("Senha alterada com sucesso");
+        
+        addToast("Senha alterada com sucesso", { appearance: 'success', autoDismiss: true });
+
         history.push({
           pathname: "/",
         });
       } catch (err) {
-        return window.alert("Você já alterou sua senha, se achar que isso é um erro, contacte o suporte!");
+        return addToast("Você já alterou sua senha, se achar que isso é um erro, contacte o suporte!", { appearance: 'error', autoDismiss: true });
       }
     } catch (error: unknown) {
       handleValidationErrors(error, formRef);
