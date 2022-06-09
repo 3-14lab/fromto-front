@@ -60,7 +60,7 @@ const SignUp: React.FC = () =>{
       }
 
       setIsLoading(false)
-
+      addToast('Cadastro concluído com sucesso. Faça o login para acessar o sistema!', { appearance: 'success', autoDismiss: true });
       history.push('/');
 
     } catch (error) {
