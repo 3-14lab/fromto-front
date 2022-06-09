@@ -18,6 +18,7 @@ interface AuthState {
 interface SignUpCredentials {
   firstName: string;
   lastName: string;
+  cpf: string;
   emailAddress: string;
   phoneNumber: string;
   password: string;
@@ -57,6 +58,7 @@ export const AuthProvider: React.FC = ({ children }) => {
     async ({
       firstName,
       lastName,
+      cpf,
       emailAddress,
       phoneNumber,
       password,
@@ -64,6 +66,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       const response = await api.post("signup", {
         firstName,
         lastName,
+        cpf,
         emailAddress,
         phoneNumber,
         password,

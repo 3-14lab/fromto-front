@@ -6,7 +6,7 @@ import React, {
   useRef,
 } from 'react';
 import { useField } from '@unform/core';
-import { telephone } from './mask';
+import { telephone, cpf } from './mask';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
@@ -20,10 +20,11 @@ const Input: React.FC<InputProps> = ({
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { fieldName, registerField, error} = useField(name);
+  const { fieldName, registerField, error } = useField(name);
 
   const handleKeyUp = useCallback((e: React.FormEvent<HTMLInputElement>) => {
-    telephone(e);
+    if(name === "cpf") return cpf(e);
+    else return telephone(e);
   }, [])
 
   useEffect(() => {

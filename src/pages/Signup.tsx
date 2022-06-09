@@ -14,6 +14,7 @@ import { FormHandles } from '@unform/core';
 interface SignUpData {
   firstName: string,
   lastName: string,
+  cpf: string,
 	emailAddress: string,
   phoneNumber: string,
 	password: string
@@ -36,6 +37,7 @@ const SignUp: React.FC = () =>{
       const schema = Yup.object().shape({
         firstName: Yup.string().required('Primeiro nome obrigatório'),
         lastName: Yup.string().required('último nome obrigatório'),
+        cpf: Yup.string().required('CPF obrigatório'),
         emailAddress: Yup.string()
           .required('E-mail obrigatório')
           .email('Digite um e-mail válido'),
@@ -52,6 +54,9 @@ const SignUp: React.FC = () =>{
 
       setIsLoading(true)
       
+      data = {...data, cpf: data.cpf.split(".").join("")};
+      data = {...data, cpf: data.cpf.split("-").join("")} as SignUpData;
+
       const response = await signUp(data)
 
       if(response === undefined) {
@@ -79,6 +84,7 @@ const SignUp: React.FC = () =>{
 
           <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="text" name="firstName" placeholder='Primeiro nome' />
           <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="text" name="lastName" placeholder='Último nome' />
+          <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="text" name="cpf" placeholder='CPF' masked={true} />
           <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="email"name="emailAddress" placeholder='E-mail' />
           <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="text" name="phoneNumber" placeholder='Telefone' masked={true} />
           <Input className='w-full px-3 py-2 bg-white font-roboto font-normal	text-sm	placeholder-gray-400 border-2 border-[#E5E7EB] rounded-md focus:outline-none focus:border-blue focus:ring-blue mt-2' type="password" name="password" placeholder='Senha' />
