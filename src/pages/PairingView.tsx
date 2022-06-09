@@ -123,6 +123,7 @@ export const PairingView: React.FC = () => {
             data={formatCSV}
             filename={`${city_name}_${sector_name}_${expensesheet_name}`}
             headers={headers}
+            separator={";"}
             className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg"
           >
             Baixar planilha
