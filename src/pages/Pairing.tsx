@@ -263,7 +263,7 @@ export const Pairing: React.FC = () => {
             data={downloadPairingFilled as []}
             filename={`${city_name}_${sector_name}_${pairing_name}`}
             headers={headers}
-            separator={";"}>
+            separator={";"}
           >
             <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
               Baixar planilha
@@ -273,6 +273,7 @@ export const Pairing: React.FC = () => {
             data={downloadPairingEmpty as []}
             filename={`${city_name}_${sector_name}_${pairing_name} - NAO PAREADOS`}
             headers={headersSecondary}
+            separator={";"}
           >
             <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-red-400 rounded-lg">
               Baixar não pareados
