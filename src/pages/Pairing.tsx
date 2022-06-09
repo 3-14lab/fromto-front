@@ -263,6 +263,7 @@ export const Pairing: React.FC = () => {
             data={downloadPairingFilled as []}
             filename={`${city_name}_${sector_name}_${pairing_name}`}
             headers={headers}
+            separator={";"}>
           >
             <button className="px-[28px] py-[13px] text-white font-bold text-sm mt-10 bg-green-800 rounded-lg">
               Baixar planilha
