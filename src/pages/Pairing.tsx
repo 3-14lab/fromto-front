@@ -76,7 +76,7 @@ export const Pairing: React.FC = () => {
         return {
           base_code: item.base_code,
           location: item.place_name,
-          value: Number(item.value).toLocaleString("pt-br"),
+          value: Number(item.value).toLocaleString("pt-br" ,{style: 'currency', currency: 'BRL'}).toString().split("R$").join(""),
         };
       });
   }, [formattedFile]);
@@ -89,7 +89,7 @@ export const Pairing: React.FC = () => {
         return {
           model_code: item.model_code,
           location: item.place_name,
-          value: Number(item.value).toLocaleString("pt-br"),
+          value: Number(item.value).toLocaleString("pt-br" ,{style: 'currency', currency: 'BRL'}).toString().split("R$").join(""),
         };
       });
   }, [formattedFile]);
