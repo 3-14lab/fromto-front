@@ -58,10 +58,7 @@ export const PairingView: React.FC = () => {
     return {
       code_base: item.base_code,
       location: item.place_name,
-      value: Number(item.value).toLocaleString("pt-br", {
-        style: "currency",
-        currency: "BRL",
-      }),
+      value: Number(item.value).toLocaleString("pt-br"),
     };
   });
 

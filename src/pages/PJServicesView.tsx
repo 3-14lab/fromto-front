@@ -85,7 +85,7 @@ export const PJServicesView: React.FC = () => {
     return {
       stocking_code: item.stocking_code,
       description_stocking: item.description_stocking,
-      reallocated_value: Number(item.reallocated_value).toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}),
+      reallocated_value: Number(item.reallocated_value).toLocaleString('pt-br'),
     };
   });
 

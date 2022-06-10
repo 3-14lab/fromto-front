@@ -3,7 +3,6 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import { BackButton, Header } from "@components";
 import { useUpload } from "@hooks/upload";
 import { CSVLink } from "react-csv";
-import api from "@services/api";
 import { Oval } from "react-loader-spinner";
 import { sicgespType, localType, pairingCodesType } from "@hooks/upload";
 import SearchableSelector from "@components/SearchableSelector";
@@ -77,10 +76,7 @@ export const Pairing: React.FC = () => {
         return {
           base_code: item.base_code,
           location: item.place_name,
-          value: Number(item.value).toLocaleString("pt-br", {
-            style: "currency",
-            currency: "BRL",
-          }),
+          value: Number(item.value).toLocaleString("pt-br"),
         };
       });
   }, [formattedFile]);
@@ -93,10 +89,7 @@ export const Pairing: React.FC = () => {
         return {
           model_code: item.model_code,
           location: item.place_name,
-          value: Number(item.value).toLocaleString("pt-br", {
-            style: "currency",
-            currency: "BRL",
-          }),
+          value: Number(item.value).toLocaleString("pt-br"),
         };
       });
   }, [formattedFile]);
