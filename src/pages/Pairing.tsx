@@ -12,7 +12,12 @@ interface LocationState {
   pairing_name: string;
   sector_name: string;
   city_name: string;
-  data: [];
+  data: {
+    base_code: string;
+    model_code: string;
+    place_name: string;
+    value: string;
+  }[];
 }
 
 export type FilePropsSicgesp = {
@@ -65,6 +70,14 @@ export const Pairing: React.FC = () => {
         ...prev,
         ...data.reduce((p: any, c: any) => ({ ...p, [c.model_code]: c }), {}),
       }));
+
+      setPairingCodes((prev) => [
+        ...prev,
+        ...data.map((pairedData) => ({
+          model_code: pairedData.model_code,
+          base_code: pairedData.base_code,
+        })),
+      ]);
     }
   }, [data]);
 
@@ -76,7 +89,12 @@ export const Pairing: React.FC = () => {
         return {
           base_code: item.base_code,
           location: item.place_name,
-          value: Number(item.value).toLocaleString("pt-br" ,{style: 'currency', currency: 'BRL'}).toString().split("R$").join("").trim(),
+          value: Number(item.value)
+            .toLocaleString("pt-br", { style: "currency", currency: "BRL" })
+            .toString()
+            .split("R$")
+            .join("")
+            .trim(),
         };
       });
   }, [formattedFile]);
@@ -89,7 +107,12 @@ export const Pairing: React.FC = () => {
         return {
           model_code: item.model_code,
           location: item.place_name,
-          value: Number(item.value).toLocaleString("pt-br" ,{style: 'currency', currency: 'BRL'}).toString().split("R$").join("").trim(),
+          value: Number(item.value)
+            .toLocaleString("pt-br", { style: "currency", currency: "BRL" })
+            .toString()
+            .split("R$")
+            .join("")
+            .trim(),
         };
       });
   }, [formattedFile]);
