@@ -12,7 +12,12 @@ interface LocationState {
   pairing_name: string;
   sector_name: string;
   city_name: string;
-  data: [];
+  data: {
+    base_code: string;
+    model_code: string;
+    place_name: string;
+    value: string;
+  }[];
 }
 
 export type FilePropsSicgesp = {
@@ -35,7 +40,7 @@ export const Pairing: React.FC = () => {
 
   const [formattedFile, setFormattedFile] = useState({} as FilePropsLocal);
   const [sicgespFile, setSicgespFile] = useState({} as FilePropsSicgesp);
-  const [pairingCodes, setPairingCodes] = useState<pairingCodesType[]>([]);
+  const [pairingCodes, setPairingCodes] = useState<pairingCodesType>({});
 
   const headers = [
     { label: "Código Lotação", key: "base_code" },
@@ -65,6 +70,16 @@ export const Pairing: React.FC = () => {
         ...prev,
         ...data.reduce((p: any, c: any) => ({ ...p, [c.model_code]: c }), {}),
       }));
+
+      setPairingCodes(
+        data.reduce(
+          (acc, current) => ({
+            ...acc,
+            [current.model_code]: { baseCode: current.base_code },
+          }),
+          {}
+        )
+      );
     }
   }, [data]);
 
@@ -76,7 +91,12 @@ export const Pairing: React.FC = () => {
         return {
           base_code: item.base_code,
           location: item.place_name,
-          value: Number(item.value).toLocaleString("pt-br" ,{style: 'currency', currency: 'BRL'}).toString().split("R$").join("").trim(),
+          value: Number(item.value)
+            .toLocaleString("pt-br", { style: "currency", currency: "BRL" })
+            .toString()
+            .split("R$")
+            .join("")
+            .trim(),
         };
       });
   }, [formattedFile]);
@@ -89,44 +109,22 @@ export const Pairing: React.FC = () => {
         return {
           model_code: item.model_code,
           location: item.place_name,
-          value: Number(item.value).toLocaleString("pt-br" ,{style: 'currency', currency: 'BRL'}).toString().split("R$").join("").trim(),
+          value: Number(item.value)
+            .toLocaleString("pt-br", { style: "currency", currency: "BRL" })
+            .toString()
+            .split("R$")
+            .join("")
+            .trim(),
         };
       });
   }, [formattedFile]);
 
   function update(model_code: string, target: string | null) {
-    const pairingAlreadySelect = Object.values(formattedFile).find(
-      (item) => target === item.base_code
-    );
-
-    const pairingRepeated = pairingCodes.find((item) => {
-      return item.base_code === target;
-    });
-
     if (!target) {
       return false;
     }
 
-    if (pairingRepeated) {
-      return false;
-    }
-
-    setPairingCodes([
-      ...pairingCodes,
-      {
-        model_code,
-        base_code: target,
-      },
-    ]);
-
-    if (pairingAlreadySelect) {
-      setFormattedFile((prev) => ({
-        ...prev,
-        [model_code]: { ...prev[model_code], base_code: undefined },
-      }));
-
-      return false;
-    }
+    setPairingCodes({ ...pairingCodes, [model_code]: { base_code: target } });
 
     const newPairingSelect = formattedFile[model_code];
     setFormattedFile((prev) => ({
@@ -142,7 +140,10 @@ export const Pairing: React.FC = () => {
     const pairingCreateBody = {
       sector_id,
       name: pairing_name,
-      pairingCodes: pairingCodes,
+      pairingCodes: Object.keys(pairingCodes).map((modelCode) => ({
+        model_code: modelCode,
+        base_code: pairingCodes[modelCode].base_code,
+      })),
       local_file: Object.values(formattedFile),
       sicgesp_file: Object.values(sicgespFile),
     };

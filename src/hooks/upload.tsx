@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext } from "react";
 
 interface UploadContextData {
   file: FileProps;
@@ -11,25 +11,26 @@ export type localType = {
   place_name: string;
   value: string;
   base_code?: string | null;
-}
+};
 
 export type localTypePJ = {
   stocking_code: string;
   description_stocking: string;
   reallocated_value: string;
   number_posts: string;
-}
+};
 
 export type sicgespType = {
   base_code: string;
   location: string;
   value: string;
-}
+};
 
 export type pairingCodesType = {
-  base_code: string;
-  model_code: string;
-}
+  [model_code: string]: {
+    base_code: string;
+  };
+};
 
 export type FileProps = {
   sicgesp: sicgespType[];
@@ -37,21 +38,17 @@ export type FileProps = {
   localPJ: localTypePJ[];
 };
 
-
 const UploadContext = createContext({} as UploadContextData);
 
 export const UploadProvider: React.FC = ({ children }) => {
-  
   const [file, setFile] = useState({} as FileProps);
 
   function handleUploadFile(file: FileProps) {
-    setFile(file)
+    setFile(file);
   }
 
   return (
-    <UploadContext.Provider
-      value={{ file, setFile, handleUploadFile }}
-    >
+    <UploadContext.Provider value={{ file, setFile, handleUploadFile }}>
       {children}
     </UploadContext.Provider>
   );
