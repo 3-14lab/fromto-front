@@ -75,7 +75,7 @@ export const Pairing: React.FC = () => {
         data.reduce(
           (acc, current) => ({
             ...acc,
-            [current.model_code]: { baseCode: current.base_code },
+            [current.model_code]: { base_code: current.base_code },
           }),
           {}
         )
